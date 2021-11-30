@@ -1,6 +1,6 @@
 # Politetune (prototype)
 
-Project Politetune is a rule-based politeness tuner that is designed to help L2 learners of Korean in learning when to use Jondaemal(존댓말) and when to use Banmal(반말). (that's the objective for the time being, but it is very well subject to change)
+Project Politetune is a rule-based (well, for the time being) politeness tuner that is designed to help L2 learners of Korean in learning when to use Jondaemal(존댓말) and when to use Banmal(반말). 
 
 ## By Whom?
 - funded by: [Faculty of Oriental Studies](https://www.orinst.ox.ac.uk) at the University of Oxford 
