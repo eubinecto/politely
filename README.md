@@ -45,7 +45,7 @@ Project Politetune is a rule-based (well, for the time being) politeness tuner t
 - Older sister (non-POLITE)
 - Older brother (non-POLITE)
 - Older cousin (non-POLITE)
-- Younger sister(non-POLITE)
+- Younger sister (non-POLITE)
 - Younger brother (non-POLITE)
 - Younger cousin (non-POLITE)
 - Uncle (POLITE)
@@ -78,24 +78,32 @@ Project Politetune is a rule-based (well, for the time being) politeness tuner t
 
 Verbs	| Polite |	Non-polite
 --- | --- | --- 
-공부하다	| 공부해요 | 	공부해
-마시다 	| 마셔요 | 	마셔
-가다	| 가요 | 	가
-오다	| 와요 | 	와
 좋아하다	| 좋아해요 | 	좋아해
 싫어하다	| 싫어해요 | 	싫어해
+미안하다 | 	미안해요 | 	미안해
+쇼핑하다	| 쇼핑해요 | 	쇼핑해
+공부하다	| 공부해요 | 	공부해
+마시다 	| 마셔요 | 	마셔
 알다	| 알아요 | 	알아
 모르다	| 몰라요 | 	몰라
 듣다	| 들어요 | 	들어
 사다	| 사요 | 	사
+보다	| 봐요 | 	봐
+가다	| 가요 | 	가
+오다	| 와요 | 	와
 아프다	| 아파요 | 	아파
 목마르다	| 목말라요 | 	목말라
 배고프다	| 배고파요 | 	배고파
 고맙다	| 고마워요 | 	고마워
-미안하다 | 	미안해요 | 	미안해 
-보다	| 봐요 | 	봐
-쇼핑하다	| 쇼핑해요 | 	쇼핑해 
 
 
 
 
+## Goals
+
+```text
+마시다 -> 나는 물을 마셔요 / 나는 물을 마셔
+공부하다 -> 나는 공부해요 -> 나는 공부해
+가다 -> 가요 -> 가
+오다 ->  
+```
