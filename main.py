@@ -6,7 +6,7 @@ import argparse
 from typing import List, Dict, Tuple
 from konlpy.tag import Okt
 from termcolor import colored
-import re
+
 
 RULES: Dict[str, Tuple[int, int]] = {
     "t": (1, 1),  # teacher
