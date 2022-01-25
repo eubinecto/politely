@@ -2,29 +2,30 @@
 그냥 처음엔 막코딩하자. just put everything under here.
 It's okay to write dirty stuff, at least as of right now.
 """
-import argparse
+import streamlit as st
 from typing import List, Dict, Tuple
 from konlpy.tag import Okt
-from termcolor import colored
+import copy
 
 
 RULES: Dict[str, Tuple[int, int]] = {
-    "t": (1, 1),  # teacher
-    "baw": (1, 1),  # boss at work
-    "os": (0, 0),  # older sister
-    "ob": (0, 0),  # older brother
-    "oc": (0, 0),  # older cousin
-    "ys": (0, 0),  # younger sister
-    "yb": (0, 0),  # younger brother
-    "yc": (0, 0),  # younger cousin
-    "u": (1, 1),  # uncle
-    "f": (0, 1),  # friend
-    "gpa": (1, 1),  # grandpa
-    "gma": (1, 1),  # grandma
-    "m": (0, 1),  # mum
-    "d": (1, 1),  # dad
-    "sc": (1, 1)  # shop clerk
+    "teacher": (1, 1),  # teacher
+    "boss at work": (1, 1),  # boss at work
+    "older sister": (0, 0),  # older sister
+    "older brother": (0, 0),  # older brother
+    "older cousin": (0, 0),  # older cousin
+    "younger sister": (0, 0),  # younger sister
+    "younger brother": (0, 0),  # younger brother
+    "younger cousin": (0, 0),  # younger cousin
+    "uncle": (1, 1),  # uncle
+    "friend": (0, 1),  # friend
+    "grandpa": (1, 1),  # grandpa
+    "grandma": (1, 1),  # grandma
+    "mum": (0, 1),  # mum
+    "dad": (1, 1),  # dad
+    "shop clerk": (1, 1)  # shop clerk
 }
+
 
 HONORIFICS: Dict[str, Tuple[str, str]] = {
     "하다": ("해", "해요"),  # this covers pretty much all the -하다 verbs.
@@ -42,33 +43,33 @@ HONORIFICS: Dict[str, Tuple[str, str]] = {
     "고맙다": ("고마워", "고마워요")
 }
 
+VISIBILITIES = [
+    "private",
+    "public"
+]
 # M1 quark
 JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java'
 
 
 def main():
     # parsing the arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--sent", "--s", type=str, default="나는 공부할래")
-    # choose the two options
-    parser.add_argument("--listener", "--l", type=str, choices=RULES.keys())
-    parser.add_argument("--visibility", "--v", type=int, choices=[0, 1])  # 0 = private, 1 = public.
-
-    args = parser.parse_args()
+    st.title("Politetune Demo")
+    sent = st.text_input("Type a sentence you want to politetune", "나는 공부한다")
+    listener = st.sidebar.selectbox("Who is your listener?", RULES.keys())
+    visibility = st.sidebar.selectbox("How visible are you?", VISIBILITIES)
+    visibility = VISIBILITIES.index(visibility)
     # decide if you should be polite or not
-    polite = RULES[args.listener][args.visibility]
+    polite = RULES[listener][visibility]
     # first, tokenize & lemmatize words
     okt = Okt(jvmpath=JVM_PATH)
     # then, polite-tune the tokens.
-    tuned = args.sent
-    for token, lemma in zip(okt.morphs(args.sent, stem=False), okt.morphs(args.sent, stem=True)):
+    tuned = copy.copy(sent)
+    for token, lemma in zip(okt.morphs(sent, stem=False), okt.morphs(sent, stem=True)):
         if lemma in HONORIFICS.keys() and token != HONORIFICS[lemma][polite]:
-            tuned = tuned.replace(token, colored(HONORIFICS[lemma][polite], color="blue"))
+            tuned = tuned.replace(token, HONORIFICS[lemma][polite])
     # print out the results
-    print(f"{args.sent} -> {tuned}")
-    print(f"listener: {args.listener},"
-          f"\nvisibility: {args.visibility},"
-          f"\npoliteness: {polite}")
+    st.write(f"tuned: {tuned}")
+    st.write(f"politeness: {polite}")
 
 
 if __name__ == '__main__':
