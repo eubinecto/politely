@@ -47,8 +47,6 @@ VISIBILITIES = [
     "private",
     "public"
 ]
-# M1 quark
-JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java'
 
 
 def main():
@@ -61,7 +59,7 @@ def main():
     # decide if you should be polite or not
     polite = RULES[listener][visibility]
     # first, tokenize & lemmatize words
-    okt = Okt(jvmpath=JVM_PATH)
+    okt = Okt()
     # then, polite-tune the tokens.
     tuned = copy.copy(sent)
     for token, lemma in zip(okt.morphs(sent, stem=False), okt.morphs(sent, stem=True)):
