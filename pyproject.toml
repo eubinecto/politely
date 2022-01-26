@@ -5,7 +5,7 @@ description = ""
 authors = ["eubinecto <eubinecto>"]
 
 [tool.poetry.dependencies]
-python = "3.9.10"
+python = "^3.9.10"
 konlpy = "^0.6.0"
 streamlit = "^1.4.0"
 
