@@ -1,5 +1,7 @@
 # Politetune (prototype)
 
+![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/eubinecto/politetune/main/main.py)
+
 Project Politetune is a rule-based (well, for the time being) politeness tuner that is designed to help L2 learners of Korean in learning when to use Jondaemal(존댓말) and when to use Banmal(반말). 
 
 ## By Whom?
@@ -96,6 +98,7 @@ Verbs	| Polite |	Non-polite
 배고프다	| 배고파요 | 	배고파
 고맙다	| 고마워요 | 	고마워
 
+| row1 | row2 |
 
 
 

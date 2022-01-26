@@ -5,28 +5,30 @@ It's okay to write dirty stuff, at least as of right now.
 import streamlit as st
 from typing import Dict, Tuple
 from konlpy.tag import Okt
-import copy
+import platform
 
 
+# listener -> (private, public)
 RULES: Dict[str, Tuple[int, int]] = {
-    "teacher": (1, 1),  # teacher
-    "boss at work": (1, 1),  # boss at work
-    "older sister": (0, 0),  # older sister
-    "older brother": (0, 0),  # older brother
-    "older cousin": (0, 0),  # older cousin
-    "younger sister": (0, 0),  # younger sister
-    "younger brother": (0, 0),  # younger brother
-    "younger cousin": (0, 0),  # younger cousin
-    "uncle": (1, 1),  # uncle
-    "friend": (0, 1),  # friend
-    "grandpa": (1, 1),  # grandpa
-    "grandma": (1, 1),  # grandma
-    "mum": (0, 1),  # mum
-    "dad": (1, 1),  # dad
-    "shop clerk": (1, 1)  # shop clerk
+    "teacher": (1, 1),
+    "boss at work": (1, 1),
+    "older sister": (0, 0),
+    "older brother": (0, 0),
+    "older cousin": (0, 0),
+    "younger sister": (0, 0),
+    "younger brother": (0, 0),
+    "younger cousin": (0, 0),
+    "uncle": (1, 1),
+    "friend": (0, 1),
+    "grandpa": (1, 1),
+    "grandma": (1, 1),
+    "mum": (0, 1),
+    "dad": (1, 1),
+    "shop clerk": (1, 1)
 }
 
 
+# verb -> (not polite, polite)
 HONORIFICS: Dict[str, Tuple[str, str]] = {
     "하다": ("해", "해요"),  # this covers pretty much all the -하다 verbs.
     "마시다": ("마셔", "마셔요"),
@@ -48,6 +50,8 @@ VISIBILITIES = [
     "public"
 ]
 
+JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java'
+
 
 def main():
     # parsing the arguments
@@ -58,13 +62,17 @@ def main():
     visibility = VISIBILITIES.index(visibility)
     # decide if you should be polite or not
     polite = RULES[listener][visibility]
-    # first, tokenize & lemmatize words
-    okt = Okt()
-    # then, polite-tune the tokens.
-    tuned = copy.copy(sent)
+    # first, tokenize & lemmatize words. Then, polite-tune the tokens.
+    if platform.processor() == "arm":
+        okt = Okt(jvmpath=JVM_PATH)  # m1-compatible jvm
+    else:
+        okt = Okt()
+
+    tuned = sent
     for token, lemma in zip(okt.morphs(sent, stem=False), okt.morphs(sent, stem=True)):
-        if lemma in HONORIFICS.keys() and token != HONORIFICS[lemma][polite]:
+        if lemma in HONORIFICS.keys():
             tuned = tuned.replace(token, HONORIFICS[lemma][polite])
+
     # print out the results
     st.write(f"tuned: {tuned}")
     st.write(f"politeness: {polite}")
