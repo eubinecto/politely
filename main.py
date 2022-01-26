@@ -63,7 +63,7 @@ def main():
     # then, polite-tune the tokens.
     tuned = copy.copy(sent)
     for token, lemma in zip(okt.morphs(sent, stem=False), okt.morphs(sent, stem=True)):
-        if lemma in HONORIFICS.keys() and token != HONORIFICS[lemma][polite]:
+        if lemma in HONORIFICS.keys():
             tuned = tuned.replace(token, HONORIFICS[lemma][polite])
     # print out the results
     st.write(f"tuned: {tuned}")
