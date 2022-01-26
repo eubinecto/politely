@@ -1,0 +1,2 @@
+konlpy==0.6.0
+streamlit== 1.4.0
