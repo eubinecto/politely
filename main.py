@@ -3,7 +3,7 @@
 It's okay to write dirty stuff, at least as of right now.
 """
 import streamlit as st
-from typing import List, Dict, Tuple
+from typing import Dict, Tuple
 from konlpy.tag import Okt
 import copy
 
