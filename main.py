@@ -14,14 +14,15 @@ def main():
     # parsing the arguments
     st.title("Honorify Demo")
     sent = st.text_input("Type a sentence here", value="나는 공부해")
-    listener = st.selectbox("Who is your listener?", honorifier.rules.keys())
-    visibility = st.selectbox("What is your visibility?", honorifier.visibilities)
+    listener = st.selectbox("Who is your listener?", honorifier.RULES.index)
+    visibility = st.selectbox("What is your visibility?", honorifier.VISIBILITIES)
 
     if st.button(label="Honorify"):
-        honorified = honorifier(sent, listener, visibility)
-        msg = "yes" if honorifier.honored else "no"
-        st.markdown(f"Should you use honorifics?: `{msg}`")
+        honorified, styler_rules, styler_honorifics = honorifier(sent, listener, visibility)
+        print(honorifier.honored)
         st.markdown(honorified)
+        st.table(styler_rules)
+        st.table(styler_honorifics)
 
 
 if __name__ == '__main__':

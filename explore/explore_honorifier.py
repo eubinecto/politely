@@ -8,6 +8,7 @@ def main():
     honorifier = Honorifier()
     honorified = honorifier(sent, listener, visibility)
     print(honorified)
+    print(honorifier.honored)
 
 
 if __name__ == '__main__':
