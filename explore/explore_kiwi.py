@@ -11,7 +11,10 @@ def main():
     kiwi.add_user_word("해")
     print(kiwi.tokenize(text="나는 공부해"))
     print(kiwi.tokenize(text="나는 공부해요"))
-    tokens = kiwi.tokenize(text="나는 공부해")
+    print(kiwi.tokenize(text="저기로 가요"))
+    print(kiwi.tokenize(text="가요"))
+    print(kiwi.tokenize(text="아버지는 진지를 드신다"))
+
 
 
 if __name__ == '__main__':
