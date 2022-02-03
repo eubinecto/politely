@@ -11,8 +11,12 @@ JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java
 
 def main():
     okt = Okt(jvmpath=JVM_PATH)
-    tokens = okt.morphs("으아아아 M1 사용하기 피곤하네")
+    tokens = okt.morphs("나는 마셔", stem=True)
     print(tokens)
+    tokens = okt.morphs("저는 고마워요", stem=True)
+    print(tokens)
+    tok2pos = okt.pos("나는 공부하고 있어. 선생님은 물을 마셔.", stem=True)
+    print(tok2pos)
 
 
 if __name__ == '__main__':

@@ -3,12 +3,44 @@
 It's okay to write dirty stuff, at least as of right now.
 """
 import streamlit as st
-from typing import Dict, Tuple
-from konlpy.tag import Okt
 import platform
+from typing import Dict, Tuple, List, Optional, Union
+from konlpy.tag import Okt
 
 
-# listener -> (private, public)
+# verb -> visibility -> unhonored form / honored form
+# TODO: The keys should be changed to regular expressions
+VERB_HONORIFICS: Dict[str, Tuple[str, str]] = {
+    # just do one thing and one thing right.
+    "하다": ("해", "해요"),  # should be at the end.
+    "마시다": ("마셔", "마셔요"),
+    "알다": ("알아", "알아요"),
+    "있다": ("있어", "있어요"),
+    "모르다": ("몰라", "몰라요"),
+    "들다": ("들어", "들어요"),
+    "사다": ("사", "사요"),
+    "보다": ("봐", "봐요"),
+    "가다": ("가", "가요"),
+    "오다": ("와", "와요"),
+    "아프다": ("아파", "아파요"),
+    "목마르다": ("목말라", "목말라요"),
+    "배고프다": ("배고파", "배고파요"),
+    "고맙다": ("고마워", "고마워요"),
+}
+
+NOUN_HONORIFICS: Dict[str, Tuple[str, str]] = {
+    "나": ("나", "저"),
+    "저": ("나", "저"),
+}
+
+
+VISIBILITIES = [
+    "private",
+    "public"
+]
+
+# listener -> visibility -> not honored / honored
+# you choose a listener
 RULES: Dict[str, Tuple[int, int]] = {
     "teacher": (1, 1),
     "boss at work": (1, 1),
@@ -28,54 +60,48 @@ RULES: Dict[str, Tuple[int, int]] = {
 }
 
 
-# verb -> (not polite, polite)
-HONORIFICS: Dict[str, Tuple[str, str]] = {
-    "하다": ("해", "해요"),  # this covers pretty much all the -하다 verbs.
-    "마시다": ("마셔", "마셔요"),
-    "알다": ("알아", "알아요"),
-    "모르다": ("몰라", "몰라요"),
-    "듣다": ("들어", "들어요"),
-    "사다": ("사", "사요"),
-    "보다": ("봐", "봐요"),
-    "가다": ("가", "가요"),
-    "오다": ("와", "와요"),
-    "아프다": ("아파", "아파요"),
-    "목마르다": ("목말라", "목말라요"),
-    "배고프다": ("배고파", "배고파요"),
-    "고맙다": ("고마워", "고마워요")
-}
+class Honorifier:
 
-VISIBILITIES = [
-    "private",
-    "public"
-]
+    def __init__(self, okt: Okt):
+        self.okt = okt
 
-JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java'
+    def __call__(self, sent: str, honored: bool) -> str:
+        # wait, this way, I cannot deal with the white spaces
+        lemmas: List[str] = self.okt.morphs(sent, stem=True)
+        tok2pos: List[Tuple[str, str]] = self.okt.pos(sent)
+        for lemma, (token, pos) in zip(lemmas, tok2pos):
+            if pos == "Verb" and lemma in VERB_HONORIFICS:
+                sent = sent.replace(token, f"`{VERB_HONORIFICS[lemma][honored]}({pos})`")
+            elif pos == "Noun" and lemma in NOUN_HONORIFICS:
+                sent = sent.replace(token, f"`{NOUN_HONORIFICS[lemma][honored]}({pos})`")
+        return sent
+
+
+def load_okt() -> Okt:
+    if platform.processor() == "arm":
+        okt = Okt(jvmpath='/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java')  # m1-compatible jvm
+    else:
+        okt = Okt()
+    return okt
+
+
+okt = load_okt()
+honorifier = Honorifier(okt)
 
 
 def main():
     # parsing the arguments
-    st.title("Politetune Demo")
-    sent = st.text_input("Type a sentence you want to politetune", "나는 공부한다")
-    listener = st.sidebar.selectbox("Who is your listener?", RULES.keys())
-    visibility = st.sidebar.selectbox("How visible are you?", VISIBILITIES)
-    visibility = VISIBILITIES.index(visibility)
-    # decide if you should be polite or not
-    polite = RULES[listener][visibility]
-    # first, tokenize & lemmatize words. Then, polite-tune the tokens.
-    if platform.processor() == "arm":
-        okt = Okt(jvmpath=JVM_PATH)  # m1-compatible jvm
-    else:
-        okt = Okt()
+    st.title("Honorify Demo")
+    sent = st.text_input("Type a sentence here", value="나는 공부해")
+    listener = st.selectbox("Who is your listener?", RULES.keys())
+    visibility = st.selectbox("What is your visibility?", VISIBILITIES)
 
-    tuned = sent
-    for token, lemma in zip(okt.morphs(sent, stem=False), okt.morphs(sent, stem=True)):
-        if lemma in HONORIFICS.keys():
-            tuned = tuned.replace(token, HONORIFICS[lemma][polite])
-
-    # print out the results
-    st.write(f"tuned: {tuned}")
-    st.write(f"politeness: {polite}")
+    if st.button(label="Honorify"):
+        honored = RULES[listener][VISIBILITIES.index(visibility)]
+        msg = "yes" if honored else "no"
+        st.markdown(f"Should you use honorifics?: `{msg}`")
+        honorified = honorifier(sent, honored)
+        st.markdown(honorified)
 
 
 if __name__ == '__main__':
