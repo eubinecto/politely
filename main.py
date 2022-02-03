@@ -4,7 +4,7 @@ It's okay to write dirty stuff, at least as of right now.
 """
 import streamlit as st
 import platform
-from typing import Dict, Tuple, List, Optional, Union
+from typing import Dict, Tuple, List
 from konlpy.tag import Okt
 
 
@@ -85,8 +85,7 @@ def load_okt() -> Okt:
     return okt
 
 
-okt = load_okt()
-honorifier = Honorifier(okt)
+honorifier = Honorifier(load_okt())
 
 
 def main():
