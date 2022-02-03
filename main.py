@@ -19,10 +19,10 @@ def main():
 
     if st.button(label="Honorify"):
         honorified, styler_rules, styler_honorifics = honorifier(sent, listener, visibility)
-        print(honorifier.honored)
         st.markdown(honorified)
-        st.table(styler_rules)
-        st.table(styler_honorifics)
+        left, right = st.columns(2)
+        left.table(styler_rules)
+        right.table(styler_honorifics)
 
 
 if __name__ == '__main__':
