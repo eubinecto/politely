@@ -1,13 +1,12 @@
 from typing import Optional, List, Tuple
 import pandas as pd
 from pandas.io.formats.style import Styler
-from politetune.fetchers import fetch_okt, fetch_honorifics, fetch_rules, fetch_visibilities
+from politetune.fetchers import fetch_okt, fetch_honorifics, fetch_rules
 
 
 class Honorifier:
     HONORIFICS: pd.DataFrame = fetch_honorifics()
     RULES: pd.DataFrame = fetch_rules()
-    VISIBILITIES: List[str] = fetch_visibilities()
 
     def __init__(self):
         self.okt = fetch_okt()

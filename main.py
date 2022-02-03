@@ -15,14 +15,15 @@ def main():
     st.title("Honorify Demo")
     sent = st.text_input("Type a sentence here", value="나는 공부해")
     listener = st.selectbox("Who is your listener?", honorifier.RULES.index)
-    visibility = st.selectbox("What is your visibility?", honorifier.VISIBILITIES)
+    visibility = st.selectbox("What is your visibility?", honorifier.RULES.columns)
 
     if st.button(label="Honorify"):
-        honorified, styler_rules, styler_honorifics = honorifier(sent, listener, visibility)
-        st.markdown(honorified)
-        left, right = st.columns(2)
-        left.table(styler_rules)
-        right.table(styler_honorifics)
+        with st.spinner("Please wait..."):
+            honorified, styler_rules, styler_honorifics = honorifier(sent, listener, visibility)
+            st.markdown(honorified)
+            left, right = st.columns(2)
+            left.table(styler_rules)
+            right.table(styler_honorifics)
 
 
 if __name__ == '__main__':

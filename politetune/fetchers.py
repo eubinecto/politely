@@ -1,22 +1,15 @@
 import platform
-from typing import List
 from konlpy.tag import Okt
-from politetune.paths import ZULU_JVM, HONORIFICS_YAML, RULES_YAML, VISIBILITIES_YAML
-import json
+from politetune.paths import ZULU_JVM, HONORIFICS_JSON, RULES_JSON
 import pandas as pd
 
 
 def fetch_honorifics() -> pd.DataFrame:
-    return pd.read_json(str(HONORIFICS_YAML)).transpose()
+    return pd.read_json(str(HONORIFICS_JSON)).transpose()
 
 
 def fetch_rules() -> pd.DataFrame:
-    return pd.read_json(str(RULES_YAML)).transpose()
-
-
-def fetch_visibilities() -> List[str]:
-    with open(str(VISIBILITIES_YAML), "r") as fh:
-        return json.load(fh)
+    return pd.read_json(str(RULES_JSON)).transpose()
 
 
 def fetch_okt() -> Okt:
