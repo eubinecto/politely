@@ -1,0 +1,46 @@
+teacher:
+  private: True
+  public: True
+boss at work:
+  private: True
+  public: True
+older sister:
+  private: False
+  public: False
+older brother:
+  private: False
+  public: False
+older cousin:
+  private: False
+  public: False
+younger sister:
+  private: False
+  public: False
+younger brother:
+  private: False
+  public: False
+younger cousin:
+  private: False
+  public: False
+uncle:
+  private: True
+  public: True
+friend:
+  private: False
+  public: True
+grandpa:
+  private: True
+  public: True
+grandma:
+  private: True
+  public: True
+mum:
+  private: True
+  public: True
+dad:
+  private: True
+  public: True
+shop clerk:
+  private: True
+  public: True
+
