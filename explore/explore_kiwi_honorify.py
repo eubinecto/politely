@@ -56,9 +56,8 @@ def honorify(sent: str, honored: bool) -> str:
     # preprocess the sentence
     sent = sent + "." if not sent.endswith(".") else sent  # for accurate pos-tagging
     sent = sent.replace(" ", " " * 2)  # for accurate spacing
-    # tokenize the sentence
+    # tokenize the sentence, and replace all the EFs with their honorifics
     tokens = kiwi.tokenize(sent)
-    # replace the EC's with the those defined by RULES
     texts = [
         HONORIFICS.get(f"{token.form}+{token.tag}", (token.form,) * 2)[honored]
         for token in tokens
@@ -72,7 +71,7 @@ def honorify(sent: str, honored: bool) -> str:
         text + " " if spacing else text
         for text, spacing in zip(texts, spacings)
     ])
-    # conjugations
+    # abbreviate tokens
     for key, val in ABBREVIATIONS.items():
         sent = sent.replace(key, val)
     return sent
