@@ -1,7 +1,8 @@
 from typing import Optional, List, Tuple
 import pandas as pd
 from pandas.io.formats.style import Styler
-from politetune.fetchers import fetch_okt, fetch_honorifics, fetch_rules
+from politetune.fetchers import fetch_honorifics, fetch_rules
+from kiwipiepy import Kiwi
 
 
 class Honorifier:
@@ -9,13 +10,11 @@ class Honorifier:
     RULES: pd.DataFrame = fetch_rules()
 
     def __init__(self):
-        self.okt = fetch_okt()
+        self.kiwi = Kiwi()
         self.honored: Optional[bool] = None
 
     def __call__(self, sent: str, listener: str, visibility: str) -> Tuple[str, Styler, Styler]:
         self.honored = self.RULES.loc[listener][visibility]
-        lemmas: List[str] = self.okt.morphs(sent, stem=True)
-        tok2pos: List[Tuple[str, str]] = self.okt.pos(sent)
         for lemma, (token, pos) in zip(lemmas, tok2pos):
             if lemma in self.HONORIFICS.index and pos == self.HONORIFICS.loc[lemma]['pos']:
                 sent = sent.replace(token, f"`{self.HONORIFICS.loc[lemma][self.honored]}`")
