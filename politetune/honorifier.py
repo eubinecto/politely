@@ -18,7 +18,7 @@ class Honorifier:
         tok2pos: List[Tuple[str, str]] = self.okt.pos(sent)
         for lemma, (token, pos) in zip(lemmas, tok2pos):
             if lemma in self.HONORIFICS.index and pos == self.HONORIFICS.loc[lemma]['pos']:
-                sent = sent.replace(token, f"`{self.HONORIFICS.loc[lemma][self.honored]}({pos})`")
+                sent = sent.replace(token, f"`{self.HONORIFICS.loc[lemma][self.honored]}`")
         return sent, self.highlight_rules(listener, visibility), self.highlight_honorifics(lemmas, tok2pos)
 
     def highlight_rules(self, listener: str, visibility: str) -> Styler:
