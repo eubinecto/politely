@@ -1,9 +1,9 @@
 import pandas as pd
-from politetune.loaders import load_honorifics
+from politetune.fetchers import fetch_honorifics
 
 
 def main():
-    honorifics = load_honorifics()
+    honorifics = fetch_honorifics()
     print(honorifics)
 
     # and... you could build a dataframe out of the dictionary.

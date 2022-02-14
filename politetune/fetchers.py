@@ -1,19 +1,18 @@
-import platform
-from konlpy.tag import Okt
-from politetune.paths import ZULU_JVM, HONORIFICS_JSON, RULES_JSON
-import pandas as pd
+import json
+from politetune.paths import HONORIFICS_JSON, RULES_JSON, ABBREVIATIONS_JSON
 
 
-def fetch_honorifics() -> pd.DataFrame:
-    return pd.read_json(str(HONORIFICS_JSON)).transpose()
+def fetch_abbreviations() -> dict:
+    with open(str(ABBREVIATIONS_JSON), 'r') as fh:
+        return json.loads(fh.read())
 
 
-def fetch_rules() -> pd.DataFrame:
-    return pd.read_json(str(RULES_JSON)).transpose()
+def fetch_honorifics() -> dict:
+    with open(str(HONORIFICS_JSON), 'r') as fh:
+        return json.loads(fh.read())
 
 
-def fetch_okt() -> Okt:
-    if platform.processor() == "arm":
-        return Okt(jvmpath=str(ZULU_JVM))  # fetch okt with m1-compatible jvm
-    else:
-        return Okt()
+def fetch_rules() -> dict:
+    with open(str(RULES_JSON), 'r') as fh:
+        return json.loads(fh.read())
+

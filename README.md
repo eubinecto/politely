@@ -17,3 +17,15 @@ input | output |
 - led & developed by: [Jieun Kiaer](https://www.orinst.ox.ac.uk/people/jieun-kiaer) (Associate Professor of Korean Language and Linguistics at the University of Oxford)
 - co-developed by: Research assistant Eu-Bin KIM (Msc. in Applied Linguistics at the University of Oxford, Bsc. in AI at the University of Manchester )
 
+
+## Quick Start
+
+Running stremlit in local:
+```shell
+streamlit run main.py
+```
+
+Running tests:
+```shell
+pytest
+```
