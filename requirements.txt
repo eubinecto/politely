@@ -1,4 +1,3 @@
-konlpy==0.6.0
 kiwipiepy==0.10.3
-streamlit==1.5.0
+streamlit==1.5.1
 pytest==7.0.1

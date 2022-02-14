@@ -1,5 +1,8 @@
 import numpy as np
-from typing import Optional, List
+import pandas as pd
+from typing import Optional, List, Tuple
+from pandas.io.formats.style import Styler
+from _kiwipiepy import Token
 from politetune.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rules
 from kiwipiepy import Kiwi
 
@@ -17,7 +20,7 @@ class Tuner:
         self.kiwi = Kiwi()
         self.polite: Optional[bool] = None
 
-    def __call__(self, sent: str, listener: str, visibility: str) -> str:
+    def __call__(self, sent: str, listener: str, visibility: str) -> dict:
         self.polite = self.RULES[listener][visibility]
         # preprocess the sentence
         tuned = sent + "." if not sent.endswith(".") else sent  # for accurate pos-tagging
@@ -45,4 +48,22 @@ class Tuner:
         # post-process the sentence
         if not sent.endswith("."):
             tuned = tuned.replace(".", "")
-        return tuned
+        return {
+            "tuned": tuned,
+            "rules": self.highlight_rules(listener, visibility),
+            "honorifics": self.highlight_honorifics(tokens)
+        }
+
+    def highlight_rules(self, listener: str, visibility: str) -> Styler:
+        styler = pd.DataFrame(self.RULES).transpose().style
+        subset = pd.IndexSlice[(listener, visibility)]
+        styler = styler.applymap(lambda x: "background-color: purple", subset=subset)
+        return styler
+
+    def highlight_honorifics(self, tokens: Token) -> Styler:
+        styler = pd.DataFrame(self.HONORIFICS).transpose().style
+        for token in tokens:
+            if f"{token.form}+{token.tag}" in self.HONORIFICS.keys():
+                subset = pd.IndexSlice[(f"{token.form}+{token.tag}", self.polite)]
+                styler = styler.applymap(lambda x: "background-color: purple", subset=subset)
+        return styler
