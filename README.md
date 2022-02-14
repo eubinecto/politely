@@ -1,14 +1,18 @@
 # Politetune (demo)
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/eubinecto/politetune/main/main.py)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/eubinecto/politetune/main/main_streamlit.py)
 
 
 
 Project Politetune is a rule-based (well, for the time being) politeness tuner that is designed to help L2 learners of Korean in learning when and when not to use Korean honorifics. 
 
-input | output |
---- | --- |
-<img width="700" alt="image" src="https://user-images.githubusercontent.com/56193069/152403258-305592fd-eda6-4047-a4da-ac40e8db0a7c.png"> | <img width="700" alt="image" src="https://user-images.githubusercontent.com/56193069/152403290-e78ec60b-0686-47de-a1c6-0adc19fd2a92.png"> |
+ example |
+--- |
+input | 
+<img width="734" alt="image" src="https://user-images.githubusercontent.com/56193069/153815272-a5360a24-400d-4ff7-8214-d5b932ea556e.png"> |
+output | 
+<img width="713" alt="image" src="https://user-images.githubusercontent.com/56193069/153815317-4aca2728-e11f-4000-a4dc-c2b823333021.png"> | 
+
 
 
 
@@ -22,7 +26,7 @@ input | output |
 
 Running stremlit in local:
 ```shell
-streamlit run main.py
+streamlit run main_streamlit.py
 ```
 
 Running tests:
