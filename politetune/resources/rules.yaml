@@ -1,0 +1,45 @@
+boss at work:
+  private: o
+  public: o
+dad:
+  private: o
+  public: o
+friend:
+  private: x
+  public: o
+grandma:
+  private: o
+  public: o
+grandpa:
+  private: o
+  public: o
+mum:
+  private: o
+  public: o
+older brother:
+  private: x
+  public: x
+older cousin:
+  private: x
+  public: x
+older sister:
+  private: x
+  public: x
+shop clerk:
+  private: o
+  public: o
+teacher:
+  private: o
+  public: o
+uncle:
+  private: o
+  public: o
+younger brother:
+  private: x
+  public: x
+younger cousin:
+  private: x
+  public: x
+younger sister:
+  private: x
+  public: x
