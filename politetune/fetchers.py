@@ -1,18 +1,18 @@
-import json
-from politetune.paths import HONORIFICS_JSON, RULES_JSON, ABBREVIATIONS_JSON
+import yaml
+from politetune.paths import HONORIFICS_YAML, RULES_YAML, ABBREVIATIONS_YAML
 
 
 def fetch_abbreviations() -> dict:
-    with open(str(ABBREVIATIONS_JSON), 'r') as fh:
-        return json.loads(fh.read())
+    with open(str(ABBREVIATIONS_YAML), 'r') as fh:
+        return yaml.safe_load(fh)
 
 
 def fetch_honorifics() -> dict:
-    with open(str(HONORIFICS_JSON), 'r') as fh:
-        return json.loads(fh.read())
+    with open(str(HONORIFICS_YAML), 'r') as fh:
+        return yaml.safe_load(fh)
 
 
 def fetch_rules() -> dict:
-    with open(str(RULES_JSON), 'r') as fh:
-        return json.loads(fh.read())
+    with open(str(RULES_YAML), 'r') as fh:
+        return yaml.safe_load(fh)
 
