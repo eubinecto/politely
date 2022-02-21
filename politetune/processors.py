@@ -24,10 +24,10 @@ class Tuner:
 
     def __call__(self, sent: str, listener: str, visibility: str) -> str:
         # preprocess the sentence
-        tuned = sent + "." if not sent.endswith(".") else sent  # for accurate pos-tagging
-        tuned = tuned.replace(" ", " " * 2)  # for accurate spacing
+        preprocessed = sent + "." if not sent.endswith(".") else sent  # for accurate pos-tagging
+        preprocessed = preprocessed.replace(" ", " " * 2)  # for accurate spacing
         # tokenize the sentence, and replace all the EFs with their honorifics
-        tokens = self.kiwi.tokenize(tuned)
+        tokens = self.kiwi.tokenize(preprocessed)
         polite = self.RULES[listener][visibility]
         texts = [
             self.HONORIFICS[f"{token.form}+{token.tag}"][polite]
@@ -40,14 +40,16 @@ class Tuner:
         lens = np.array([token.len for token in tokens] + [0])
         sums = np.array(starts) + np.array(lens)
         spacings = (starts[1:] - sums[:-1]) > 0
-        tuned = "".join([
+        spaced = "".join([
             text + " " if spacing else text
             for text, spacing in zip(texts, spacings)
         ])
         # abbreviate tokens
+        abbreviated = spaced
         for key, val in self.ABBREVIATIONS.items():
-            tuned = tuned.replace(key, val)
+            abbreviated = abbreviated.replace(key, val)
         # post-process the sentence
+        tuned = abbreviated
         if not sent.endswith("."):
             tuned = tuned.replace(".", "")
         # register any information to be used for post-processing
@@ -59,10 +61,10 @@ class Tuner:
             if f"{token.form}+{token.tag}" in self.HONORIFICS.keys()
         ]
         self.abbreviations = [
-            (key, val)
+            (key, "abbreviation")
             for key, val in self.ABBREVIATIONS.items()
-            if key in tuned
-        ]  # TODO: you may need this later.
+            if key in spaced
+        ]
         return tuned
 
 
@@ -70,10 +72,13 @@ class Highlighter:
     """
     This should work independent of Tuner.
     """
+    ABBREVIATIONS: pd.DataFrame = pd.DataFrame.from_dict(fetch_abbreviations(), orient="index",
+                                                         columns=["abbreviation"])
     RULES: pd.DataFrame = pd.DataFrame(fetch_rules()).transpose()
     HONORIFICS: pd.DataFrame = pd.DataFrame(fetch_honorifics()).transpose()
 
-    def __call__(self, rule: Tuple[str, str], honorifics: List[Tuple[str, str]]) -> Tuple[Styler, Styler]:
+    def __call__(self, rule: Tuple[str, str], honorifics: List[Tuple[str, str]],
+                 abbreviations: List[Tuple[str, str]]) -> Tuple[Styler, Styler, Styler]:
         """
         :param rule: The rule applied
         :param honorifics: The honorifics applied
@@ -81,9 +86,8 @@ class Highlighter:
         """
         styler_rule = self.highlight_rule(rule)
         styler_honorifics = self.highlight_honorifics(honorifics)
-        # TODO: add a styler for abbreviations
-        styler_abbreviations = ...
-        return styler_rule, styler_honorifics
+        styler_abbreviations = self.highlight_abbreviations(abbreviations)
+        return styler_rule, styler_honorifics, styler_abbreviations
 
     def highlight_rule(self, rule: Tuple[str, str]) -> Styler:
         styler = self.RULES.style
@@ -96,8 +100,11 @@ class Highlighter:
             styler = styler.applymap(lambda x: "background-color: purple", subset=honorific)
         return styler
 
-    def highlight_abbreviations(self) -> Styler:
-        raise NotImplementedError
+    def highlight_abbreviations(self, abbreviations: List[Tuple[str, str]]) -> Styler:
+        styler = self.ABBREVIATIONS.style
+        for abbreviated in abbreviations:
+            styler = styler.applymap(lambda x: "background-color: purple", subset=abbreviated)
+        return styler
 
     @property
     def listeners(self):
@@ -106,4 +113,3 @@ class Highlighter:
     @property
     def visibilities(self):
         return self.RULES.columns
-

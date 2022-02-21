@@ -22,11 +22,11 @@ def main():
             tuned = tuner(sent, listener, visibility)
             st.markdown(tuned)
             # highlight the rule & honorifics that were applied
-            left, right = st.columns(2)
-            rule, honorifics = highlighter(tuner.rule, tuner.honorifics)
+            left, center, right = st.columns(3)
+            rule, honorifics, abbreviations = highlighter(tuner.rule, tuner.honorifics, tuner.abbreviations)
             left.table(rule)
-            right.table(honorifics)
-            # TODO: highlight abbreviations as well (left, center, right)
+            center.table(honorifics)
+            right.table(abbreviations)
 
 
 if __name__ == '__main__':
