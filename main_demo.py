@@ -1,5 +1,5 @@
 
-from politetune.tuner import Tuner
+from politetune.processors import Tuner
 
 SENTS = [
     "나는 공부하고 있어",
@@ -27,8 +27,8 @@ tuner = Tuner()
 
 def main():
     for sent in SENTS:
-        unhonored = tuner(sent, "friend", "private")['tuned']
-        honored = tuner(sent, "friend", "public")['tuned']
+        unhonored = tuner(sent, "adult family", "private")
+        honored = tuner(sent, "adult family", "public")
         print(sent, "->", unhonored, "|", honored)
         # not bad!
         """
