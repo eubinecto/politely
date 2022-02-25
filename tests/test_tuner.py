@@ -49,5 +49,15 @@ class TestTuner(TestCase):
         listener, visibility = self.formal
         tuned = self.tuner("나는 내 목표를 향해 달린다", listener, visibility)
         self.assertEqual("저는 제 목표를 향해 달립니다", tuned)
+        tuned = self.tuner("나는 공부한다", listener, visibility)
+        self.assertEqual("저는 공부합니다", tuned)
+        tuned = self.tuner("나는 수영한다", listener, visibility)
+        self.assertEqual("저는 수영합니다", tuned)
+        tuned = self.tuner("나는 요구한다", listener, visibility)
+        self.assertEqual("저는 요구합니다", tuned)
+        tuned = self.tuner("나는 목마르다", listener, visibility)
+        self.assertEqual("저는 목마릅니다", tuned)
+        tuned = self.tuner("나는 내 트로피를 들었다", listener, visibility)
+        self.assertEqual("저는 제 트로피를 들었습니다", tuned)
 
 
