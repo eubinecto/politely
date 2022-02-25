@@ -9,9 +9,9 @@ Project Politetune is a rule-based (well, for the time being) politeness tuner t
  example |
 --- |
 input | 
-<img width="734" alt="image" src="https://user-images.githubusercontent.com/56193069/153815272-a5360a24-400d-4ff7-8214-d5b932ea556e.png"> |
+<img width="691" alt="image" src="https://user-images.githubusercontent.com/56193069/155671048-7e3054ff-671e-40c5-aed8-0296984d1f57.png"> |
 output | 
-<img width="713" alt="image" src="https://user-images.githubusercontent.com/56193069/153815317-4aca2728-e11f-4000-a4dc-c2b823333021.png"> | 
+<img width="681" alt="image" src="https://user-images.githubusercontent.com/56193069/155671094-72a7703b-351d-4c37-82d0-2f75a4d7c734.png">| 
 
 
 
