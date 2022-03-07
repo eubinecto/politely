@@ -27,15 +27,21 @@ def main():
     else orth
     for token, orth in zip(tokens, orths)
     ]
-    print(tuned)
+    print("".join(tuned))
     # 반말
     tuned = [
     "습니다" if f"{token.form}+{token.tag}" == "다+EF"
     else orth
     for token, orth in zip(tokens, orths)
     ]
-    print(tuned)
+    print("".join(tuned))
+    
         # orth -> lemmatized
+    orth2lemma = [
+        (token.form, orth)
+        for token, orth in zip(tokens, orths)
+    ]
+    print(orth2lemma)
 
     # 왜 겹치는 구간이 나오는거지..
     # 그리고 spacing을 구하는 것까지 생각해보면...
@@ -43,6 +49,7 @@ def main():
     # 이상적인 출력:
     # (text=시끄러, lemma=시끄럽), (text=운, lemma=은), (text=코, lemma=코),
     # (text=고, lemma=골), (text=는, lemma=는)
+
 
 if __name__ == '__main__':
     main()
