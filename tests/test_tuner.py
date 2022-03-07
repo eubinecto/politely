@@ -98,6 +98,17 @@ class TestTuner(TestCase):
         tuned = self.tuner("새로운 소리에 놀랐다", listener, visibility)
         self.assertEqual("새로운 소리에 놀랐습니다", tuned)
 
+    def test_possessive(self):
+        listener, visibility = self.jon
+        tuned = self.tuner("난 내 가방을 들었다", listener, visibility)
+        self.assertEqual("전 제 가방을 들었어요", tuned)
+        listener, visibility = self.ban
+        tuned = self.tuner("난 내 가방을 들었다", listener, visibility)
+        self.assertEqual("난 내 가방을 들었어", tuned)
+
+
+
+
 
 
 

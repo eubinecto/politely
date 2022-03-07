@@ -1,5 +1,4 @@
 
-import numpy as np
 import pandas as pd
 from kiwipiepy import Kiwi
 from pandas.io.formats.style import Styler
@@ -19,52 +18,33 @@ class Tuner:
         self.kiwi = Kiwi()
         self.polite: Optional[bool] = None
         self.rule: Optional[Tuple[str, str]] = None
-        self.honorifics: Optional[List[Tuple[str, str]]] = None
-        self.abbreviations: Optional[List[Tuple[str, str]]] = None
+        self.honorifics: List[Tuple[str, str]] = list()
+        self.abbreviations: List[Tuple[str, str]] = list()
 
     def __call__(self, sent: str, listener: str, visibility: str) -> str:
         # preprocess the sentence
-        preprocessed = sent + "." if not sent.endswith(".") else sent  # for accurate pos-tagging
-        preprocessed = preprocessed.replace(" ", " " * 2)  # for accurate spacing
+        tuned = sent + "." if not sent.endswith(".") else sent  # for accurate pos-tagging
         # tokenize the sentence, and replace all the EFs with their honorifics
-        tokens = self.kiwi.tokenize(preprocessed)
+        tokens = self.kiwi.tokenize(tuned)
         polite = self.RULES[listener][visibility]
-        texts = [
-            self.HONORIFICS[f"{token.form}+{token.tag}"][polite]
-            if f"{token.form}+{token.tag}" in self.HONORIFICS.keys()
-            else token.form
-            for token in tokens
-        ]
-        # restore spacings
-        starts = np.array([token.start for token in tokens] + [0])
-        lens = np.array([token.len for token in tokens] + [0])
-        sums = np.array(starts) + np.array(lens)
-        spacings = (starts[1:] - sums[:-1]) > 0
-        spaced = "".join([
-            text + " " if spacing else text
-            for text, spacing in zip(texts, spacings)
-        ])
+        # honorify tokens
+        for token in tokens:
+            key = f"{token.form}+{token.tag}"
+            if key in self.HONORIFICS.keys():
+                honorific = self.HONORIFICS[key][polite]
+                # TODO: 무작정 교체만 하고 있을수는 없다...는 것이 문제다...
+                tuned = tuned[:token.start] + honorific + tuned[token.end:]
+                self.honorifics.append((key, polite))  # need this for highlighting
         # abbreviate tokens
-        abbreviated = spaced
         for key, val in self.ABBREVIATIONS.items():
-            abbreviated = abbreviated.replace(key, val)
+            tuned = tuned.replace(key, val)
+            self.abbreviations.append((key, "abbreviation"))
         # post-process the sentence
-        tuned = abbreviated
         if not sent.endswith("."):
             tuned = tuned.replace(".", "")
         # register any information to be used for post-processing
         self.polite = polite
         self.rule = (listener, visibility)
-        self.honorifics = [
-            (f"{token.form}+{token.tag}", polite)
-            for token in tokens
-            if f"{token.form}+{token.tag}" in self.HONORIFICS.keys()
-        ]
-        self.abbreviations = [
-            (key, "abbreviation")
-            for key, val in self.ABBREVIATIONS.items()
-            if key in spaced
-        ]
         return tuned
 
 
