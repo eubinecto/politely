@@ -18,7 +18,7 @@ HONORIFICS = {
 
 
 def main():
-    polite = 1
+    polite = 0
     for sent in sents:
         tokens = api.analyze(sent)
         lexicon2morphs = [(token.lex, list(map(str, token.morphs))) for token in tokens]
@@ -33,7 +33,17 @@ def main():
             for lex, morphs in lexicon2morphs
         ]
         print(" ".join(tuned))  # right, you could just give up on highlighting.
+"""
+when polite = 0
+시끄럽게 코고는 소리에 놀라서 저ㄴ 잠이 깨었어요.
+저는 달리고 있어요.
+저는 노래를 듣고 있어요.
 
+when polite = 1 
+시끄럽게 코고는 소리에 놀라서 나ㄴ 잠이 깨었어.
+나는 달리고 있어.
+나는 노래를 듣고 있어.
+"""
 
 if __name__ == '__main__':
     main()
