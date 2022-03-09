@@ -26,7 +26,7 @@ output |
 
 Running stremlit in local:
 ```shell
-streamlit run main_streamlit.py
+streamlit run main_deploy.py
 ```
 
 Running tests:

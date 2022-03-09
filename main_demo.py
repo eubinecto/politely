@@ -1,5 +1,5 @@
 
-from politetune.processors import Tuner
+from politetune.tuner import Tuner
 
 SENTS = [
     "나는 공부하고 있어",
@@ -27,9 +27,10 @@ tuner = Tuner()
 
 def main():
     for sent in SENTS:
-        unhonored = tuner(sent, "adult family", "private")
-        honored = tuner(sent, "adult family", "public")
-        print(sent, "->", unhonored, "|", honored)
+        ban = tuner(sent, "adult family", "private")
+        jon = tuner(sent, "adult family", "public")
+        formal = tuner(sent, "boss at work", "public")
+        print(sent, "->", ban, "|", jon, "|", formal)
         # not bad!
         """
         나는 공부하고 있어 -> 나는 공부하고 있어 | 저는 공부하고 있어요
