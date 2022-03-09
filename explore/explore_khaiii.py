@@ -3,9 +3,8 @@ from khaiii import KhaiiiApi
 
 def main():
     api = KhaiiiApi()
-    for word in api.analyze("시끄럽게 코고는 소리에 놀라서 난 잠이 깼다."):
-        print(word.lex)  # lexicon
-        print([str(morph) for morph in word.morphs])  # morphemes
+    for token in api.analyze("시끄럽게 코고는 소리에 놀라서 난 잠이 깼다."):
+        print(token)
 
 
 """
