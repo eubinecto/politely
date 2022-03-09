@@ -5,14 +5,25 @@ kiwi = Kiwi()
 
 def main():
     # This is much better!
-    sent = "시끄럽게 코고는 소리에 놀라서 난 잠이 깼다."
+    sent = "나는 나의 가방을 들었다."
     tokens = kiwi.tokenize(sent)
-    for token in tokens:
-        if f"{token.form}+{token.tag}" == "다+EF":
-            sent = sent[:token.start] + "어요" + sent[token.end:]
+    # two-word
+    for curr in tokens:
+        print(curr)
 
-        if f"{token.form}+{token.tag}" == "난+NP":
-            sent = sent[:token.start] + "전" + sent[token.end:]
+    for idx, curr in enumerate(tokens):
+        # what I think would be a better tactic is just to map out
+        # every rule
+        if f"{curr.form}+{curr.tag}" == "나+NP":
+            after = tokens[idx + 1]
+            if f"{after.form}+{after.tag}" == "의+JKG":
+                sent = sent[:curr.start] + "저의" + sent[curr.end:]
+            else:
+                sent = sent[:curr.start] + "저" + sent[curr.end:]
+
+        if f"{curr.form}+{curr.tag}" == "다+EF":
+            sent = sent[:curr.start] + "어요" + sent[curr.end:]
+
     print(sent)
 
 
