@@ -1,7 +1,7 @@
 
 import pandas as pd
 from khaiii.khaiii import KhaiiiApi
-from typing import Optional
+from typing import Optional, Any, Callable, List
 from politetune.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rules, fetch_irregulars
 
 
@@ -16,16 +16,39 @@ class Tuner:
 
     def __init__(self):
         self.khaiii = KhaiiiApi()
-        self.polite: Optional[bool] = None
+        # inputs
+        self.out: Any = None
+        self.listener: Optional[str] = None
+        self.visibility: Optional[str] = None
 
     def __call__(self, sent: str, listener: str, visibility: str) -> str:
-        # append a period if it is not appended
-        tuned = sent + "." if not sent.endswith(".") else sent  # for accurate pos-tagging
-        # tokenize the sentence, and replace all the EFs with their honorifics
-        polite = self.RULES[listener][visibility]
-        tokens = self.khaiii.analyze(tuned)
+        # register inputs
+        self.sent = sent
+        self.listener = listener
+        self.visibility = visibility
+        # process each step
+        for step in self.steps():
+            step()
+        # return the final output
+        return self.out
+
+    def steps(self) -> List[Callable]:
+        return [
+            self.preprocess,
+            self.apply_honorifics,
+            self.apply_abbreviations,
+            self.apply_irregulars,
+            self.postprocess
+        ]
+
+    def preprocess(self):
+        self.out = self.sent + "." if not self.sent.endswith(".") else self.sent  # for accurate pos-tagging
+
+    def apply_honorifics(self):
+        polite = self.RULES[self.listener][self.visibility]
+        tokens = self.khaiii.analyze(self.out)
         lexicon2morphs = [(token.lex, list(map(str, token.morphs))) for token in tokens]
-        tuned = " ".join([
+        self.out = " ".join([
             "".join([
                 self.HONORIFICS[morph][polite] if morph in self.HONORIFICS
                 else morph.split("/")[0]
@@ -34,18 +57,17 @@ class Tuner:
             if set(morphs) & set(self.HONORIFICS.keys()) else lex
             for lex, morphs in lexicon2morphs
         ])
-        # abbreviate tokens
+
+    def apply_abbreviations(self):
         for key, val in self.ABBREVIATIONS.items():
-            tuned = tuned.replace(key, val)
-        # apply irregular rules
+            self.out = self.out.replace(key, val)
+
+    def apply_irregulars(self):
         for key, val in self.IRREGULARS.items():
-            tuned = tuned.replace(key, val)
-        # remove or leave the period
-        tuned = tuned.replace(".", "") if not sent.endswith(".") else tuned
-        # register any information to be used for post-processing
-        self.polite = polite
-        self.rule = (listener, visibility)
-        return tuned
+            self.out = self.out.replace(key, val)
+
+    def postprocess(self):
+        self.out = self.out.replace(".", "") if not self.sent.endswith(".") else self.out
 
     @property
     def listeners(self):
