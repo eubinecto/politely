@@ -45,8 +45,8 @@ class TestTuner(TestCase):
         # self.assertEqual("나는 주체할수 없는 슬픔을 내 가슴에 묻었어", tuned)
         tuned = self.tuner("저는 지금 밥을 먹고 있어요", listener, visibility)
         self.assertEqual("나는 지금 밥을 먹고 있어", tuned)
-        # tuned = self.tuner("전 지금 밥을 먹고 있어요", listener, visibility)
-        # self.assertEqual("나는 지금 밥을 먹고 있어", tuned)  # won't work..
+        tuned = self.tuner("전 지금 밥을 먹고 있어요", listener, visibility)
+        self.assertEqual("나는 지금 밥을 먹고 있어", tuned)  # won't work..
 
     def test_jondemal(self):
         listener, visibility = self.jon
