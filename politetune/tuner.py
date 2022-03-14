@@ -43,9 +43,6 @@ class Tuner:
 
     def preprocess(self):
         self.out = self.sent + "." if not self.sent.endswith(".") else self.sent  # for accurate pos-tagging
-        self.out = self.out.replace("전", "저는")\
-                           .replace("넌", "너는")\
-                           .replace("난", "나는")
 
     def apply_honorifics(self):
         polite = self.RULES[self.listener][self.visibility]
