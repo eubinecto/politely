@@ -17,6 +17,8 @@ git clone https://github.com/kakao/khaiii.git
 cd khaiii || exit
 mkdir build
 cd build || exit
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
 cmake -E env CXXFLAGS="-w" cmake .. || exit
 make all resource || exit
 make install || exit
