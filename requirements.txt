@@ -2,4 +2,3 @@ streamlit==1.5.1
 pytest==7.0.1
 pyyaml==6.0
 cmake==3.22.3
-git+https://github.com/eubinecto/khaiii@python-mirror
