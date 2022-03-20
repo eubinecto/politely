@@ -1,5 +1,6 @@
+import unittest
 from unittest import TestCase
-from politetune.tuner import Tuner
+from politetune.processors import Tuner
 
 
 class TestTuner(TestCase):
@@ -13,85 +14,97 @@ class TestTuner(TestCase):
         cls.jon = ("adult family", "public")
         cls.formal = ("boss at work", "public")
 
-    def test_banmal(self):
-        listener, visibility = self.ban
-        tuned = self.tuner("나는 공부한다", listener, visibility)
-        self.assertEqual("나는 공부해", tuned)
-        tuned = self.tuner("나는 수영한다", listener, visibility)
-        self.assertEqual("나는 수영해", tuned)
-        tuned = self.tuner("나는 요구한다", listener, visibility)
-        self.assertEqual("나는 요구해", tuned)
-        tuned = self.tuner("나는 목마르다", listener, visibility)
-        self.assertEqual("나는 목말라", tuned)
-        tuned = self.tuner("나는 아프다", listener, visibility)
-        self.assertEqual("나는 아파", tuned)
-        tuned = self.tuner("나는 내 목표를 향해 달린다", listener, visibility)
-        self.assertEqual("나는 내 목표를 향해 달려", tuned)
-        tuned = self.tuner("나는 내 트로피를 들었다", listener, visibility)
-        self.assertEqual("나는 내 트로피를 들었어", tuned)
-        tuned = self.tuner("그 아이는 참 예의가 바르다", listener, visibility)
-        self.assertEqual("그 아이는 참 예의가 발라", tuned)
-        tuned = self.tuner("나는 내가 제일 좋아하는 노래를 듣는다", listener, visibility)
-        self.assertEqual("나는 내가 제일 좋아하는 노래를 들어", tuned)
-        tuned = self.tuner("그 단어는 이 물건을 일컫는다", listener, visibility)
-        self.assertEqual("그 단어는 이 물건을 일컬어", tuned)
-        # this ambiguity is sort of the problem.
-        # how do you solve this ambiguity? -> This is sort of what's impossible.
-        # this is probably the case where you need predictive models. Rules cannot cover edge cases.
-        # tuned = self.tuner("나는 지나가던 행인에게 길을 물었다", listener, visibility)
-        # self.assertEqual("나는 지나가던 행인에게 길을 물었어", tuned)
-        # # this is sort of the problem.
-        # tuned = self.tuner("나는 주체할수 없는 슬픔을 내 가슴에 묻었다", listener, visibility)
-        # self.assertEqual("나는 주체할수 없는 슬픔을 내 가슴에 묻었어", tuned)
-        tuned = self.tuner("저는 지금 밥을 먹고 있어요", listener, visibility)
-        self.assertEqual("나는 지금 밥을 먹고 있어", tuned)
-        tuned = self.tuner("전 지금 밥을 먹고 있어요", listener, visibility)
-        self.assertEqual("나는 지금 밥을 먹고 있어", tuned)  # won't work..
+    def test_apply_irregulars_digud_drop(self):
+        """
+        ㄷ 탈락
+        :return:
+        """
+        sent = "영희가 철수를 도왔어"
+        self.assertEqual("영희가 철수를 도왔어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("영희가 철수를 도왔어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("영희가 철수를 도왔습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "저 집은 매일 고기를 구워"
+        self.assertEqual("저 집은 매일 고기를 구워", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("저 집은 매일 고기를 구워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("저 집은 매일 고기를 굽습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "미희는 옷을 잘 기워"
+        self.assertEqual("미희는 옷을 잘 기워", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("미희는 옷을 잘 기워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("미희는 옷을 잘 기웁니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "밥 먹고 바로 누우면 안 된대"
+        self.assertEqual("밥 먹고 바로 누우면 안 돼", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("밥 먹고 바로 누우면 안 돼요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("밥 먹고 바로 누우면 안 됩니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "오다 주웠어"
+        self.assertEqual("오다 주웠어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("오다 주웠어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("오다 주웠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "고운 손이 다 망가졌네"
+        self.assertEqual("고운 손이 다 망가졌어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("고운 손이 다 망가졌어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "오늘이 어제보다 더워"
+        self.assertEqual("오늘이 어제보다 더워", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("오늘이 어제보다 더워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("오늘이 어제보다 덥습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "이 라면은 너무 매워"
+        self.assertEqual("이 라면은 너무 매워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("이 라면은 너무 매워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이 라면은 너무 맵습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "이 라면은 너무 맵다"
+        self.assertEqual("이 라면은 너무 매워", self.tuner(sent, self.ban[0], self.ban[1]))   # noqa
+        self.assertEqual("이 라면은 너무 매워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이 라면은 너무 맵습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "올해는 유난히 추워"
+        self.assertEqual("올해는 유난히 추워", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("올해는 유난히 추워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("올해는 유난히 춥습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "오늘은 꿈자리가 사나웠어"
+        self.assertEqual("오늘은 꿈자리가 사나웠어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("오늘은 꿈자리가 사나웠어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("오늘은 꿈자리가 사나웠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "난 뱀이 무서워"
+        self.assertEqual("난 뱀이 무서워", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("전 뱀이 무서워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("전 뱀이 무섭습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "겨울산은 아름다워"
+        self.assertEqual("겨울산은 아름다워", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("겨울산은 아름다워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("겨울산은 아름답습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "키가 큰 사람은 부러워"
+        self.assertEqual("키가 큰 사람은 부러워", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("키가 큰 사람은 부러워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("키가 큰 사람은 부럽습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
-    def test_jondemal(self):
-        listener, visibility = self.jon
-        tuned = self.tuner("나는 내 목표를 향해 달린다", listener, visibility)
-        self.assertEqual("저는 제 목표를 향해 달려요", tuned)
-        tuned = self.tuner("나는 공부한다", listener, visibility)
-        self.assertEqual("저는 공부해요", tuned)
-        tuned = self.tuner("나는 공부해", listener, visibility)
-        self.assertEqual("저는 공부해요", tuned)
-        tuned = self.tuner("나는 공부할래", listener, visibility)
-        self.assertEqual("저는 공부해요", tuned)
-        tuned = self.tuner("나는 수영한다", listener, visibility)
-        self.assertEqual("저는 수영해요", tuned)
-        tuned = self.tuner("나는 요구한다", listener, visibility)
-        self.assertEqual("저는 요구해요", tuned)
-        tuned = self.tuner("나는 목마르다", listener, visibility)
-        self.assertEqual("저는 목말라요", tuned)
-        tuned = self.tuner("나는 내 트로피를 들었다", listener, visibility)
-        self.assertEqual("저는 제 트로피를 들었어요", tuned)
-        tuned = self.tuner("그 아이는 참 예의가 바르다", listener, visibility)
-        self.assertEqual("그 아이는 참 예의가 발라요", tuned)
-        tuned = self.tuner("나는 내가 제일 좋아하는 노래를 듣는다", listener, visibility)
-        self.assertEqual("저는 제가 제일 좋아하는 노래를 들어요", tuned)
-        tuned = self.tuner("그 단어는 이 물건을 일컫는다", listener, visibility)
-        self.assertEqual("그 단어는 이 물건을 일컬어요", tuned)
+    def test_apply_irregulars_bieub_drop(self):
+        """
+        ㅂ 탈락
+        :return:
+        """
+        sent = "가까우니까 걸어가자"
+        self.assertEqual("가까우니까 걸어가", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("가까우니까 걸어갑니다", self.tuner(sent, self.formal[0], self.formal[1]))  # or 걸어갑시다?
+        sent = "난 걸어 갈게"
+        self.assertEqual("난 걸어 가", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("전 걸어 가요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("전 걸어 갑니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "그걸 이제야 깨달았어"
+        self.assertEqual("그걸 이제야 깨달았어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("그걸 이제야 깨달았어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그걸 이제야 깨달았습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "나는 그 문을 닫았어"
+        self.assertEqual("나는 그 문을 닫았어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("저는 그 문을 닫았어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("저는 그 문을 닫았습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
-    def test_formal(self):
-        listener, visibility = self.formal
-        tuned = self.tuner("나는 내 목표를 향해 달린다", listener, visibility)
-        self.assertEqual("저는 제 목표를 향해 달립니다", tuned)
-        tuned = self.tuner("나는 공부한다", listener, visibility)
-        self.assertEqual("저는 공부합니다", tuned)
-        tuned = self.tuner("나는 수영한다", listener, visibility)
-        self.assertEqual("저는 수영합니다", tuned)
-        tuned = self.tuner("나는 요구한다", listener, visibility)
-        self.assertEqual("저는 요구합니다", tuned)
-        tuned = self.tuner("나는 목마르다", listener, visibility)
-        self.assertEqual("저는 목마릅니다", tuned)
-        tuned = self.tuner("나는 내 트로피를 들었다", listener, visibility)
-        self.assertEqual("저는 제 트로피를 들었습니다", tuned)
-        tuned = self.tuner("그 아이는 참 예의가 바르다", listener, visibility)
-        self.assertEqual("그 아이는 참 예의가 바릅니다", tuned)
-        tuned = self.tuner("나는 내가 제일 좋아하는 노래를 듣는다", listener, visibility)
-        self.assertEqual("저는 제가 제일 좋아하는 노래를 듣습니다", tuned)
-        tuned = self.tuner("그 단어는 이 물건을 일컫는다", listener, visibility)
-        self.assertEqual("그 단어는 이 물건을 일컫습니다", tuned)
-
-
+    @unittest.skip
+    def test_apply_irregulars_eat(self):
+        """
+        이것도 고려를 해야하나..? 잘 모르게싿.
+        :return:
+        """
+        sent = "밥 먹어"
+        self.assertEqual("밥 먹어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("밥 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("밥 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
