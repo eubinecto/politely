@@ -1,6 +1,6 @@
 # Politetune (demo)
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/eubinecto/politetune/main/main_streamlit.py)
+[![Open in Streamlit](https://politetune.herokuapp.com)
 
 
 
