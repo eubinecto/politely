@@ -6,6 +6,8 @@ sents = [
     "시끄럽게 코고는 소리에 놀라서 난 잠이 깼다.",
     "나는 달리고 있어.",
     "나는 노래를 듣고 있어요.",
+    "엄마와 함께 밥을 먹고 있어.",
+    "엄마가 심부름을 시켰어.",
 ]
 
 HONORIFICS = {
@@ -13,12 +15,14 @@ HONORIFICS = {
     "어/EF": ("어", "어요"),
     "어요/EF": ("어", "어요"),
     "나/NP": ("나", "저"),
-    "저/NP": ("나", "저")
+    "저/NP": ("나", "저"),
+    "가/JKS": ("가", "께서"),
+    "엄마/NNG": ("엄마", "어머니")
 }
 
 
 def main():
-    polite = 0
+    polite = 1
     for sent in sents:
         tokens = api.analyze(sent)
         lexicon2morphs = [(token.lex, list(map(str, token.morphs))) for token in tokens]

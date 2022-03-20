@@ -17,9 +17,11 @@ class Tuner:
     def __init__(self):
         self.khaiii = KhaiiiApi()
         # inputs
-        self.out: Any = None
+        self.sent: Optional[str] = None
         self.listener: Optional[str] = None
         self.visibility: Optional[str] = None
+        # the output can be anything
+        self.out: Any = None
 
     def __call__(self, sent: str, listener: str, visibility: str) -> str:
         # register inputs
@@ -43,9 +45,6 @@ class Tuner:
 
     def preprocess(self):
         self.out = self.sent + "." if not self.sent.endswith(".") else self.sent  # for accurate pos-tagging
-        self.out = self.out.replace("전", "저는")\
-                           .replace("넌", "너는")\
-                           .replace("난", "나는")
 
     def apply_honorifics(self):
         polite = self.RULES[self.listener][self.visibility]
@@ -79,3 +78,11 @@ class Tuner:
     @property
     def visibilities(self):
         return pd.DataFrame(self.RULES).transpose().columns
+
+
+class Explainer:
+    """
+    This is here to explain each step in tuner.
+    """
+    pass
+

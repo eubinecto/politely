@@ -2,7 +2,7 @@
 It's okay to write dirty stuff, at least as of right now.
 """
 import streamlit as st
-from politetune.tuner import Tuner
+from politetune.processors import Tuner
 
 
 # instantiate processors here
