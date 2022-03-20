@@ -17,9 +17,11 @@ class Tuner:
     def __init__(self):
         self.khaiii = KhaiiiApi()
         # inputs
-        self.out: Any = None
+        self.sent: Optional[str] = None
         self.listener: Optional[str] = None
         self.visibility: Optional[str] = None
+        # the output can be anything
+        self.out: Any = None
 
     def __call__(self, sent: str, listener: str, visibility: str) -> str:
         # register inputs
@@ -76,3 +78,11 @@ class Tuner:
     @property
     def visibilities(self):
         return pd.DataFrame(self.RULES).transpose().columns
+
+
+class Explainer:
+    """
+    This is here to explain each step in tuner.
+    """
+    pass
+

@@ -12,16 +12,3 @@ enableCORS=false\n\
 port = $PORT\n\
 " > ~/.streamlit/config.toml
 
-# for building khaiii
-git clone https://github.com/kakao/khaiii.git
-cd khaiii || exit
-mkdir build
-cd build || exit
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
-cmake -E env CXXFLAGS="-w" cmake .. || exit
-make all resource || exit
-make install || exit
-make package_python || exit
-cd package_python || exit
-pip install . || exit
