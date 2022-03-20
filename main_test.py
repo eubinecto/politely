@@ -14,6 +14,16 @@ class TestTuner(TestCase):
         cls.jon = ("adult family", "public")
         cls.formal = ("boss at work", "public")
 
+    def test_apply_preprocess(self):
+        sent = "이것은 예시 문장이다"
+        self.tuner.sent = sent
+        self.tuner.preprocess()
+        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+        sent = "이것은 예시 문장이다."
+        self.tuner.sent = sent
+        self.tuner.preprocess()
+        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+
     def test_apply_irregulars_digud_drop(self):
         """
         ㄷ 탈락
@@ -108,3 +118,15 @@ class TestTuner(TestCase):
         self.assertEqual("밥 먹어", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("밥 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("밥 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_postprocess(self):
+        sent = "이것은 예시 문장이다"
+        self.tuner.sent = sent
+        self.tuner.out = sent
+        self.tuner.postprocess()
+        self.assertEqual("이것은 예시 문장이다", self.tuner.out)
+        sent = "이것은 예시 문장이다."
+        self.tuner.sent = sent
+        self.tuner.out = sent
+        self.tuner.postprocess()
+        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
