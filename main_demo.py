@@ -1,5 +1,5 @@
 
-from politetune.tuner import Tuner
+from politetune.processors import Tuner
 
 SENTS = [
     # ㅂ 불규칙
@@ -22,7 +22,7 @@ SENTS = [
     "난 걸어 갈게",
     "그걸 이제야 깨달았어",
     "나는 그 문을 닫았어",
-    "선생님 밥 먹어"
+    "선생님 밥 먹어",
 ]
 
 tuner = Tuner()

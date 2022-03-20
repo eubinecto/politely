@@ -6,14 +6,7 @@ WORKDIR /politetune
 COPY requirements.txt ./requirements.txt
 RUN pip3 install -r requirements.txt
 # install khaiii
-RUN git clone https://github.com/kakao/khaiii.git
-RUN mkdir /politetune/khaiii/build || exit
-WORKDIR /politetune/khaiii/build
-RUN cmake -E env CXXFLAGS="-w" cmake .. || exit
-RUN make all resource || exit
-RUN make install || exit
-RUN make package_python || exit
-RUN pip install package_python/. || exit
+RUN pip3 install git+https://github.com/eubinecto/khaiii-0.4
 # then deploy
 WORKDIR /politetune
 COPY . .
