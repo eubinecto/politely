@@ -1,9 +1,24 @@
+# https://docs.google.com/document/d/13ZiGYDxqpWb93JALVOLSNLo0lHO73TYjKmEKOlCpc4w/edit
 friends and junior:
-  private: 1
-  public: 1
+  private:
+    politeness: 1
+    reason: When speaking to your friends of the same age or younger family members, it's okay to speak in the intimate style (Banmal) regardless of your visibility.
+  public:
+    politeness: 1
+    reason: When speaking to your friends of the same age or younger family members, it's okay to speak in the intimate style (Banmal) regardless of your visibility.
 boss at work:
-  private: 2
-  public: 3
+  private:
+    politeness: 2
+    reason: When speaking to your seniors at work, and you are in a private space, you should speak in the polite style (Jondaemal). However, when you are speaking in a more public space, you should speak in the formal style.
+  public:
+    politeness: 3
+    reason: When speaking to your seniors at school and you are in a private space, works or neighbours or strangers, you should speak in the polite style (Jondaemal). However, when you are speaking in a more public space, you should speak in the formal style.
 adult family:
-  private: 1
-  public: 2
+  private:
+    politeness: 1
+    reason: When speaking to your family members who are older than you (e.g. parents, sisters, brothers, etc) and you are in a private space, it's generally okay to speak in the intimate style (Banmal). However, if you are speaking in a public place,
+      you should speak in the polite style (Jondaemal).
+  public:
+    politeness: 2
+    reason: When speaking to your family members who are older than you (e.g. parents, sisters, brothers, etc) and you are in a private space, it's generally okay to speak in the intimate style (Banmal). However, if you are speaking in a public place,
+      you should speak in the polite style (Jondaemal).

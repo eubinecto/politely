@@ -6,6 +6,7 @@ WORKDIR /politetune
 COPY requirements.txt ./requirements.txt
 RUN pip3 install -r requirements.txt
 # install khaiii
+# Note: do not attmept to do this locally if your OS is not a Linux.
 RUN pip3 install git+https://github.com/eubinecto/khaiii-0.4
 # then deploy
 WORKDIR /politetune

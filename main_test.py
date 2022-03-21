@@ -24,6 +24,24 @@ class TestTuner(TestCase):
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
+    def test_apply_honorifics_eoga(self):
+        sent = "가까우니까 걸어가"
+        self.assertEqual("가까우니까 걸어가", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("가까우니까 걸어갑니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_ana(self):
+        sent = "시험의 난도가 만만치 않아"
+        self.assertEqual("시험의 난도가 만만치 않아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("시험의 난도가 만만치 않아요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("시험의 난도가 만만치 않습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_anayo(self):
+        sent = "시험의 난도가 만만치 않아요"
+        self.assertEqual("시험의 난도가 만만치 않아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("시험의 난도가 만만치 않아요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("시험의 난도가 만만치 않습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
     def test_apply_honorifics_supnida(self):
         sent = "고운 손이 다 망가졌습니다"
         self.assertEqual("고운 손이 다 망가졌어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
@@ -31,7 +49,7 @@ class TestTuner(TestCase):
         self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_apply_honorifics_ne(self):
-        sent = "고운 손이 다 망가졌네"
+        sent = "고운 손이 다 망가졌네"  # noqa
         self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
@@ -50,9 +68,9 @@ class TestTuner(TestCase):
 
     def test_apply_honorifics_gayo(self):
         sent = "가까우니까 걸어가요"
-        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("가까우니까 걸어가", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("가까우니까 걸어갑니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_apply_honorifics_gabsida(self):
         sent = "가까우니까 걸어갑시다"
@@ -151,7 +169,7 @@ class TestTuner(TestCase):
         ㅂ 탈락
         :return:
         """
-        sent = "가까우니까 걸어가자"
+        sent = "가까우니까 걸어가자"  # noqa
         self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))  # or 걸어갑시다?
