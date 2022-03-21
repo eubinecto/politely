@@ -87,7 +87,8 @@ class Tuner:
 
 class Explainer:
     """
-    This is here to explain each step in tuner.
+    This is here to explain each step in tuner. (mainly - apply_honorifics, apply_abbreviations, apply_irregulars)
+    # for this, you probably need to keep track of out
     """
     pass
 
