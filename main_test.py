@@ -24,6 +24,42 @@ class TestTuner(TestCase):
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
+    def test_apply_honorifics_ne(self):
+        sent = "고운 손이 다 망가졌네"
+        self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_ja(self):
+        sent = "가까우니까 걸어가자"
+        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_nde(self):
+        sent = "밥먹고 바로 누우면 안된대"
+        self.assertEqual("밥먹고 바로 누우면 안돼", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("밥먹고 바로 누우면 안돼요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("밥먹고 바로 누우면 안됩니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_de(self):
+        sent = "밥먹고 바로 누우면 안돼"
+        self.assertEqual("밥먹고 바로 누우면 안돼", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("밥먹고 바로 누우면 안돼요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("밥먹고 바로 누우면 안됩니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_ida(self):
+        sent = "그는 전설이다"
+        self.assertEqual("그는 전설이야", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("그는 전설이에요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그는 전설입니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_da(self):
+        sent = "나는 어제 축구를 했다"
+        self.assertEqual("나는 어제 축구를 했어", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("저는 어제 축구를 했어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("저는 어제 축구를 했습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
     def test_apply_irregulars_digud_drop(self):
         """
         ㄷ 탈락
@@ -111,7 +147,7 @@ class TestTuner(TestCase):
     @unittest.skip
     def test_apply_irregulars_eat(self):
         """
-        이것도 고려를 해야하나..? 잘 모르게싿.
+        이것도 고려를 해야하나..? 잘 모르겠다.
         :return:
         """
         sent = "밥 먹어"

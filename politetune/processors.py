@@ -1,3 +1,4 @@
+import itertools
 
 import pandas as pd
 from khaiii.khaiii import KhaiiiApi
@@ -50,15 +51,19 @@ class Tuner:
         polite = self.RULES[self.listener][self.visibility]
         tokens = self.khaiii.analyze(self.out)
         lexicon2morphs = [(token.lex, list(map(str, token.morphs))) for token in tokens]
-        self.out = " ".join([
-            "".join([
-                self.HONORIFICS[morph][polite] if morph in self.HONORIFICS
-                else morph.split("/")[0]
-                for morph in morphs
-            ])
-            if set(morphs) & set(self.HONORIFICS.keys()) else lex
-            for lex, morphs in lexicon2morphs
-        ])
+        out = list()
+        for lex, morphs in lexicon2morphs:
+            # this is to be used just for matching
+            substrings = ["+".join(morphs[i:j]) for i, j in itertools.combinations(range(len(morphs) + 1), 2)]
+            if set(substrings) & set(self.HONORIFICS.keys()):  # need to make sure any patterns match joined.
+                tuned = "+".join(morphs)
+                for pattern in self.HONORIFICS.keys():
+                    tuned = tuned.replace(pattern, self.HONORIFICS[pattern][polite])
+                tuned = "".join([token.split("/")[0] for token in tuned.split("+")])
+                out.append(tuned)
+            else:
+                out.append(lex)
+        self.out = " ".join(out)
 
     def apply_abbreviations(self):
         for key, val in self.ABBREVIATIONS.items():
@@ -69,7 +74,7 @@ class Tuner:
             self.out = self.out.replace(key, val)
 
     def postprocess(self):
-        self.out = self.out.replace(".", "") if not self.sent.endswith(".") else self.out
+        self.out = self.out[:-1] if not self.sent.endswith(".") else self.out
 
     @property
     def listeners(self):
