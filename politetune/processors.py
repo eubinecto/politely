@@ -122,7 +122,7 @@ class Explainer:
 
     def __call__(self, *args, **kwargs) -> List[str]:
         # --- step 1 ---
-        msg_1 = "###1️⃣ Determine the level of politeness"
+        msg_1 = "### 1️⃣ Determine the level of politeness"
         politeness = self.tuner.RULES[self.tuner.listener][self.tuner.visibility]['politeness']
         politeness = "intimate style (Banmal)" if politeness == 1\
             else "polite style (Banmal)" if politeness == 2\
@@ -131,11 +131,11 @@ class Explainer:
         msg_1 += f"\nYou should speak in `{politeness}`."
         msg_1 += f"\n\n Why? {reason}"
         # --- step 2 ---
-        msg_2 = f"###2️⃣ Analyze morphemes"
+        msg_2 = f"### 2️⃣ Analyze morphemes"
         analyzed = "".join(["".join(list(map(str, token.morphs))) for token in self.tuner.logs[0]])
         msg_2 += f"\n{self.tuner.sent} → {analyzed}"
         # --- step 3 ---
-        msg_3 = f"###3️⃣ Apply honorifics"
+        msg_3 = f"### 3️⃣ Apply honorifics"
         before = analyzed
         after = self.tuner.logs[1]
         for key, val in self.tuner.history_honorifics:
@@ -143,7 +143,7 @@ class Explainer:
             after = after.replace(val, f"`{val}`")
         msg_3 += f"\n{before} → {after}"
         # --- step 4 ---
-        msg_4 = "###4️⃣ Apply abbreviations"
+        msg_4 = "### 4️⃣ Apply abbreviations"
         if len(self.tuner.history_abbreviations) > 0:
             before = self.tuner.logs[1]
             after = self.tuner.logs[2]
@@ -154,7 +154,7 @@ class Explainer:
         else:
             msg_4 += "\nNo abbreviation rules were applied."
         # --- step 5 ---
-        msg_5 = f"###5️⃣ Apply irregular conjugations"
+        msg_5 = f"### 5️⃣ Apply irregular conjugations"
         if len(self.tuner.history_irregulars) > 0:
             print(self.tuner.history_irregulars)
             before = self.tuner.logs[2]
