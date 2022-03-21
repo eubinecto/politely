@@ -74,7 +74,7 @@ class Tuner:
             self.out = self.out.replace(key, val)
 
     def postprocess(self):
-        self.out = self.out[:-1] if not self.sent.endswith(".") else self.out
+        self.out = self.out if self.sent.endswith(".") else self.out[:-1]
 
     @property
     def listeners(self):

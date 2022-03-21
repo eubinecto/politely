@@ -24,14 +24,38 @@ class TestTuner(TestCase):
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
+    def test_apply_honorifics_supnida(self):
+        sent = "고운 손이 다 망가졌습니다"
+        self.assertEqual("고운 손이 다 망가졌어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("고운 손이 다 망가졌어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
     def test_apply_honorifics_ne(self):
         sent = "고운 손이 다 망가졌네"
         self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
+    def test_apply_honorifics_neyo(self):
+        sent = "고운 손이 다 망가졌네요"
+        self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
     def test_apply_honorifics_ja(self):
-        sent = "가까우니까 걸어가자"
+        sent = "가까우니까 걸어가자"  # noqa
+        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_gayo(self):
+        sent = "가까우니까 걸어가요"
+        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_gabsida(self):
+        sent = "가까우니까 걸어갑시다"
         self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
@@ -85,9 +109,9 @@ class TestTuner(TestCase):
         self.assertEqual("오다 주웠어", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("오다 주웠어요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("오다 주웠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "고운 손이 다 망가졌네"
-        self.assertEqual("고운 손이 다 망가졌어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("고운 손이 다 망가졌어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        sent = "고운 손이 다 망가졌네"  # noqa
+        self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
         sent = "오늘이 어제보다 더워"
         self.assertEqual("오늘이 어제보다 더워", self.tuner(sent, self.ban[0], self.ban[1]))
@@ -128,9 +152,9 @@ class TestTuner(TestCase):
         :return:
         """
         sent = "가까우니까 걸어가자"
-        self.assertEqual("가까우니까 걸어가", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("가까우니까 걸어갑니다", self.tuner(sent, self.formal[0], self.formal[1]))  # or 걸어갑시다?
+        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))  # or 걸어갑시다?
         sent = "난 걸어 갈게"
         self.assertEqual("난 걸어 가", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("전 걸어 가요", self.tuner(sent, self.jon[0], self.jon[1]))
@@ -144,6 +168,19 @@ class TestTuner(TestCase):
         self.assertEqual("저는 그 문을 닫았어요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("저는 그 문을 닫았습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
+    def test_apply_postprocess(self):
+        sent = "이것은 예시 문장이다"
+        self.tuner.sent = sent
+        self.tuner.out = sent + "."
+        self.tuner.postprocess()
+        self.assertEqual("이것은 예시 문장이다", self.tuner.out)
+        sent = "이것은 예시 문장이다."
+        self.tuner.sent = sent
+        self.tuner.out = sent
+        self.tuner.postprocess()
+        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+
+    # --- known issues --- #
     @unittest.skip
     def test_apply_irregulars_eat(self):
         """
@@ -153,16 +190,16 @@ class TestTuner(TestCase):
         sent = "밥 먹어"
         self.assertEqual("밥 먹어", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("밥 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("밥 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("진지 잡수세요", self.tuner(sent, self.formal[0], self.formal[1]))
 
-    def test_apply_postprocess(self):
-        sent = "이것은 예시 문장이다"
-        self.tuner.sent = sent
-        self.tuner.out = sent
-        self.tuner.postprocess()
-        self.assertEqual("이것은 예시 문장이다", self.tuner.out)
-        sent = "이것은 예시 문장이다."
-        self.tuner.sent = sent
-        self.tuner.out = sent
-        self.tuner.postprocess()
-        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+    @unittest.skip
+    def test_apply_irregulars_collect(self):
+        """
+        맥락에 관게없이, 걷어 -> 걸어로 바꿔버려서... 사실 이 경우는 아직 어찌할수가 없다.
+        재조립을 통한 높임법을 포기하면 가능하긴 한데... 그렇다면 재조립없이 하는 것은 어떻게 할 것인가.
+        :return:
+        """
+        sent = "이참에 돈을 걷어가자"
+        self.assertEqual("이참에 돈을 걷어가자", self.tuner(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("이참에 돈을 걷어가요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이참에 돈을 걷어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
