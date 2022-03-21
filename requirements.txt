@@ -1,4 +1,4 @@
 streamlit==1.5.1
 pytest==7.0.1
-pyyaml==6.0
+oyaml==1.0
 cmake==3.22.3
