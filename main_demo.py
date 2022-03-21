@@ -1,5 +1,5 @@
 
-from politetune.processors import Tuner
+from politetune.processors import Tuner, Explainer
 
 SENTS = [
     # ㅂ 불규칙
@@ -30,13 +30,17 @@ SENTS = [
 ]
 
 tuner = Tuner()
+explainer = Explainer(tuner)
 
 
 def main():
     for sent in SENTS:
         ban = tuner(sent, "adult family", "private")
+        print(explainer()[0])
         jon = tuner(sent, "adult family", "public")
+        print(explainer()[0])
         formal = tuner(sent, "boss at work", "public")
+        print(explainer()[0])
         print(sent, "->", ban, "|", jon, "|", formal)
 
 
