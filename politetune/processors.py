@@ -19,7 +19,7 @@ class Tuner:
         # inputs
         self.sent: Optional[str] = None
         self.listener: Optional[str] = None
-        self.visibility: Optional[str] = None
+        self.environ: Optional[str] = None
         # the output can be anything
         self.out: Any = None
         self.logs: list = list()
@@ -27,11 +27,11 @@ class Tuner:
         self.history_abbreviations: set = set()
         self.history_irregulars: set = set()
 
-    def __call__(self, sent: str, listener: str, visibility: str) -> str:
+    def __call__(self, sent: str, listener: str, environ: str) -> str:
         # register inputs
         self.sent = sent
         self.listener = listener
-        self.visibility = visibility
+        self.environ = environ
         # process each step
         for step in self.steps():
             step()
@@ -70,7 +70,7 @@ class Tuner:
         self.out = tokens
 
     def apply_honorifics(self):
-        politeness = self.RULES[self.listener][self.visibility]['politeness']
+        politeness = self.RULES[self.listener][self.environ]['politeness']
         lexicon2morphs = [(token.lex, list(map(str, token.morphs))) for token in self.out]
         out = list()
         for lex, morphs in lexicon2morphs:
@@ -108,7 +108,7 @@ class Tuner:
         return pd.DataFrame(self.RULES).transpose().index
 
     @property
-    def visibilities(self):
+    def environs(self):
         return pd.DataFrame(self.RULES).transpose().columns
 
 
@@ -123,13 +123,13 @@ class Explainer:
     def __call__(self, *args, **kwargs) -> List[str]:
         # --- step 1 ---
         msg_1 = "### 1️⃣ Determine the level of politeness"
-        politeness = self.tuner.RULES[self.tuner.listener][self.tuner.visibility]['politeness']
-        politeness = "intimate style (Banmal)" if politeness == 1\
-            else "polite style (Banmal)" if politeness == 2\
-            else "formal style"
-        reason = self.tuner.RULES[self.tuner.listener][self.tuner.visibility]['reason']
-        msg_1 += f"\nYou should speak in `{politeness}`."
-        msg_1 += f"\n\n Why? {reason}"
+        politeness = self.tuner.RULES[self.tuner.listener][self.tuner.environ]['politeness']
+        politeness = "no honorifics (-어)" if politeness == 1\
+            else "polite honorifics (-어요)" if politeness == 2\
+            else "formal honorifics (-습니다)"
+        reason = self.tuner.RULES[self.tuner.listener][self.tuner.environ]['reason']
+        msg_1 += f"\nYou should speak with `{politeness}` to your `{self.tuner.listener}` when you are in a `{self.tuner.environ}` environment."
+        msg_1 += f"\n\n Why so? {reason}"
         # --- step 2 ---
         msg_2 = f"### 2️⃣ Analyze morphemes"
         analyzed = "".join(["".join(list(map(str, token.morphs))) for token in self.tuner.logs[0]])
