@@ -10,9 +10,9 @@ class TestTuner(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.tuner = Tuner()
-        cls.ban = ("adult family", "private")
-        cls.jon = ("adult family", "public")
-        cls.formal = ("boss at work", "public")
+        cls.ban = ("adult family", "comfortable & informal")
+        cls.jon = ("adult family", "formal")
+        cls.formal = ("boss at work", "formal")
 
     def test_apply_preprocess(self):
         sent = "이것은 예시 문장이다"
@@ -23,6 +23,102 @@ class TestTuner(TestCase):
         self.tuner.sent = sent
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+
+    def test_apply_honorifics_thanks_hapnida(self):
+        sent = "어제 생일선물을 받아서 행복합니다"
+        self.assertEqual("어제 생일선물을 받아서 행복해", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어제 생일선물을 받아서 행복해요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어제 생일선물을 받아서 행복합니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_thanks_intimate(self):
+        sent = "도와줘서 고마워"
+        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("도와줘서 고마워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("도와줘서 고맙습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_thanks_polite(self):
+        sent = "도와줘서 고마워요"
+        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("도와줘서 고마워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("도와줘서 고맙습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_thanks_2_polite(self):
+        sent = "도와줘서 감사해요"
+        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("도와줘서 감사해요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("도와줘서 감사합니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_thanks_formal(self):
+        sent = "도와줘서 고맙습니다"
+        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("도와줘서 고마워요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("도와줘서 고맙습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_thanks_2_formal(self):
+        sent = "도와줘서 감사합니다"
+        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("도와줘서 감사해요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("도와줘서 감사합니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_hi_formal(self):
+        sent = "안녕하십니까"
+        self.assertEqual("안녕", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("안녕하세요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("안녕하십니까", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_hi_polite(self):
+        sent = "안녕하세요"
+        self.assertEqual("안녕", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("안녕하세요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("안녕하십니까", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_hi_intimate(self):
+        sent = "안녕"
+        self.assertEqual("안녕", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("안녕하세요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("안녕하십니까", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_hagesupnida(self):
+        sent = "이번 일은 내가 맡아서 하겠습니다"
+        self.assertEqual("이번 일은 내가 맡아서 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("이번 일은 제가 맡아서 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이번 일은 제가 맡아서 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_halgeyo(self):
+        sent = "이번 일은 내가 맡아서 할게요"
+        self.assertEqual("이번 일은 내가 맡아서 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("이번 일은 제가 맡아서 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이번 일은 제가 맡아서 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_halge(self):
+        sent = "이번 일은 내가 맡아서 할게"
+        self.assertEqual("이번 일은 내가 맡아서 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("이번 일은 제가 맡아서 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이번 일은 제가 맡아서 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_galge(self):
+        sent = "난 걸어 갈게"
+        self.assertEqual("난 걸어 갈게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("전 걸어 갈게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("전 걸어 가겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_gesupnida(self):
+        sent = "새로운 레시피를 알려드리겠습니다"
+        self.assertEqual("새로운 레시피를 알려줄게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("새로운 레시피를 알려드릴게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("새로운 레시피를 알려드리겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_julge(self):
+        sent = "새로운 레시피를 알려줄게"
+        self.assertEqual("새로운 레시피를 알려줄게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("새로운 레시피를 알려드릴게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("새로운 레시피를 알려드리겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_geyo(self):
+        sent = "새로운 레시피를 알려드릴게요"
+        self.assertEqual("새로운 레시피를 알려줄게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("새로운 레시피를 알려드릴게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("새로운 레시피를 알려드리겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_apply_honorifics_eoga(self):
         sent = "가까우니까 걸어가"
@@ -174,9 +270,9 @@ class TestTuner(TestCase):
         self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))  # or 걸어갑시다?
         sent = "난 걸어 갈게"
-        self.assertEqual("난 걸어 가", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("전 걸어 가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("전 걸어 갑니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("난 걸어 갈게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("전 걸어 갈게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("전 걸어 가겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
         sent = "그걸 이제야 깨달았어"
         self.assertEqual("그걸 이제야 깨달았어", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("그걸 이제야 깨달았어요", self.tuner(sent, self.jon[0], self.jon[1]))
