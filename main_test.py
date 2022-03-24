@@ -24,7 +24,13 @@ class TestTuner(TestCase):
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
-    def test_apply_honorifics_thanks_hapnida(self):
+    def test_apply_honorifics_bieup_nida_preceded_by_yi(self):
+        sent = "그는 전설입니다"
+        self.assertEqual("그는 전설이야", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그는 전설이에요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그는 전설입니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_apply_honorifics_bieup_nida_preceded_by_ha(self):
         sent = "어제 생일선물을 받아서 행복합니다"
         self.assertEqual("어제 생일선물을 받아서 행복해", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("어제 생일선물을 받아서 행복해요", self.tuner(sent, self.jon[0], self.jon[1]))

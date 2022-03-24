@@ -27,8 +27,7 @@ def main():
             tuned = tuner(sent, listener, environ)
             st.write(tuned)
             with st.expander("Need an explanation?"):
-                for msg in explainer():
-                    st.markdown(msg)
+                explainer()
 
 
 if __name__ == '__main__':
