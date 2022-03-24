@@ -24,6 +24,16 @@ class TestTuner(TestCase):
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
+    def test_apply_preprocess_trailing_spaces(self):
+        sent = "이것은 예시 문장이다  "
+        self.tuner.sent = sent
+        self.tuner.preprocess()
+        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+        sent = "이것은 예시 문장이다. "
+        self.tuner.sent = sent
+        self.tuner.preprocess()
+        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+
     def test_apply_honorifics_bieup_nida_preceded_by_yi(self):
         sent = "그는 전설입니다"
         self.assertEqual("그는 전설이야", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa

@@ -64,7 +64,8 @@ class Tuner:
         self.logs.append(self.out)
 
     def preprocess(self):
-        self.out = self.sent + "." if not self.sent.endswith(".") else self.sent  # for accurate pos-tagging
+        self.out = self.sent.strip()  # khaiii model is sensitive to empty spaces, so we should get rid of it.
+        self.out = self.out + "." if not self.out.endswith(".") else self.out  # for accurate pos-tagging
 
     def analyze_morphemes(self):
         tokens = self.khaiii.analyze(self.out)
