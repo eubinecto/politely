@@ -71,12 +71,12 @@ class Tuner:
 
     def apply_honorifics(self):
         politeness = self.RULES[self.listener][self.environ]['politeness']
-        lexicon2morphs = [(token.lex, list(map(str, token.morphs))) for token in self.out]
+        lex2morphs = [(token.lex, list(map(str, token.morphs))) for token in self.out]
         out = list()
-        for lex, morphs in lexicon2morphs:
+        for lex, morphs in lex2morphs:
             # this is to be used just for matching
             substrings = ["+".join(morphs[i:j]) for i, j in itertools.combinations(range(len(morphs) + 1), 2)]
-            if set(substrings) & set(self.HONORIFICS.keys()):  # need to make sure any patterns match joined.
+            if set(substrings) & set(self.HONORIFICS.keys()):  # need to make sure any patterns match any substring.
                 tuned = "+".join(morphs)
                 for pattern in self.HONORIFICS.keys():
                     honorific = self.HONORIFICS[pattern][politeness]
