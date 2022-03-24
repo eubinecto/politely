@@ -15,6 +15,7 @@ after = [
 
 def main():
     df = pd.DataFrame(zip(before, after), columns=["before", "after"])
+    df.style.hide(axis='index')
     print(df)
 
 
