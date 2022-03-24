@@ -183,7 +183,7 @@ class Explainer:
             for key, val in self.tuner.history_irregulars:  # noqa
                 before = before.replace(key, f"`{key}`")
                 after = after.replace(val, f"`{val}`")
-            st.markdown(msg_4)
+            st.markdown(msg_5)
             df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=['before', 'after'])
             st.markdown(df.to_markdown(index=False))
         else:
