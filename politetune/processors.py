@@ -6,13 +6,13 @@ from politetune.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rul
 import streamlit as st
 
 
-class Tuner:
+class Styler:
     """
     a politeness tuner.
     """
-    ABBREVIATIONS: dict = fetch_abbreviations()
-    HONORIFICS: dict = fetch_honorifics()
     RULES: dict = fetch_rules()
+    HONORIFICS: dict = fetch_honorifics()
+    ABBREVIATIONS: dict = fetch_abbreviations()
     IRREGULARS: dict = fetch_irregulars()
 
     def __init__(self):
@@ -120,7 +120,7 @@ class Explainer:
     This is here to explain each step in tuner. (mainly - apply_honorifics, apply_abbreviations, apply_irregulars).
     It is given a tuner as an input, attempts to explain the latest process.
     """
-    def __init__(self, tuner: Tuner):
+    def __init__(self, tuner: Styler):
         self.tuner = tuner
 
     def __call__(self, *args, **kwargs):

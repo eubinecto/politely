@@ -3,13 +3,13 @@ It's okay to write dirty stuff, at least as of right now.
 """
 from typing import Tuple
 import streamlit as st
-from politetune.processors import Tuner, Explainer
+from politetune.processors import Styler, Explainer
 
 
 # instantiate processors here
 @st.cache(allow_output_mutation=True)
-def cache_resources() -> Tuple[Tuner, Explainer]:
-    tuner = Tuner()
+def cache_resources() -> Tuple[Styler, Explainer]:
+    tuner = Styler()
     explainer = Explainer(tuner)
     return tuner, explainer
 

@@ -1,15 +1,15 @@
 import unittest
 from unittest import TestCase
-from politetune.processors import Tuner
+from politetune.processors import Styler
 
 
 class TestTuner(TestCase):
 
-    tuner: Tuner
+    tuner: Styler
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.tuner = Tuner()
+        cls.tuner = Styler()
         cls.ban = ("adult family", "comfortable & informal")
         cls.jon = ("adult family", "formal")
         cls.formal = ("boss at work", "formal")
@@ -34,6 +34,140 @@ class TestTuner(TestCase):
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
+    # 평서문 어미 - this is used for making a statement
+    def test_generic_EF_da(self):
+        """
+        ends with -다
+        :return:
+        """
+        # 언제 , 언제 어를 써야하는가?
+        # if it were to be used for learning, the results should be explainable.
+        sent = "오늘 날씨가 정말 좋다"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("오늘 날씨가 정말 좋아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("오늘 날씨가 정말 좋아요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("오늘 날씨가 정말 좋습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_generic_EF_nuenda(self):
+        """
+        ends with -는다
+        :return:
+        """
+        sent = "한국 사람들은 설날에 떡국을 먹는다"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        # 
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹는다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_generic_EF_nieun_da(self):
+        """
+        ends with -ㄴ다
+        :return:
+        """
+        sent = "난 오늘도 그녀애게 전화를 건다"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("난 오늘도 그녀애게 전화를 건다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("전 오늘도 그녀애게 전화를 걸어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("전 오늘도 그녀애게 전화를 겁니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+
+    def test_generic_EF_guna(self):
+        """
+        ends with -구나
+        :return:
+        """
+
+    def test_generic_EF_nuenguna(self):
+        """
+        ends with -는구나
+        :return:
+        """
+        pass
+
+    def test_generic_EF_gun(self):
+        """
+        ends with -군
+        :return:
+        """
+        pass
+
+    def test_generic_EF_nuengun(self):
+        """
+        ends with -는군
+        :return:
+        """
+        pass
+
+    def test_generic_EF_ne(self):
+        """
+        ends with -네
+        :return:
+        """
+        pass
+
+    def test_generic_EF_ma(self):
+        """
+        ends with -마
+        :return:
+        """
+        pass
+
+    def test_generic_EF_euema(self):
+        """
+        ends with -으마
+        :return:
+        """
+        pass
+
+    def test_generic_EF_euergul(self):
+        """
+        ends with -을걸
+        :return:
+        """
+        pass
+
+    def test_generic_EF_rieul_gul(self):
+        """
+        ends with - ㄹ걸
+        :return:
+        """
+        pass
+
+    def test_generic_EF_euelgae(self):
+        """
+        ends with -을게
+        :return:
+        """
+        pass
+
+    def test_generic_EF_rieul_gae(self):
+        """
+        ends with -ㄹ게
+        :return:
+        """
+        pass
+
+    def test_generic_EF_eulrae(self):
+        """
+        ends with -을래
+        :return:
+        """
+        pass
+
+    def test_generic_EF_rieul_rae(self):
+        """
+        ends with -ㄹ래
+        :return:
+        """
+
+    # 의문문 어미
+
+    # 명령문 어미
+
+    # 후종결어미
+
+    # 인용어미
     def test_apply_honorifics_bieup_nida_preceded_by_yi(self):
         sent = "그는 전설입니다"
         self.assertEqual("그는 전설이야", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
