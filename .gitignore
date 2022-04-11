@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 toml
 /data/
+
+venv
+data

@@ -10,9 +10,9 @@ class TestKPS(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.tuner = KPS()
-        cls.ban = ("adult family", "comfortable & informal")
-        cls.jon = ("adult family", "formal")
-        cls.formal = ("boss at work", "formal")
+        cls.ban = ("adult family 👨‍👩‍👧‍👦", "comfortable & informal")
+        cls.jon = ("adult family 👨‍👩‍👧‍👦", "formal")
+        cls.formal = ("boss at work 💼", "formal")
 
     def test_apply_preprocess(self):
         sent = "이것은 예시 문장이다"
