@@ -8,6 +8,7 @@ def main():
     print(hgtk.josa.attach('바다', hgtk.josa.EUN_NEUN))
     print(hgtk.josa.attach('하늘', hgtk.josa.EUL_REUL))
     print(hgtk.josa.attach('바다', hgtk.josa.EUL_REUL))
+    print(hgtk.josa.attach('여러분', hgtk.josa.EUL_REUL))
     print(hgtk.josa.attach('하늘', hgtk.josa.IDA_DA))
     print(hgtk.josa.attach('바다', hgtk.josa.IDA_DA))
     print(hgtk.josa.attach('하늘', hgtk.josa.EURO_RO))

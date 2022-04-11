@@ -1,5 +1,5 @@
 
-from politetune.processors import Tuner, Explainer
+from politetune.processors import KPS, Explainer
 
 SENTS = [
     # ㅂ 불규칙
@@ -29,7 +29,7 @@ SENTS = [
     "그는 전설입니다"
 ]
 
-tuner = Tuner()
+tuner = KPS()
 
 
 def main():
