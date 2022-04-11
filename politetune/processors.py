@@ -1,6 +1,7 @@
+import os
 import re
+import requests
 import pandas as pd  # noqa
-import streamlit as st
 from khaiii.khaiii import KhaiiiApi
 from typing import Optional, Any, Callable, List
 from politetune.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rules, fetch_irregulars
@@ -67,7 +68,7 @@ class KPS:
 
     def preprocess(self):
         self.out = self.sent.strip()  # khaiii model is sensitive to empty spaces, so we should get rid of it.
-        if not self.out.endswith("?"):
+        if not self.out.endswith("?") and not self.out.endswith("!"):
             self.out = self.out + "." if not self.out.endswith(".") else self.out  # for accurate pos-tagging
 
     def analyze(self):
@@ -141,6 +142,24 @@ class KPS:
         return True if re.match(f"(^|.*\\+){re.escape(pattern)}(\\+.*|$)", string) else False
 
 
+class Translator:
+    def __call__(self, sent: str) -> str:
+        url = "https://openapi.naver.com/v1/papago/n2mt"
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-Naver-Client-Id": os.environ['NAVER_CLIENT_ID'],
+            "X-Naver-Client-Secret": os.environ['NAVER_CLIENT_SECRET']
+        }
+        data = {
+            "source": "en",
+            "target": "ko",
+            "text": sent
+        }
+        r = requests.post(url, headers=headers, data=data)
+        r.raise_for_status()
+        return r.json()['message']['result']['translatedText']
+
+
 class Explainer:
     """
     This is here to explain each step in tuner. (mainly - apply_honorifics, apply_abbreviations, apply_irregulars).
@@ -149,7 +168,7 @@ class Explainer:
     def __init__(self, tuner: KPS):
         self.tuner = tuner
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, column):
         # CSS to inject contained in a string
         hide_table_row_index = """
                     <style>
@@ -159,9 +178,9 @@ class Explainer:
                     """
 
         # Inject CSS with Markdown
-        st.markdown(hide_table_row_index, unsafe_allow_html=True)
+        column.markdown(hide_table_row_index, unsafe_allow_html=True)
         # --- step 1 ---
-        msg_1 = "### 1️⃣ Determine the level of politeness"
+        msg_1 = "### 1️⃣ Politeness"
         politeness = self.tuner.RULES[self.tuner.listener][self.tuner.environ]['politeness']
         politeness = "casual style (-어)" if politeness == 1\
             else "polite style (-어요)" if politeness == 2\
@@ -170,49 +189,49 @@ class Explainer:
         msg_1 += f"\nYou should speak in a `{politeness}` to your `{self.tuner.listener}`" \
                  f" when you are in a `{self.tuner.environ}` environment."
         msg_1 += f"\n\n Why so? {reason}"
-        st.markdown(msg_1)
+        column.markdown(msg_1)
         # --- step 2 ---
-        msg_2 = f"### 2️⃣ Analyze morphemes"
+        msg_2 = f"### 2️⃣ Morphemes"
         before = self.tuner.sent.split(" ")
         after = ["".join(list(map(str, token.morphs))) for token in self.tuner.logs[0]]
         df = pd.DataFrame(zip(before, after), columns=['before', 'after'])
-        st.markdown(msg_2)
-        st.markdown(df.to_markdown(index=False))
+        column.markdown(msg_2)
+        column.markdown(df.to_markdown(index=False))
         # --- step 3 ---
-        msg_3 = f"### 3️⃣ Apply honorifics"
+        msg_3 = f"### 3️⃣ Honorifics"
         before = " ".join(["".join(list(map(str, token.morphs))) for token in self.tuner.logs[0]])
         after = self.tuner.logs[1]
         for key, val in self.tuner.history_honorifics:
             before = before.replace(key, f"`{key}`")
             after = after.replace(val, f"`{val}`")
         df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=['before', 'after'])
-        st.markdown(msg_3)
-        st.markdown(df.to_markdown(index=False))
+        column.markdown(msg_3)
+        column.markdown(df.to_markdown(index=False))
         # # --- step 4 ---
-        msg_4 = "### 4️⃣ Apply abbreviations"
+        msg_4 = "### 4️⃣ Abbreviations"
         if len(self.tuner.history_abbreviations) > 0:
             before = self.tuner.logs[1]
             after = self.tuner.logs[2]
             for key, val in self.tuner.history_abbreviations:  # noqa
                 before = before.replace(key, f"`{key}`")
                 after = after.replace(val, f"`{val}`")
-            st.markdown(msg_4)
+            column.markdown(msg_4)
             df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=['before', 'after'])
-            st.markdown(df.to_markdown(index=False))
+            column.markdown(df.to_markdown(index=False))
         else:
             msg_4 += "\nNo abbreviation rules to be applied."
-            st.markdown(msg_4)
+            column.markdown(msg_4)
         # # --- step 5 ---
-        msg_5 = f"### 5️⃣ Apply irregular conjugations"
+        msg_5 = f"### 5️⃣ Conjugations"
         if len(self.tuner.history_irregulars) > 0:
             before = self.tuner.logs[2]
             after = self.tuner.logs[3]
             for key, val in self.tuner.history_irregulars:  # noqa
                 before = before.replace(key, f"`{key}`")
                 after = after.replace(val, f"`{val}`")
-            st.markdown(msg_5)
+            column.markdown(msg_5)
             df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=['before', 'after'])
-            st.markdown(df.to_markdown(index=False))
+            column.markdown(df.to_markdown(index=False))
         else:
             msg_5 += "\nNo conjugation rules to be applied."
-            st.markdown(msg_5)
+            column.markdown(msg_5)
