@@ -44,6 +44,16 @@ class TestTuner(TestCase):
         # if it were to be used for learning, the results should be explainable.
         sent = "오늘 날씨가 정말 좋다"
         # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("오늘 날씨가 정말 좋다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("오늘 날씨가 정말 좋아요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("오늘 날씨가 정말 좋습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "오늘 날씨가 정말 좋아요"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("오늘 날씨가 정말 좋아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("오늘 날씨가 정말 좋아요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("오늘 날씨가 정말 좋습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "오늘 날씨가 정말 좋습니다"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
         self.assertEqual("오늘 날씨가 정말 좋아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("오늘 날씨가 정말 좋아요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("오늘 날씨가 정말 좋습니다", self.tuner(sent, self.formal[0], self.formal[1]))
@@ -54,9 +64,15 @@ class TestTuner(TestCase):
         :return:
         """
         sent = "한국 사람들은 설날에 떡국을 먹는다"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        # 
         self.assertEqual("한국 사람들은 설날에 떡국을 먹는다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "한국 사람들은 설날에 떡국을 먹어요"
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "한국 사람들은 설날에 떡국을 먹습니다"
+        self.assertEqual("한국 사람들은 설날에 떡국을 먹어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("한국 사람들은 설날에 떡국을 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("한국 사람들은 설날에 떡국을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
@@ -65,95 +81,185 @@ class TestTuner(TestCase):
         ends with -ㄴ다
         :return:
         """
-        sent = "난 오늘도 그녀애게 전화를 건다"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("난 오늘도 그녀애게 전화를 건다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("전 오늘도 그녀애게 전화를 걸어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("전 오늘도 그녀애게 전화를 겁니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
+        sent = "여기에 내 인생의 모든 것을 건다"
+        self.assertEqual("여기에 내 인생의 모든 것을 건다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("여기에 제 인생의 모든 것을 걸게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("여기에 제 인생의 모든 것을 걸겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "여기에 제 인생의 모든 것을 걸게요"
+        self.assertEqual("여기에 내 인생의 모든 것을 걸어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("여기에 제 인생의 모든 것을 걸게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("여기에 제 인생의 모든 것을 걸겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "여기에 제 인생의 모든 것을 걸겠습니다"
+        self.assertEqual("여기에 내 인생의 모든 것을 걸어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("여기에 제 인생의 모든 것을 걸게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("여기에 제 인생의 모든 것을 걸겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_guna(self):
         """
         ends with -구나
         :return:
         """
+        sent = "그 어려운걸 해냈구나"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("그 어려운걸 해냈구나", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 어려운걸 해냈군요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 어려운걸 해냈습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_nuenguna(self):
         """
         ends with -는구나
         :return:
         """
-        pass
-
-    def test_generic_EF_gun(self):
-        """
-        ends with -군
-        :return:
-        """
-        pass
+        sent = "그 어려운걸 해내는구나"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("그 어려운걸 해내는구나", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 어려운걸 해내는군요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 어려운걸 해냅니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_nuengun(self):
         """
         ends with -는군
         :return:
         """
-        pass
+        sent = "그 어려운걸 해내는군"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("그 어려운걸 해내는군", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 어려운걸 해내는군요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 어려운걸 해냅니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_generic_EF_gun(self):
+        """
+        ends with -군
+        :return:
+        """
+        sent = "그 어려운걸 이루었군"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("그 어려운걸 이루었군", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 어려운걸 이루었군요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 어려운걸 이루었습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_ne(self):
         """
         ends with -네
         :return:
         """
-        pass
+        sent = "이렇게 끝나 버리네"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("이렇게 끝나 버리네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("이렇게 끝나 버리네요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이렇게 끝나 버립니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "미리 할걸 그랬네"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("미리 할걸 그랬네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("미리 할걸 그랬네요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("미리 할걸 그랬습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_generic_EF_ne_exceptions(self):
+        """
+        네/EF, 하지만 무조건 네요가 붙지 않는 경우.
+        :return:
+        """
+        sent = "믿고 있겠네"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("믿고 있겠네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("믿고 있겠어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("믿고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_ma(self):
         """
-        ends with -마
+        ends with -마. 약속 평서문.
         :return:
         """
-        pass
+        sent = "내일 연락하마"
+        self.assertEqual("내일 연락하마", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("내일 연락할게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("내일 연락하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "곧 따라가마"
+        self.assertEqual("곧 따라가마", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("곧 따라갈게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("곧 따라가겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_euema(self):
         """
         ends with -으마
         :return:
         """
-        pass
+        sent = "믿고 있으마"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("믿고 있으마", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("믿고 있을게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("믿고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
+    # TODO: "걸" 이라는 단어가 참... 맥락이 매우 중요한 것 같다.
     def test_generic_EF_euergul(self):
         """
         ends with -을걸
         :return:
         """
-        pass
+        sent = "그녀는 기다리고 있을걸"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("그녀는 기다리고 있을걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그녀는 기다리고 있을걸요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그녀는 기다리고 있을것입니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "속시원하게 털어놓을걸"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("속시원하게 털어놓을걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("속시원하게 털어놓을걸", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그녀는 기다리고 있을것입니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_rieul_gul(self):
         """
         ends with - ㄹ걸
         :return:
         """
-        pass
+        sent = "그녀는 기다리고 있을걸"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("그녀는 기다리고 있을걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그녀는 기다리고 있을걸요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그녀는 기다리고 있을것입니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_euelgae(self):
         """
         ends with -을게
         :return:
         """
-        pass
+        sent = "기다리고 있을게"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("기다리고 있을게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("기다리고 있을게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("기다리고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_rieul_gae(self):
         """
         ends with -ㄹ게
         :return:
         """
-        pass
+        sent = "그건 내가 책임지고 할게"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("그건 내가 책임지고 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그건 제가 책임지고 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그건 제가 책임지고 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_eulrae(self):
         """
         ends with -을래
         :return:
         """
-        pass
+        sent = "정말 말 안들을래"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("정말 말 안들을래", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("정말 말 안들을래요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("정말 말 안들을것입니까", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "정말 말 안들을래요"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("정말 말 안들을래", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("정말 말 안들을래요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("정말 말 안들을것입니까", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "정말 말 안들을것입니까"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("정말 말 안들을래", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("정말 말 안들을래요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("정말 말 안들을것입니까", self.tuner(sent, self.formal[0], self.formal[1]))
 
     def test_generic_EF_rieul_rae(self):
         """
@@ -467,3 +573,37 @@ class TestTuner(TestCase):
         self.assertEqual("이참에 돈을 걷어가자", self.tuner(sent, self.ban[0], self.ban[1]))
         self.assertEqual("이참에 돈을 걷어가요", self.tuner(sent, self.jon[0], self.jon[1]))
         self.assertEqual("이참에 돈을 걷어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    @unittest.skip
+    def test_drop_subject_when_honorified(self):
+        """
+        존대를 할 때는 주어를 드랍하는 규칙이 있다. 하지만 현재 적용하진 상태.
+        :return:
+        """
+        sent = "자네만 믿고 있겠네"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("자네만 믿고 있겠네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("믿고 있겠어요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("믿고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    @unittest.skip
+    def test_generic_EF_rieul_gul_confess(self):
+        """
+        ends with - ㄹ걸:  추측과 후회를 구분하는 것이 가능한가?
+        https://kiss.kstudy.com/thesis/thesis-view.asp?key=3735390
+        :return:
+        """
+        sent = "미리미리 해둘걸"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("미리미리 해둘걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        # 다짐을 하는 것이 예의를 차리는 것일수도.
+        self.assertEqual("미리미리 해둘게요", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("미리미리 해두겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    @unittest.skip
+    def test_spacing(self):
+        """
+        https://kiss.kstudy.com/thesis/thesis-view.asp?key=3735390
+        :return:
+        """
+        "난 오늘도 전화를 걸어요"  # 띄어쓰기가 있으면 걸 -> 걷이 되어버린다.

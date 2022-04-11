@@ -76,15 +76,18 @@ class Styler:
         lex2morphs = [(token.lex, list(map(str, token.morphs))) for token in self.out]
         out = list()
         for lex, morphs in lex2morphs:
-            # this is to be used just for matching
-            substrings = ["+".join(morphs[i:j]) for i, j in itertools.combinations(range(len(morphs) + 1), 2)]
-            if set(substrings) & set(self.HONORIFICS.keys()):  # need to make sure any patterns match any substring.
-                tuned = "+".join(morphs)
-                for pattern in self.HONORIFICS.keys():
+            # look, how do we know if those morphs are valid or invalid?
+            # you've got to go through the patterns for sure.
+            # if there was no "continue", then we append the lex.
+            tuned = "+".join(morphs)
+            for pattern in self.HONORIFICS.keys():
+                if pattern in tuned:
                     honorific = self.HONORIFICS[pattern][politeness]
-                    if pattern in tuned:
+                    if honorific not in tuned:  # this is the if statement to use for logging the history.
                         tuned = tuned.replace(pattern, honorific)
-                        self.history_honorifics.add((pattern, honorific))  # to be used in the explainer
+                        self.history_honorifics.add((pattern, honorific))
+            # if something has changed, then go for it, but otherwise just use the lex.
+            if tuned != "+".join(morphs):
                 tuned = "".join([token.split("/")[0] for token in tuned.split("+")])
                 out.append(tuned)
             else:
