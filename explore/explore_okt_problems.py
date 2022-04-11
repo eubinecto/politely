@@ -1,5 +1,5 @@
 
-from politetune.fetchers import fetch_okt
+from kps.fetchers import fetch_okt
 from kiwipiepy import Kiwi
 
 

@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from politetune.fetchers import fetch_komoran
+from kps.fetchers import fetch_komoran
 from kiwipiepy import Kiwi
 from kiwipiepy import Token
 

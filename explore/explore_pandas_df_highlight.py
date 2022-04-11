@@ -3,7 +3,7 @@ reference:
 https://stackoverflow.com/a/59381603
 """
 
-from politetune.fetchers import fetch_rules
+from kps.fetchers import fetch_rules
 import pandas as pd
 
 

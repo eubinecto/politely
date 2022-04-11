@@ -1,5 +1,5 @@
 
-from politetune.processors import Translator
+from kps.processors import Translator
 
 
 def main():

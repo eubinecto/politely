@@ -1,4 +1,4 @@
-from politetune.fetchers import fetch_abbreviations
+from kps.fetchers import fetch_abbreviations
 import pandas as pd
 
 

@@ -1,4 +1,4 @@
-from politetune.fetchers import fetch_rules
+from kps.fetchers import fetch_rules
 
 
 def main():

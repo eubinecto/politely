@@ -1,4 +1,4 @@
-from politetune.fetchers import fetch_komoran
+from kps.fetchers import fetch_komoran
 
 
 def lemmatize(word: str) -> str:

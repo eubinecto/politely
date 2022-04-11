@@ -1,9 +1,9 @@
 import unittest
 from unittest import TestCase
-from politetune.processors import KPS
+from kps.processors import KPS
 
 
-class TestTuner(TestCase):
+class TestKPS(TestCase):
 
     tuner: KPS
 

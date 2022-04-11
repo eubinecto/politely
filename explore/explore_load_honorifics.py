@@ -1,5 +1,5 @@
 import pandas as pd
-from politetune.fetchers import fetch_honorifics
+from kps.fetchers import fetch_honorifics
 
 
 def main():
