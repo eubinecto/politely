@@ -1,14 +1,15 @@
-import itertools
-import pandas as pd
+import re
+import pandas as pd  # noqa
+import streamlit as st
 from khaiii.khaiii import KhaiiiApi
 from typing import Optional, Any, Callable, List
 from politetune.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rules, fetch_irregulars
-import streamlit as st
+from politetune.errors import EFNotIncludedError, EFNotSupportedError
 
 
-class Styler:
+class KPS:
     """
-    a politeness tuner.
+    The Korean Politeness Styler
     """
     RULES: dict = fetch_rules()
     HONORIFICS: dict = fetch_honorifics()
@@ -17,12 +18,12 @@ class Styler:
 
     def __init__(self):
         self.khaiii = KhaiiiApi()
-        # inputs
-        self.sent: Optional[str] = None
+        # --- in's & out's --- #
         self.listener: Optional[str] = None
         self.environ: Optional[str] = None
-        # the output can be anything
+        self.sent: Optional[str] = None
         self.out: Any = None
+        # --- histories --- #
         self.logs: list = list()
         self.history_honorifics: set = set()
         self.history_abbreviations: set = set()
@@ -43,7 +44,8 @@ class Styler:
         return [
             self.clear,
             self.preprocess,
-            self.analyze_morphemes,
+            self.analyze,
+            self.check,
             self.log,
             self.apply_honorifics,
             self.log,
@@ -51,9 +53,9 @@ class Styler:
             self.log,
             self.apply_irregulars,
             self.log,
-            self.postprocess
         ]
 
+    # ---- methods for steps --- #
     def clear(self):
         self.logs.clear()
         self.history_honorifics.clear()
@@ -65,31 +67,49 @@ class Styler:
 
     def preprocess(self):
         self.out = self.sent.strip()  # khaiii model is sensitive to empty spaces, so we should get rid of it.
-        self.out = self.out + "." if not self.out.endswith(".") else self.out  # for accurate pos-tagging
+        if not self.out.endswith("?"):
+            self.out = self.out + "." if not self.out.endswith(".") else self.out  # for accurate pos-tagging
 
-    def analyze_morphemes(self):
+    def analyze(self):
         tokens = self.khaiii.analyze(self.out)
         self.out = tokens
+
+    def check(self):
+        """
+        Check if your assumption holds. Raises an error if any of them does not hold.
+        """
+        efs = [
+            "+".join(map(str, token.morphs))
+            for token in self.out
+            if "EF" in "+".join(map(str, token.morphs))
+        ]
+        # assumption 1: the sentence must include more than 1 EF's
+        if not efs:
+            raise EFNotIncludedError("|".join(["+".join(map(str, token.morphs)) for token in self.out]))
+        # assumption 2: all EF's should be supported by KPS.
+        for ef in efs:
+            for pattern in self.HONORIFICS.keys():
+                if self.matched(pattern, ef):
+                    break
+            else:
+                raise EFNotSupportedError(ef)
 
     def apply_honorifics(self):
         politeness = self.RULES[self.listener][self.environ]['politeness']
         lex2morphs = [(token.lex, list(map(str, token.morphs))) for token in self.out]
         out = list()
         for lex, morphs in lex2morphs:
-            # look, how do we know if those morphs are valid or invalid?
-            # you've got to go through the patterns for sure.
-            # if there was no "continue", then we append the lex.
             tuned = "+".join(morphs)
             for pattern in self.HONORIFICS.keys():
-                if pattern in tuned:
+                if self.matched(pattern, tuned):
                     honorific = self.HONORIFICS[pattern][politeness]
-                    if honorific not in tuned:  # this is the if statement to use for logging the history.
-                        tuned = tuned.replace(pattern, honorific)
-                        self.history_honorifics.add((pattern, honorific))
+                    tuned = tuned.replace(pattern, honorific)
+                    self.history_honorifics.add((pattern, honorific))
             # if something has changed, then go for it, but otherwise just use the lex.
-            if tuned != "+".join(morphs):
-                tuned = "".join([token.split("/")[0] for token in tuned.split("+")])
-                out.append(tuned)
+            before = "".join([morph.split("/")[0] for morph in morphs])
+            after = "".join([morph.split("/")[0] for morph in tuned.split("+")])
+            if before != after:
+                out.append(after)
             else:
                 out.append(lex)
         self.out = " ".join(out)
@@ -106,9 +126,7 @@ class Styler:
                 self.out = self.out.replace(key, val)
                 self.history_irregulars.add((key, val))
 
-    def postprocess(self):
-        self.out = self.out if self.sent.endswith(".") else self.out[:-1]
-
+    # --- accessing options --- #
     @property
     def listeners(self):
         return pd.DataFrame(self.RULES).transpose().index
@@ -117,13 +135,18 @@ class Styler:
     def environs(self):
         return pd.DataFrame(self.RULES).transpose().columns
 
+    # --- supporting methods --- #
+    @staticmethod
+    def matched(pattern: str, string: str) -> bool:
+        return True if re.match(f"(^|.*\\+){re.escape(pattern)}(\\+.*|$)", string) else False
+
 
 class Explainer:
     """
     This is here to explain each step in tuner. (mainly - apply_honorifics, apply_abbreviations, apply_irregulars).
     It is given a tuner as an input, attempts to explain the latest process.
     """
-    def __init__(self, tuner: Styler):
+    def __init__(self, tuner: KPS):
         self.tuner = tuner
 
     def __call__(self, *args, **kwargs):
@@ -140,11 +163,11 @@ class Explainer:
         # --- step 1 ---
         msg_1 = "### 1️⃣ Determine the level of politeness"
         politeness = self.tuner.RULES[self.tuner.listener][self.tuner.environ]['politeness']
-        politeness = "no honorifics (-어)" if politeness == 1\
-            else "polite honorifics (-어요)" if politeness == 2\
-            else "formal honorifics (-습니다)"
+        politeness = "casual style (-어)" if politeness == 1\
+            else "polite style (-어요)" if politeness == 2\
+            else "formal style (-습니다)"
         reason = self.tuner.RULES[self.tuner.listener][self.tuner.environ]['reason']
-        msg_1 += f"\nYou should speak with `{politeness}` to your `{self.tuner.listener}`" \
+        msg_1 += f"\nYou should speak in a `{politeness}` to your `{self.tuner.listener}`" \
                  f" when you are in a `{self.tuner.environ}` environment."
         msg_1 += f"\n\n Why so? {reason}"
         st.markdown(msg_1)

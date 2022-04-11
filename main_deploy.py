@@ -3,13 +3,14 @@ It's okay to write dirty stuff, at least as of right now.
 """
 from typing import Tuple
 import streamlit as st
-from politetune.processors import Styler, Explainer
+from politetune.processors import KPS, Explainer
+from politetune.errors import EFNotIncludedError, EFNotSupportedError
 
 
 # instantiate processors here
 @st.cache(allow_output_mutation=True)
-def cache_resources() -> Tuple[Styler, Explainer]:
-    tuner = Styler()
+def cache_resources() -> Tuple[KPS, Explainer]:
+    tuner = KPS()
     explainer = Explainer(tuner)
     return tuner, explainer
 
@@ -24,10 +25,16 @@ def main():
 
     if st.button(label="Tune"):
         with st.spinner("Please wait..."):
-            tuned = tuner(sent, listener, environ)
-            st.write(tuned)
-            with st.expander("Need an explanation?"):
-                explainer()
+            try:
+                tuned = tuner(sent, listener, environ)
+            except EFNotIncludedError as e1:
+                st.error(str(e1))
+            except EFNotSupportedError as e2:
+                st.error(str(e2))
+            else:
+                st.write(tuned)
+                with st.expander("Need an explanation?"):
+                    explainer()
 
 
 if __name__ == '__main__':

@@ -1,15 +1,15 @@
 import unittest
 from unittest import TestCase
-from politetune.processors import Styler
+from politetune.processors import KPS
 
 
 class TestTuner(TestCase):
 
-    tuner: Styler
+    tuner: KPS
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.tuner = Styler()
+        cls.tuner = KPS()
         cls.ban = ("adult family", "comfortable & informal")
         cls.jon = ("adult family", "formal")
         cls.formal = ("boss at work", "formal")
@@ -34,521 +34,127 @@ class TestTuner(TestCase):
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
-    # 평서문 어미 - this is used for making a statement
-    def test_generic_EF_da(self):
+    # --- casual --- #
+    def test_EF_ja(self):
+        sent = "자 이제 먹자."
+        self.assertEqual("자 이제 먹자.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("자 이제 먹어요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("자 이제 먹읍시다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "자 이제 먹어요."
+        self.assertEqual("자 이제 먹어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("자 이제 먹어요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("자 이제 먹습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "자 이제 먹습니다."
+        self.assertEqual("자 이제 먹어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("자 이제 먹어요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("자 이제 먹습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_EF_gae(self):
+        sent = "회의를 시작할게."
+        self.assertEqual("회의를 시작할게.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("회의를 시작할게요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("회의를 시작하겠습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "회의를 시작할게요."
+        self.assertEqual("회의를 시작할게.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("회의를 시작할게요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("회의를 시작하겠습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "회의를 시작하겠습니다."
+        self.assertEqual("회의를 시작하겠어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("회의를 시작하겠어요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("회의를 시작하겠습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_EF_eo(self):
         """
-        ends with -다
-        :return:
+        어
         """
-        # 언제 , 언제 어를 써야하는가?
-        # if it were to be used for learning, the results should be explainable.
-        sent = "오늘 날씨가 정말 좋다"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("오늘 날씨가 정말 좋다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("오늘 날씨가 정말 좋아요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("오늘 날씨가 정말 좋습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "오늘 날씨가 정말 좋아요"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("오늘 날씨가 정말 좋아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("오늘 날씨가 정말 좋아요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("오늘 날씨가 정말 좋습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "오늘 날씨가 정말 좋습니다"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("오늘 날씨가 정말 좋아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("오늘 날씨가 정말 좋아요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("오늘 날씨가 정말 좋습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "그 일은 내가 처리했어."
+        self.assertEqual("그 일은 내가 처리했어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제가 처리했어요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제가 처리했습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "그 일은 제가 처리했어요."
+        self.assertEqual("그 일은 내가 처리했어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제가 처리했어요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제가 처리했습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "그 일은 제가 처리했습니다."
+        self.assertEqual("그 일은 내가 처리했어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제가 처리했어요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제가 처리했습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
 
-    def test_generic_EF_nuenda(self):
+    def test_EF_yi_ya(self):
         """
-        ends with -는다
-        :return:
+        이+야
         """
-        sent = "한국 사람들은 설날에 떡국을 먹는다"
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹는다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "한국 사람들은 설날에 떡국을 먹어요"
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "한국 사람들은 설날에 떡국을 먹습니다"
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("한국 사람들은 설날에 떡국을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "그 일은 내 담당이야."
+        self.assertEqual("그 일은 내 담당이야.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제 담당이에요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제 담당입니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "그 일은 제 담당이에요."
+        self.assertEqual("그 일은 내 담당이야.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제 담당이에요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제 담당입니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "그 일은 제 담당입니다."
+        self.assertEqual("그 일은 내 담당이야.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제 담당이에요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제 담당입니다.", self.tuner(sent, self.formal[0], self.formal[1]))
 
-    def test_generic_EF_nieun_da(self):
+    def test_EF_ma(self):
+        sent = "내 패션을 함부로 비꼬지마"
+        self.assertEqual("내 패션을 함부로 비꼬지마.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("제 패션을 함부로 비꼬지마요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "제 패션을 함부로 비꼬지마요"
+        self.assertEqual("내 패션을 함부로 비꼬지마.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("제 패션을 함부로 비꼬지마요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "제 패션을 함부로 비꼬지마십시오"
+        self.assertEqual("내 패션을 함부로 비꼬지마셔.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("제 패션을 함부로 비꼬지마셔요.", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.tuner(sent, self.formal[0], self.formal[1]))
+
+    def test_EF_eo_q(self):
         """
-        ends with -ㄴ다
-        :return:
+        어?
         """
-        sent = "여기에 내 인생의 모든 것을 건다"
-        self.assertEqual("여기에 내 인생의 모든 것을 건다", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("여기에 제 인생의 모든 것을 걸게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("여기에 제 인생의 모든 것을 걸겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "여기에 제 인생의 모든 것을 걸게요"
-        self.assertEqual("여기에 내 인생의 모든 것을 걸어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("여기에 제 인생의 모든 것을 걸게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("여기에 제 인생의 모든 것을 걸겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "여기에 제 인생의 모든 것을 걸겠습니다"
-        self.assertEqual("여기에 내 인생의 모든 것을 걸어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("여기에 제 인생의 모든 것을 걸게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("여기에 제 인생의 모든 것을 걸겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        # 했어?
+        sent = "어제 공부는 마무리 했어?"
+        self.assertEqual("어제 공부는 마무리 했어?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어제 공부는 마무리 했어요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어제 공부는 마무리 했습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "어제 공부는 마무리 했어요?"
+        self.assertEqual("어제 공부는 마무리 했어?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어제 공부는 마무리 했어요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어제 공부는 마무리 했습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "어제 공부는 마무리 했습니까?"
+        self.assertEqual("어제 공부는 마무리 했어?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어제 공부는 마무리 했어요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어제 공부는 마무리 했습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        # 가셔? (가시어?)
+        sent = "어디 가셔?"
+        self.assertEqual("어디 가셔?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어디 가셔요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어디 가십니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "어디 가셔요?"
+        self.assertEqual("어디 가셔?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어디 가셔요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어디 가십니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "어디 가십니까?"
+        self.assertEqual("어디 가셔?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어디 가셔요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어디 가십니까?", self.tuner(sent, self.formal[0], self.formal[1]))
 
-    def test_generic_EF_guna(self):
-        """
-        ends with -구나
-        :return:
-        """
-        sent = "그 어려운걸 해냈구나"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("그 어려운걸 해냈구나", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 어려운걸 해냈군요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 어려운걸 해냈습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_nuenguna(self):
-        """
-        ends with -는구나
-        :return:
-        """
-        sent = "그 어려운걸 해내는구나"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("그 어려운걸 해내는구나", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 어려운걸 해내는군요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 어려운걸 해냅니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_nuengun(self):
-        """
-        ends with -는군
-        :return:
-        """
-        sent = "그 어려운걸 해내는군"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("그 어려운걸 해내는군", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 어려운걸 해내는군요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 어려운걸 해냅니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_gun(self):
-        """
-        ends with -군
-        :return:
-        """
-        sent = "그 어려운걸 이루었군"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("그 어려운걸 이루었군", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 어려운걸 이루었군요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 어려운걸 이루었습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_ne(self):
-        """
-        ends with -네
-        :return:
-        """
-        sent = "이렇게 끝나 버리네"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("이렇게 끝나 버리네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("이렇게 끝나 버리네요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("이렇게 끝나 버립니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "미리 할걸 그랬네"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("미리 할걸 그랬네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("미리 할걸 그랬네요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("미리 할걸 그랬습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_ne_exceptions(self):
-        """
-        네/EF, 하지만 무조건 네요가 붙지 않는 경우.
-        :return:
-        """
-        sent = "믿고 있겠네"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("믿고 있겠네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("믿고 있겠어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("믿고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_ma(self):
-        """
-        ends with -마. 약속 평서문.
-        :return:
-        """
-        sent = "내일 연락하마"
-        self.assertEqual("내일 연락하마", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("내일 연락할게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("내일 연락하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "곧 따라가마"
-        self.assertEqual("곧 따라가마", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("곧 따라갈게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("곧 따라가겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_euema(self):
-        """
-        ends with -으마
-        :return:
-        """
-        sent = "믿고 있으마"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("믿고 있으마", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("믿고 있을게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("믿고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    # TODO: "걸" 이라는 단어가 참... 맥락이 매우 중요한 것 같다.
-    def test_generic_EF_euergul(self):
-        """
-        ends with -을걸
-        :return:
-        """
-        sent = "그녀는 기다리고 있을걸"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("그녀는 기다리고 있을걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그녀는 기다리고 있을걸요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그녀는 기다리고 있을것입니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "속시원하게 털어놓을걸"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("속시원하게 털어놓을걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("속시원하게 털어놓을걸", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그녀는 기다리고 있을것입니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_rieul_gul(self):
-        """
-        ends with - ㄹ걸
-        :return:
-        """
-        sent = "그녀는 기다리고 있을걸"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("그녀는 기다리고 있을걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그녀는 기다리고 있을걸요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그녀는 기다리고 있을것입니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_euelgae(self):
-        """
-        ends with -을게
-        :return:
-        """
-        sent = "기다리고 있을게"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("기다리고 있을게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("기다리고 있을게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("기다리고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_rieul_gae(self):
-        """
-        ends with -ㄹ게
-        :return:
-        """
-        sent = "그건 내가 책임지고 할게"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("그건 내가 책임지고 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그건 제가 책임지고 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그건 제가 책임지고 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_eulrae(self):
-        """
-        ends with -을래
-        :return:
-        """
-        sent = "정말 말 안들을래"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("정말 말 안들을래", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("정말 말 안들을래요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("정말 말 안들을것입니까", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "정말 말 안들을래요"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("정말 말 안들을래", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("정말 말 안들을래요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("정말 말 안들을것입니까", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "정말 말 안들을것입니까"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("정말 말 안들을래", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("정말 말 안들을래요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("정말 말 안들을것입니까", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_generic_EF_rieul_rae(self):
-        """
-        ends with -ㄹ래
-        :return:
-        """
-
-    # 의문문 어미
-
-    # 명령문 어미
-
-    # 후종결어미
-
-    # 인용어미
-    def test_apply_honorifics_bieup_nida_preceded_by_yi(self):
-        sent = "그는 전설입니다"
-        self.assertEqual("그는 전설이야", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그는 전설이에요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그는 전설입니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_bieup_nida_preceded_by_ha(self):
-        sent = "어제 생일선물을 받아서 행복합니다"
-        self.assertEqual("어제 생일선물을 받아서 행복해", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어제 생일선물을 받아서 행복해요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("어제 생일선물을 받아서 행복합니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_thanks_intimate(self):
-        sent = "도와줘서 고마워"
-        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("도와줘서 고마워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("도와줘서 고맙습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_thanks_polite(self):
-        sent = "도와줘서 고마워요"
-        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("도와줘서 고마워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("도와줘서 고맙습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_thanks_2_polite(self):
-        sent = "도와줘서 감사해요"
-        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("도와줘서 감사해요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("도와줘서 감사합니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_thanks_formal(self):
-        sent = "도와줘서 고맙습니다"
-        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("도와줘서 고마워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("도와줘서 고맙습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_thanks_2_formal(self):
-        sent = "도와줘서 감사합니다"
-        self.assertEqual("도와줘서 고마워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("도와줘서 감사해요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("도와줘서 감사합니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_hi_formal(self):
-        sent = "안녕하십니까"
-        self.assertEqual("안녕", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("안녕하세요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("안녕하십니까", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_hi_polite(self):
-        sent = "안녕하세요"
-        self.assertEqual("안녕", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("안녕하세요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("안녕하십니까", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_hi_intimate(self):
-        sent = "안녕"
-        self.assertEqual("안녕", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("안녕하세요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("안녕하십니까", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_hagesupnida(self):
-        sent = "이번 일은 내가 맡아서 하겠습니다"
-        self.assertEqual("이번 일은 내가 맡아서 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("이번 일은 제가 맡아서 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("이번 일은 제가 맡아서 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_halgeyo(self):
-        sent = "이번 일은 내가 맡아서 할게요"
-        self.assertEqual("이번 일은 내가 맡아서 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("이번 일은 제가 맡아서 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("이번 일은 제가 맡아서 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_halge(self):
-        sent = "이번 일은 내가 맡아서 할게"
-        self.assertEqual("이번 일은 내가 맡아서 할게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("이번 일은 제가 맡아서 할게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("이번 일은 제가 맡아서 하겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_galge(self):
-        sent = "난 걸어 갈게"
-        self.assertEqual("난 걸어 갈게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("전 걸어 갈게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("전 걸어 가겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_gesupnida(self):
-        sent = "새로운 레시피를 알려드리겠습니다"
-        self.assertEqual("새로운 레시피를 알려줄게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("새로운 레시피를 알려드릴게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("새로운 레시피를 알려드리겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_julge(self):
-        sent = "새로운 레시피를 알려줄게"
-        self.assertEqual("새로운 레시피를 알려줄게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("새로운 레시피를 알려드릴게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("새로운 레시피를 알려드리겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_geyo(self):
-        sent = "새로운 레시피를 알려드릴게요"
-        self.assertEqual("새로운 레시피를 알려줄게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("새로운 레시피를 알려드릴게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("새로운 레시피를 알려드리겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_eoga(self):
-        sent = "가까우니까 걸어가"
-        self.assertEqual("가까우니까 걸어가", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("가까우니까 걸어갑니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_ana(self):
-        sent = "시험의 난도가 만만치 않아"
-        self.assertEqual("시험의 난도가 만만치 않아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("시험의 난도가 만만치 않아요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("시험의 난도가 만만치 않습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_anayo(self):
-        sent = "시험의 난도가 만만치 않아요"
-        self.assertEqual("시험의 난도가 만만치 않아", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("시험의 난도가 만만치 않아요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("시험의 난도가 만만치 않습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_supnida(self):
-        sent = "고운 손이 다 망가졌습니다"
-        self.assertEqual("고운 손이 다 망가졌어", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("고운 손이 다 망가졌어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_ne(self):
-        sent = "고운 손이 다 망가졌네"  # noqa
-        self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_neyo(self):
-        sent = "고운 손이 다 망가졌네요"
-        self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_ja(self):
-        sent = "가까우니까 걸어가자"  # noqa
-        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_gayo(self):
-        sent = "가까우니까 걸어가요"
-        self.assertEqual("가까우니까 걸어가", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("가까우니까 걸어갑니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_gabsida(self):
-        sent = "가까우니까 걸어갑시다"
-        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_nde(self):
-        sent = "밥먹고 바로 누우면 안된대"
-        self.assertEqual("밥먹고 바로 누우면 안돼", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("밥먹고 바로 누우면 안돼요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("밥먹고 바로 누우면 안됩니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_de(self):
-        sent = "밥먹고 바로 누우면 안돼"
-        self.assertEqual("밥먹고 바로 누우면 안돼", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("밥먹고 바로 누우면 안돼요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("밥먹고 바로 누우면 안됩니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_ida(self):
-        sent = "그는 전설이다"
-        self.assertEqual("그는 전설이야", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("그는 전설이에요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그는 전설입니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_honorifics_da(self):
-        sent = "나는 어제 축구를 했다"
-        self.assertEqual("나는 어제 축구를 했어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("저는 어제 축구를 했어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("저는 어제 축구를 했습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_irregulars_digud_drop(self):
-        """
-        ㄷ 탈락
-        :return:
-        """
-        sent = "영희가 철수를 도왔어"
-        self.assertEqual("영희가 철수를 도왔어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("영희가 철수를 도왔어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("영희가 철수를 도왔습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "저 집은 매일 고기를 구워"
-        self.assertEqual("저 집은 매일 고기를 구워", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("저 집은 매일 고기를 구워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("저 집은 매일 고기를 굽습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "미희는 옷을 잘 기워"
-        self.assertEqual("미희는 옷을 잘 기워", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("미희는 옷을 잘 기워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("미희는 옷을 잘 기웁니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "밥 먹고 바로 누우면 안 된대"
-        self.assertEqual("밥 먹고 바로 누우면 안 돼", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("밥 먹고 바로 누우면 안 돼요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("밥 먹고 바로 누우면 안 됩니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "오다 주웠어"
-        self.assertEqual("오다 주웠어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("오다 주웠어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("오다 주웠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "고운 손이 다 망가졌네"  # noqa
-        self.assertEqual("고운 손이 다 망가졌네", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("고운 손이 다 망가졌네요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("고운 손이 다 망가졌습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "오늘이 어제보다 더워"
-        self.assertEqual("오늘이 어제보다 더워", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("오늘이 어제보다 더워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("오늘이 어제보다 덥습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "이 라면은 너무 매워"
-        self.assertEqual("이 라면은 너무 매워", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("이 라면은 너무 매워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("이 라면은 너무 맵습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "이 라면은 너무 맵다"
-        self.assertEqual("이 라면은 너무 매워", self.tuner(sent, self.ban[0], self.ban[1]))   # noqa
-        self.assertEqual("이 라면은 너무 매워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("이 라면은 너무 맵습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "올해는 유난히 추워"
-        self.assertEqual("올해는 유난히 추워", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("올해는 유난히 추워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("올해는 유난히 춥습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "오늘은 꿈자리가 사나웠어"
-        self.assertEqual("오늘은 꿈자리가 사나웠어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("오늘은 꿈자리가 사나웠어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("오늘은 꿈자리가 사나웠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "난 뱀이 무서워"
-        self.assertEqual("난 뱀이 무서워", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("전 뱀이 무서워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("전 뱀이 무섭습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "겨울산은 아름다워"
-        self.assertEqual("겨울산은 아름다워", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("겨울산은 아름다워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("겨울산은 아름답습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "키가 큰 사람은 부러워"
-        self.assertEqual("키가 큰 사람은 부러워", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("키가 큰 사람은 부러워요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("키가 큰 사람은 부럽습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_irregulars_bieub_drop(self):
-        """
-        ㅂ 탈락
-        :return:
-        """
-        sent = "가까우니까 걸어가자"  # noqa
-        self.assertEqual("가까우니까 걸어가자", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("가까우니까 걸어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("가까우니까 걸어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))  # or 걸어갑시다?
-        sent = "난 걸어 갈게"
-        self.assertEqual("난 걸어 갈게", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("전 걸어 갈게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("전 걸어 가겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "그걸 이제야 깨달았어"
-        self.assertEqual("그걸 이제야 깨달았어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("그걸 이제야 깨달았어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그걸 이제야 깨달았습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-        sent = "나는 그 문을 닫았어"
-        self.assertEqual("나는 그 문을 닫았어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("저는 그 문을 닫았어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("저는 그 문을 닫았습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    def test_apply_postprocess(self):
-        sent = "이것은 예시 문장이다"
-        self.tuner.sent = sent
-        self.tuner.out = sent + "."
-        self.tuner.postprocess()
-        self.assertEqual("이것은 예시 문장이다", self.tuner.out)
-        sent = "이것은 예시 문장이다."
-        self.tuner.sent = sent
-        self.tuner.out = sent
-        self.tuner.postprocess()
-        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+    def test_EF_ddae_q(self):
+        sent = "순서를 바꾸는건 어때?"
+        self.assertEqual("순서를 바꾸는건 어때?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("순서를 바꾸는건 어때요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "순서를 바꾸는건 어때요?"
+        self.assertEqual("순서를 바꾸는건 어때?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("순서를 바꾸는건 어때요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "순서를 바꾸는건 어떻습니까?"
+        self.assertEqual("순서를 바꾸는건 어때?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("순서를 바꾸는건 어때요?", self.tuner(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
 
     # --- known issues --- #
     @unittest.skip
@@ -587,23 +193,10 @@ class TestTuner(TestCase):
         self.assertEqual("믿고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
 
     @unittest.skip
-    def test_generic_EF_rieul_gul_confess(self):
-        """
-        ends with - ㄹ걸:  추측과 후회를 구분하는 것이 가능한가?
-        https://kiss.kstudy.com/thesis/thesis-view.asp?key=3735390
-        :return:
-        """
-        sent = "미리미리 해둘걸"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("미리미리 해둘걸", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        # 다짐을 하는 것이 예의를 차리는 것일수도.
-        self.assertEqual("미리미리 해둘게요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("미리미리 해두겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
-
-    @unittest.skip
-    def test_spacing(self):
-        """
-        https://kiss.kstudy.com/thesis/thesis-view.asp?key=3735390
-        :return:
-        """
-        "난 오늘도 전화를 걸어요"  # 띄어쓰기가 있으면 걸 -> 걷이 되어버린다.
+    def test_contextual(self):
+        # 이런 식으로 맥락이 필요한 경우도 대응이 어렵다.
+        # 이제, 밥을 등, 단어 선택에 따라 formal의 형태가 달라지는데, 이것에 대응하는 것은 불가능하다.
+        sent = "자 이제 먹어요"
+        self.assertEqual("자 이제 먹읍시다", self.tuner(sent, self.formal[0], self.formal[1]))
+        sent = "전 밥을 먹어요"
+        self.assertEqual("전 밥을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
