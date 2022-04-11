@@ -4,8 +4,7 @@
 
 
 
-
-Project Politetune is a rule-based (well, for the time being) politeness tuner that is designed to help L2 learners of Korean in learning when and when not to use Korean honorifics. 
+KPS is a rule-based politeness styler for anyone trying to learn Korean honorifics.
 
  example |
 --- |
@@ -13,7 +12,6 @@ input |
 <img width="691" alt="image" src="https://user-images.githubusercontent.com/56193069/155671048-7e3054ff-671e-40c5-aed8-0296984d1f57.png"> |
 output | 
 <img width="681" alt="image" src="https://user-images.githubusercontent.com/56193069/155671094-72a7703b-351d-4c37-82d0-2f75a4d7c734.png">| 
-
 
 
 
@@ -25,12 +23,14 @@ output |
 
 ## Quick Start
 
-Running stremlit in local:
+Hosting local:
 ```shell
+export NAVER_CLIENT_ID = ...
+export NAVER_CLIENT_SECRET = ...
 streamlit run main_deploy.py
 ```
-
 Running tests:
 ```shell
 pytest
 ```
+

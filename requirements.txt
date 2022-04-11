@@ -3,3 +3,4 @@ pytest==7.0.1
 oyaml==1.0
 cmake==3.22.3
 tabulate==0.8.9
+click==8.0.4
