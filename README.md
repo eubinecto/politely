@@ -1,6 +1,6 @@
 # The Korean Politeness Styler
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://politetune.herokuapp.com)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://korean-politeness-styler.herokuapp.com)
 
 
 
