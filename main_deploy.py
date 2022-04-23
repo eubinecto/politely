@@ -34,7 +34,7 @@ def describe_case(kps: KPS, explainer: Explainer, sent: str, listener: str, envi
 def main():
     # parsing the arguments
     kps, explainer, translator = cache_resources()
-    st.title("Korean Politeness Styler")
+    st.title("Politely")
     desc = "- 💡: [Jieun Kiaer](https://www.orinst.ox.ac.uk/people/jieun-kiaer) & [Eu-Bin KIM](https://github.com/eubinecto) @ the Univerity of Oxford\n" \
            "- 🔌: [`khaiii`](https://github.com/kakao/khaiii) for analyzing Korean morphemes & [`papago`](https://papago.naver.com/?sk=auto&tk=ko&hn=1&st=hello%20world) for english-to-korean translations\n"\
            "- The code that runs this website is [publicly available on Github](https://github.com/eubinecto/kps). Please leave a ⭐ if you like what we are building!"
