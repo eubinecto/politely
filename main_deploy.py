@@ -10,20 +10,20 @@ from politely.errors import EFNotIncludedError, EFNotSupportedError
 # instantiate processors here
 @st.cache(allow_output_mutation=True)
 def cache_resources() -> Tuple[KPS, Explainer, Translator]:
-    kps = KPS()
-    explainer = Explainer(kps)
+    styler = KPS()
+    explainer = Explainer(styler)
     translator = Translator()
-    return kps, explainer, translator
+    return styler, explainer, translator
 
 
-def describe_case(kps: KPS, explainer: Explainer, sent: str, listener: str, environ: str):
+def describe_case(styler: KPS, explainer: Explainer, sent: str, listener: str, environ: str):
     try:
-        tuned = kps(sent, listener, environ)
+        tuned = styler(sent, listener, environ)
     except EFNotIncludedError as e1:
-        st.write(kps.sent)
+        st.write(styler.sent)
         st.warning("WARNING: " + str(e1))
     except EFNotSupportedError as e2:
-        st.write(kps.sent)
+        st.write(styler.sent)
         st.warning("WARNING: " + str(e2))
     else:
         st.write(tuned)
@@ -33,7 +33,7 @@ def describe_case(kps: KPS, explainer: Explainer, sent: str, listener: str, envi
 
 def main():
     # parsing the arguments
-    kps, explainer, translator = cache_resources()
+    styler, explainer, translator = cache_resources()
     st.title("Politely")
     desc = "- 💡: [Jieun Kiaer](https://www.orinst.ox.ac.uk/people/jieun-kiaer) & [Eu-Bin KIM](https://github.com/eubinecto) @ the Univerity of Oxford\n" \
            "- 🔌: [`khaiii`](https://github.com/kakao/khaiii) for analyzing Korean morphemes & [`papago`](https://papago.naver.com/?sk=auto&tk=ko&hn=1&st=hello%20world) for english-to-korean translations\n"\
@@ -50,11 +50,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(kps, explainer, target, listener, environ)
+                describe_case(styler, explainer, target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(kps, explainer, target, listener, environ)
+                describe_case(styler, explainer, target, listener, environ)
             # 2
             st.markdown("---")
             listener = "boss at work 💼"
@@ -63,11 +63,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(kps, explainer, target, listener, environ)
+                describe_case(styler, explainer, target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(kps, explainer, target, listener, environ)
+                describe_case(styler, explainer, target, listener, environ)
             # 3
             st.markdown("---")
             listener = "adult family 👨‍👩‍👧‍👦"
@@ -76,11 +76,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(kps, explainer, target, listener, environ)
+                describe_case(styler, explainer, target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(kps, explainer, target, listener, environ)
+                describe_case(styler, explainer, target, listener, environ)
 
 
 if __name__ == '__main__':
