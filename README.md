@@ -1,4 +1,4 @@
-# The Korean Politeness Styler
+# Politely
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://korean-politeness-styler.herokuapp.com)
 
