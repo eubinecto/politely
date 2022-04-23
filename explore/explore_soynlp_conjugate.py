@@ -24,6 +24,18 @@ def main():
     print(conjugate("떠나", "ㅂ시다"))  # -> 일컬어요
     print(conjugate("되", "ㄴ대요"))  # -> 일컬어요
     print(conjugate("떠나", "어요"))  # -> 일컬어요
+    print(conjugate("가시", "ㅂ니다"))  # -> 일컬어요
+    print(conjugate("먹", "ㅂ니다"))  # -> 일컬어요
+    print(conjugate("사", "았어"))  # -> 일컬어요
+    print(conjugate("어떻", "습니까"))  # -> 일컬어요
+    print(conjugate("하였", "습니까"))  # -> 일컬어요
+    print(conjugate("어떻", "어요"))  # -> 일컬어요
+    print(conjugate("파랗", "아"))  # -> 일컬어요
+    print(conjugate("하", "였어?"))  # -> 일컬어요 ddd
+    print(conjugate("마시", "어"))  # -> 일컬어요 ddd
+    print(conjugate("나", "어"))  # -> 일컬어요 ddd
+    print(conjugate("것", "이야"))  # -> 일컬어요 ddd
+    print(conjugate("되", "ㅂ니다"))  # -> 일컬어요 ddd
 
 
 if __name__ == '__main__':

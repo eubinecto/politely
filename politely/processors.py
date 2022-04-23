@@ -6,10 +6,12 @@ import pandas as pd  # noqa
 import streamlit as st
 from khaiii.khaiii import KhaiiiApi
 from typing import Any, Tuple, Set
-from politely.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rules, fetch_irregulars
+from soynlp.hangle import compose, decompose
+from politely.fetchers import fetch_honorifics, fetch_rules
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 from multipledispatch import dispatch
 from dataclasses import dataclass, field
+from soynlp.lemmatizer import conjugate as soynlp_conjugate
 
 
 class Styler:
@@ -21,14 +23,11 @@ class Styler:
         args: dict = field(default_factory=dict)
         case: dict = field(default_factory=dict)
         steps: list = field(default_factory=list)
-        conjugations: Set[Tuple[str, str]] = field(default_factory=set)
-        abbreviations: Set[Tuple[str, str]] = field(default_factory=set)
-        irregulars: Set[Tuple[str, str]] = field(default_factory=set)
+        honorifics: Set[Tuple[str, str]] = field(default_factory=set)
+        conjugations: Set[Tuple[str, str, str]] = field(default_factory=set)
     # class-owned attributes
     RULES: dict = fetch_rules()
     HONORIFICS: dict = fetch_honorifics()
-    ABBREVIATIONS: dict = fetch_abbreviations()
-    IRREGULARS: dict = fetch_irregulars()
 
     def __init__(self):
         # object-owned attributes
@@ -66,11 +65,9 @@ class Styler:
             .analyze() \
             .check() \
             .log() \
-            .conjugate(politeness) \
+            .honorify(politeness) \
             .log() \
-            .abbreviate() \
-            .log() \
-            .irregulars() \
+            .conjugate() \
             .log()
         return self
 
@@ -89,9 +86,7 @@ class Styler:
         """
         self.logs.args.clear()
         self.logs.steps.clear()
-        self.logs.conjugations.clear()
-        self.logs.abbreviations.clear()
-        self.logs.irregulars.clear()
+        self.logs.honorifics.clear()
         return self
 
     def log(self):
@@ -140,38 +135,78 @@ class Styler:
                 raise EFNotSupportedError(ef)
         return self
 
-    def conjugate(self, politeness: int):
+    def honorify(self, politeness: int):
         lex2morphs = [(token.lex, list(map(str, token.morphs))) for token in self.out]
-        out = list()
+        self.out = list()
         for lex, morphs in lex2morphs:
             tuned = "+".join(morphs)
             for pattern in self.HONORIFICS.keys():
                 if self.matched(pattern, tuned):
                     honorific = self.HONORIFICS[pattern][politeness]
                     tuned = tuned.replace(pattern, honorific)
-                    self.logs.conjugations.add((pattern, honorific))
+                    self.logs.honorifics.add((pattern, honorific))
             # if something has changed, then go for it, but otherwise just use the lex.
-            before = "".join([morph.split("/")[0] for morph in morphs])
-            after = "".join([morph.split("/")[0] for morph in tuned.split("+")])
+            before = [morph.split("/")[0] for morph in morphs]
+            after = [morph.split("/")[0] for morph in tuned.split("+")]
             if before != after:
-                out.append(after)
+                self.out.append(after)
             else:
-                out.append(lex)
+                self.out.append(lex)
+        return self
+
+    def conjugate(self):
+        """
+        conjugate L -> R.
+        Custom rules are followed by soynlp's rules.
+        """
+        out = list()
+        for chunk in self.out:
+            if isinstance(chunk, list):
+                # you should conjugate these
+                original = chunk[0]
+                left = original
+                for idx in range(len(chunk) - 1):
+                    right = chunk[idx + 1]
+                    if right in (".", "?", "!"):  # just a quirk with soynlp
+                        left += right
+                    else:
+                        l_cho, l_jung, l_jong = decompose(left[-1])
+                        r_cho, r_jung, r_jong = decompose(right[0])
+                        if l_jong != " " and re.match(r'[ㅂ습]니.+', right):
+                            left += f"습{right[1:]}"
+                            self.logs.conjugations.add((original, left, f"종성 + `ㅂ니` -> 습니"))
+                        elif l_jong == "ㅎ" and re.match(r'어.+', right):
+                            # e.g. 어떻 + 어요 -> 어때요
+                            left = left[:-1] + compose(l_cho, "ㅐ",  " ")
+                            left += re.findall(r'어(.*)', right)[0]
+                            self.logs.conjugations.add((original, left, f"`ㅎ` + `어` -> `ㅐ`"))
+                        elif l_jung == "ㅣ" and re.match(r'어.+', right):
+                            # e.g. 시어 -> 셔
+                            left = left[:-1] + compose(l_cho, "ㅕ",  " ")
+                            left += re.findall(r'어(.*)', right)[0]
+                            self.logs.conjugations.add((original, left, f"`ㅣ`+ `ㅓ` -> `ㅕ`"))
+                        elif l_jung == "ㅏ" and re.match(r"[ㅓㅕ]", r_jung):
+                            # e.g. 하어요 -> 해요, 하여요 -> 해요, 하었어요 -> 했어요  -> 하였어요 -> 했어요
+                            left = left[:-1] + compose(l_cho, "ㅐ",  r_jong)
+                            left += right[1:]
+                            self.logs.conjugations.add((original, left, f"`ㅏ`+ (`ㅓ` 또는 `ㅕ`) -> `ㅐ`"))
+                        elif l_jung == "ㅏ" and right == "의":
+                            # e.g. 나의 -> 내 ("내"가 더 많이 쓰이므로)
+                            left = left[:-1] + compose(l_cho, "ㅐ",  " ")
+                            self.logs.conjugations.add((original, left, f"`ㅏ`+ `의` -> `ㅐ`"))
+                        elif l_jung == "ㅓ" and right == "의":
+                            # e.g. 저의 -> 제 ("제"가 더 많이 쓰이므로)
+                            left = left[:-1] + compose(l_cho, "ㅔ",  " ")
+                            self.logs.conjugations.add((original, left, f"`ㅓ`+ `의` -> `ㅔ`"))
+                        else:
+                            # rely on soynlp for the remaining cases
+                            # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
+                            left = min(soynlp_conjugate(left, right, debug=True), key=lambda x: len(x))
+                            self.logs.conjugations.add((original, left, f"regular conjugations"))
+                out.append(left)
+            else:
+                out.append(chunk)
         self.out = " ".join(out)
-        return self
-
-    def abbreviate(self):
-        for key, val in self.ABBREVIATIONS.items():
-            if key in self.out:
-                self.out = self.out.replace(key, val)
-                self.logs.abbreviations.add((key, val))
-        return self
-
-    def irregulars(self):
-        for key, val in self.IRREGULARS.items():
-            if key in self.out:
-                self.out = self.out.replace(key, val)
-                self.logs.irregulars.add((key, val))
         return self
 
     # --- accessing options --- #
@@ -247,38 +282,18 @@ class Explainer:
         # --- step 3 ---
         msg_3 = f"### 3️⃣ Honorifics"
         before = " ".join(["".join(list(map(str, token.morphs))) for token in self.logs.steps[0]])
-        after = self.logs.steps[1]
-        for key, val in self.logs.conjugations:
+        after = " ".join([
+            "".join(elem) if isinstance(elem, list)
+            else elem
+            for elem in self.logs.steps[1]
+        ])
+        for key, val in self.logs.honorifics:
             before = before.replace(key, f"`{key}`")
             after = after.replace(val, f"`{val}`")
         df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=['before', 'after'])
         st.markdown(msg_3)
         st.markdown(df.to_markdown(index=False))
         # # --- step 4 ---
-        msg_4 = "### 4️⃣ Abbreviations"
-        if len(self.logs.abbreviations) > 0:
-            before = self.logs.steps[1]
-            after = self.logs.steps[2]
-            for key, val in self.styler.history_abbreviations:  # noqa
-                before = before.replace(key, f"`{key}`")
-                after = after.replace(val, f"`{val}`")
-            st.markdown(msg_4)
-            df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=['before', 'after'])
-            st.markdown(df.to_markdown(index=False))
-        else:
-            msg_4 += "\nNo abbreviation rules to be applied."
-            st.markdown(msg_4)
-        # # --- step 5 ---
-        msg_5 = f"### 5️⃣ Conjugations"
-        if len(self.logs.irregulars) > 0:
-            before = self.logs.steps[2]
-            after = self.logs.steps[3]
-            for key, val in self.styler.history_irregulars:  # noqa
-                before = before.replace(key, f"`{key}`")
-                after = after.replace(val, f"`{val}`")
-            st.markdown(msg_5)
-            df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=['before', 'after'])
-            st.markdown(df.to_markdown(index=False))
-        else:
-            msg_5 += "\nNo conjugation rules to be applied."
-            st.markdown(msg_5)
+        msg_4 = "### 4️⃣ Conjugations"
+        st.markdown(msg_4)
+        st.markdown("🚧 on development 🚧")
