@@ -1,4 +1,3 @@
-from typing import List
 
 
 class EFNotSupportedError(Exception):
@@ -6,7 +5,7 @@ class EFNotSupportedError(Exception):
         self.ef = ef
 
     def __str__(self) -> str:
-        return f"KPS does not support the ending: `{self.ef}`"
+        return f"The politely Styler does not support the ending: `{self.ef}`"
 
 
 class EFNotIncludedError(Exception):
