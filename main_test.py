@@ -3,16 +3,16 @@ from unittest import TestCase
 from politely.processors import Styler
 
 
-class TestKPS(TestCase):
+class TestStyler(TestCase):
 
     styler: Styler
 
     @classmethod
     def setUpClass(cls) -> None:
         cls.styler = Styler()
-        cls.ban = ("adult family 👨‍👩‍👧‍👦", "comfortable & informal")
-        cls.jon = ("adult family 👨‍👩‍👧‍👦", "formal")
-        cls.formal = ("boss at work 💼", "formal")
+        cls.ban = ("adult family", "comfortable & informal")
+        cls.jon = ("adult family", "formal")
+        cls.formal = ("boss at work", "formal")
 
     def test_apply_preprocess(self):
         sent = "이것은 예시 문장이다"
@@ -138,6 +138,12 @@ class TestKPS(TestCase):
         self.assertEqual("어디 가셔요?", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("어디 가십니까?", self.styler(sent, self.formal[0], self.formal[1]))
 
+    def test_EF_boa(self):
+        sent = "좀만 더 버텨봐"
+        self.assertEqual("좀만 더 버텨봐.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("좀만 더 버텨봅니다.", self.styler(sent, self.formal[0], self.formal[1]))
+
     def test_EF_ddae_q(self):
         sent = "순서를 바꾸는건 어때?"
         self.assertEqual("순서를 바꾸는건 어때?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
@@ -152,6 +158,7 @@ class TestKPS(TestCase):
         self.assertEqual("순서를 바꾸는건 어때요?", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, self.formal[0], self.formal[1]))
 
+
     # --- known issues --- #
     @unittest.skip
     def test_apply_irregulars_eat(self):
@@ -165,6 +172,18 @@ class TestKPS(TestCase):
         self.assertEqual("진지 잡수세요", self.styler(sent, self.formal[0], self.formal[1]))
 
     @unittest.skip
+    def test_EF_ne(self):
+        """
+        존대를 할 때는 주어를 드랍하는 규칙이 있다. 하지만 현재 적용하진 상태.
+        :return:
+        """
+        sent = "자네만 믿고 있겠네"
+        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
+        self.assertEqual("자네만 믿고 있겠네.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("믿고 있겠어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("믿고 있겠습니다.", self.styler(sent, self.formal[0], self.formal[1]))
+
+    @unittest.skip
     def test_apply_irregulars_collect(self):
         """
         맥락에 관게없이, 걷어 -> 걸어로 바꿔버려서... 사실 이 경우는 아직 어찌할수가 없다.
@@ -175,18 +194,6 @@ class TestKPS(TestCase):
         self.assertEqual("이참에 돈을 걷어가자", self.styler(sent, self.ban[0], self.ban[1]))
         self.assertEqual("이참에 돈을 걷어가요", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("이참에 돈을 걷어갑시다", self.styler(sent, self.formal[0], self.formal[1]))
-
-    @unittest.skip
-    def test_drop_subject_when_honorified(self):
-        """
-        존대를 할 때는 주어를 드랍하는 규칙이 있다. 하지만 현재 적용하진 상태.
-        :return:
-        """
-        sent = "자네만 믿고 있겠네"
-        # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("자네만 믿고 있겠네", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("믿고 있겠어요", self.styler(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("믿고 있겠습니다", self.styler(sent, self.formal[0], self.formal[1]))
 
     @unittest.skip
     def test_contextual(self):

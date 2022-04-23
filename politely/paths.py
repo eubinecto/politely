@@ -5,7 +5,5 @@ LIB_DIR = Path(__file__).resolve().parent
 RESOURCES_DIR = LIB_DIR / "resources"
 
 # files
-ABBREVIATIONS_YAML = RESOURCES_DIR / "abbreviations.yaml"
 HONORIFICS_YAML = RESOURCES_DIR / "honorifics.yaml"
 RULES_YAML = RESOURCES_DIR / "rules.yaml"
-IRREGULARS_YAML = RESOURCES_DIR / "irregulars.yaml"

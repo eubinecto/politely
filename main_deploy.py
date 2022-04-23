@@ -20,11 +20,9 @@ def describe_case(styler: Styler, explainer: Explainer, sent: str, listener: str
     try:
         tuned = styler(sent, listener, environ)
     except EFNotIncludedError as e1:
-        st.write(styler.logs.args['sent'])
-        st.warning("WARNING: " + str(e1))
+        st.error("ERROR: " + str(e1))
     except EFNotSupportedError as e2:
-        st.write(styler.logs.args['sent'])
-        st.warning("WARNING: " + str(e2))
+        st.error("ERROR: " + str(e2))
     else:
         st.write(tuned)
         with st.expander("Need an explanation?"):
