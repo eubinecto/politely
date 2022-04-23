@@ -1,5 +1,5 @@
 
-from politely.processors import KPS
+from politely.processors import Styler
 
 SENTS = [
     # ㅂ 불규칙
@@ -29,7 +29,7 @@ SENTS = [
     "그는 전설입니다"
 ]
 
-tuner = KPS()
+tuner = Styler()
 
 
 def main():

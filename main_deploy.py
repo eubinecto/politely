@@ -3,20 +3,20 @@ It's okay to write dirty stuff, at least as of right now.
 """
 from typing import Tuple
 import streamlit as st
-from politely.processors import KPS, Explainer, Translator
+from politely.processors import Styler, Explainer, Translator
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 
 
 # instantiate processors here
 @st.cache(allow_output_mutation=True)
-def cache_resources() -> Tuple[KPS, Explainer, Translator]:
-    styler = KPS()
+def cache_resources() -> Tuple[Styler, Explainer, Translator]:
+    styler = Styler()
     explainer = Explainer(styler)
     translator = Translator()
     return styler, explainer, translator
 
 
-def describe_case(styler: KPS, explainer: Explainer, sent: str, listener: str, environ: str):
+def describe_case(styler: Styler, explainer: Explainer, sent: str, listener: str, environ: str):
     try:
         tuned = styler(sent, listener, environ)
     except EFNotIncludedError as e1:
