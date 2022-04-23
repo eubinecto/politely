@@ -1,4 +1,4 @@
-from kps.fetchers import fetch_komoran
+from politely.fetchers import fetch_komoran
 
 
 def lemmatize(word: str) -> str:

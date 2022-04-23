@@ -1,5 +1,5 @@
 
-from kps.fetchers import fetch_okt
+from politely.fetchers import fetch_okt
 from kiwipiepy import Kiwi
 
 

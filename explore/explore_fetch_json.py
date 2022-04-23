@@ -1,5 +1,5 @@
 
-from kps.fetchers import fetch_abbreviations
+from politely.fetchers import fetch_abbreviations
 
 def main():
     print(fetch_abbreviations())

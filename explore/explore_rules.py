@@ -1,4 +1,4 @@
-from kps.fetchers import fetch_rules
+from politely.fetchers import fetch_rules
 
 
 def main():

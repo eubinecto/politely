@@ -1,4 +1,4 @@
-from kps.honorifier import Honorifier
+from politely.honorifier import Honorifier
 
 
 def main():

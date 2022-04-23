@@ -1,5 +1,5 @@
 import oyaml as yaml
-from kps.paths import HONORIFICS_YAML, RULES_YAML, ABBREVIATIONS_YAML, IRREGULARS_YAML
+from politely.paths import HONORIFICS_YAML, RULES_YAML, ABBREVIATIONS_YAML, IRREGULARS_YAML
 
 
 def fetch_abbreviations() -> dict:

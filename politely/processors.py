@@ -4,8 +4,8 @@ import requests
 import pandas as pd  # noqa
 from khaiii.khaiii import KhaiiiApi
 from typing import Optional, Any, Callable, List
-from kps.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rules, fetch_irregulars
-from kps.errors import EFNotIncludedError, EFNotSupportedError
+from politely.fetchers import fetch_abbreviations, fetch_honorifics, fetch_rules, fetch_irregulars
+from politely.errors import EFNotIncludedError, EFNotSupportedError
 
 
 class KPS:

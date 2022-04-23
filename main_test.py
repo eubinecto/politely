@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from kps.processors import KPS
+from politely.processors import KPS
 
 
 class TestKPS(TestCase):

@@ -1,5 +1,5 @@
 
-from kps.processors import Translator
+from politely.processors import Translator
 
 
 def main():

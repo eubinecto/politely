@@ -1,5 +1,5 @@
 
-from kps.processors import KPS
+from politely.processors import KPS
 
 SENTS = [
     # ㅂ 불규칙

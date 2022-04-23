@@ -3,8 +3,8 @@ It's okay to write dirty stuff, at least as of right now.
 """
 from typing import Tuple
 import streamlit as st
-from kps.processors import KPS, Explainer, Translator
-from kps.errors import EFNotIncludedError, EFNotSupportedError
+from politely.processors import KPS, Explainer, Translator
+from politely.errors import EFNotIncludedError, EFNotSupportedError
 
 
 # instantiate processors here

@@ -1,5 +1,5 @@
 import pandas as pd
-from kps.fetchers import fetch_rules, fetch_honorifics
+from politely.fetchers import fetch_rules, fetch_honorifics
 
 
 def main():
