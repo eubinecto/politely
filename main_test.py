@@ -5,111 +5,107 @@ from politely.processors import Styler
 
 class TestKPS(TestCase):
 
-    tuner: Styler
+    styler: Styler
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.tuner = Styler()
+        cls.styler = Styler()
         cls.ban = ("adult family 👨‍👩‍👧‍👦", "comfortable & informal")
         cls.jon = ("adult family 👨‍👩‍👧‍👦", "formal")
         cls.formal = ("boss at work 💼", "formal")
 
     def test_apply_preprocess(self):
         sent = "이것은 예시 문장이다"
-        self.tuner.args['sent'] = sent
-        self.tuner.preprocess()
-        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+        self.styler.preprocess(sent)
+        self.assertEqual("이것은 예시 문장이다.", self.styler.out)
         sent = "이것은 예시 문장이다."
-        self.tuner.args['sent'] = sent
-        self.tuner.preprocess()
-        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+        self.styler.preprocess(sent)
+        self.assertEqual("이것은 예시 문장이다.", self.styler.out)
 
     def test_apply_preprocess_trailing_spaces(self):
         sent = "이것은 예시 문장이다  "
-        self.tuner.args['sent'] = sent
-        self.tuner.preprocess()
-        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+        self.styler.preprocess(sent)
+        self.assertEqual("이것은 예시 문장이다.", self.styler.out)
         sent = "이것은 예시 문장이다. "
-        self.tuner.args['sent'] = sent
-        self.tuner.preprocess()
-        self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
+        self.styler.preprocess(sent)
+        self.assertEqual("이것은 예시 문장이다.", self.styler.out)
 
     # --- casual --- #
     def test_EF_ja(self):
         sent = "자 이제 먹자."
-        self.assertEqual("자 이제 먹자.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("자 이제 먹어요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("자 이제 먹읍시다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("자 이제 먹자.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("자 이제 먹어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("자 이제 먹읍시다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "자 이제 먹어요."
-        self.assertEqual("자 이제 먹어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("자 이제 먹어요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("자 이제 먹습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("자 이제 먹어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("자 이제 먹어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("자 이제 먹습니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "자 이제 먹습니다."
-        self.assertEqual("자 이제 먹어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("자 이제 먹어요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("자 이제 먹습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("자 이제 먹어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("자 이제 먹어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("자 이제 먹습니다.", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_EF_gae(self):
         sent = "회의를 시작할게."
-        self.assertEqual("회의를 시작할게.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("회의를 시작할게요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("회의를 시작하겠습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("회의를 시작할게.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("회의를 시작할게요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("회의를 시작하겠습니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "회의를 시작할게요."
-        self.assertEqual("회의를 시작할게.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("회의를 시작할게요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("회의를 시작하겠습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("회의를 시작할게.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("회의를 시작할게요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("회의를 시작하겠습니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "회의를 시작하겠습니다."
-        self.assertEqual("회의를 시작하겠어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("회의를 시작하겠어요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("회의를 시작하겠습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("회의를 시작하겠어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("회의를 시작하겠어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("회의를 시작하겠습니다.", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_EF_eo(self):
         """
         어
         """
         sent = "그 일은 내가 처리했어."
-        self.assertEqual("그 일은 내가 처리했어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 일은 제가 처리했어요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 일은 제가 처리했습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("그 일은 내가 처리했어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제가 처리했어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제가 처리했습니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "그 일은 제가 처리했어요."
-        self.assertEqual("그 일은 내가 처리했어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 일은 제가 처리했어요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 일은 제가 처리했습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("그 일은 내가 처리했어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제가 처리했어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제가 처리했습니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "그 일은 제가 처리했습니다."
-        self.assertEqual("그 일은 내가 처리했어.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 일은 제가 처리했어요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 일은 제가 처리했습니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("그 일은 내가 처리했어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제가 처리했어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제가 처리했습니다.", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_EF_yi_ya(self):
         """
         이+야
         """
         sent = "그 일은 내 담당이야."
-        self.assertEqual("그 일은 내 담당이야.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 일은 제 담당이에요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 일은 제 담당입니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("그 일은 내 담당이야.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제 담당이에요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제 담당입니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "그 일은 제 담당이에요."
-        self.assertEqual("그 일은 내 담당이야.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 일은 제 담당이에요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 일은 제 담당입니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("그 일은 내 담당이야.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제 담당이에요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제 담당입니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "그 일은 제 담당입니다."
-        self.assertEqual("그 일은 내 담당이야.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("그 일은 제 담당이에요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("그 일은 제 담당입니다.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("그 일은 내 담당이야.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("그 일은 제 담당이에요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("그 일은 제 담당입니다.", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_EF_ma(self):
         sent = "내 패션을 함부로 비꼬지마"
-        self.assertEqual("내 패션을 함부로 비꼬지마.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("제 패션을 함부로 비꼬지마요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("내 패션을 함부로 비꼬지마.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("제 패션을 함부로 비꼬지마요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "제 패션을 함부로 비꼬지마요"
-        self.assertEqual("내 패션을 함부로 비꼬지마.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("제 패션을 함부로 비꼬지마요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("내 패션을 함부로 비꼬지마.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("제 패션을 함부로 비꼬지마요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "제 패션을 함부로 비꼬지마십시오"
-        self.assertEqual("내 패션을 함부로 비꼬지마셔.", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("제 패션을 함부로 비꼬지마셔요.", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("내 패션을 함부로 비꼬지마셔.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("제 패션을 함부로 비꼬지마셔요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_EF_eo_q(self):
         """
@@ -117,44 +113,44 @@ class TestKPS(TestCase):
         """
         # 했어?
         sent = "어제 공부는 마무리 했어?"
-        self.assertEqual("어제 공부는 마무리 했어?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어제 공부는 마무리 했어요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("어제 공부는 마무리 했습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("어제 공부는 마무리 했어?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어제 공부는 마무리 했어요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어제 공부는 마무리 했습니까?", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "어제 공부는 마무리 했어요?"
-        self.assertEqual("어제 공부는 마무리 했어?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어제 공부는 마무리 했어요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("어제 공부는 마무리 했습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("어제 공부는 마무리 했어?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어제 공부는 마무리 했어요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어제 공부는 마무리 했습니까?", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "어제 공부는 마무리 했습니까?"
-        self.assertEqual("어제 공부는 마무리 했어?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어제 공부는 마무리 했어요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("어제 공부는 마무리 했습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("어제 공부는 마무리 했어?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어제 공부는 마무리 했어요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어제 공부는 마무리 했습니까?", self.styler(sent, self.formal[0], self.formal[1]))
         # 가셔? (가시어?)
         sent = "어디 가셔?"
-        self.assertEqual("어디 가셔?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어디 가셔요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("어디 가십니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("어디 가셔?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어디 가셔요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어디 가십니까?", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "어디 가셔요?"
-        self.assertEqual("어디 가셔?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어디 가셔요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("어디 가십니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("어디 가셔?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어디 가셔요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어디 가십니까?", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "어디 가십니까?"
-        self.assertEqual("어디 가셔?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어디 가셔요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("어디 가십니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("어디 가셔?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("어디 가셔요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어디 가십니까?", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_EF_ddae_q(self):
         sent = "순서를 바꾸는건 어때?"
-        self.assertEqual("순서를 바꾸는건 어때?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("순서를 바꾸는건 어때요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("순서를 바꾸는건 어때?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("순서를 바꾸는건 어때요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "순서를 바꾸는건 어때요?"
-        self.assertEqual("순서를 바꾸는건 어때?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("순서를 바꾸는건 어때요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("순서를 바꾸는건 어때?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("순서를 바꾸는건 어때요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "순서를 바꾸는건 어떻습니까?"
-        self.assertEqual("순서를 바꾸는건 어때?", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("순서를 바꾸는건 어때요?", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("순서를 바꾸는건 어때?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("순서를 바꾸는건 어때요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, self.formal[0], self.formal[1]))
 
     # --- known issues --- #
     @unittest.skip
@@ -164,9 +160,9 @@ class TestKPS(TestCase):
         :return:
         """
         sent = "밥 먹어"
-        self.assertEqual("밥 먹어", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("밥 먹어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("진지 잡수세요", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("밥 먹어", self.styler(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("밥 먹어요", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("진지 잡수세요", self.styler(sent, self.formal[0], self.formal[1]))
 
     @unittest.skip
     def test_apply_irregulars_collect(self):
@@ -176,9 +172,9 @@ class TestKPS(TestCase):
         :return:
         """
         sent = "이참에 돈을 걷어가자"
-        self.assertEqual("이참에 돈을 걷어가자", self.tuner(sent, self.ban[0], self.ban[1]))
-        self.assertEqual("이참에 돈을 걷어가요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("이참에 돈을 걷어갑시다", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("이참에 돈을 걷어가자", self.styler(sent, self.ban[0], self.ban[1]))
+        self.assertEqual("이참에 돈을 걷어가요", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("이참에 돈을 걷어갑시다", self.styler(sent, self.formal[0], self.formal[1]))
 
     @unittest.skip
     def test_drop_subject_when_honorified(self):
@@ -188,15 +184,15 @@ class TestKPS(TestCase):
         """
         sent = "자네만 믿고 있겠네"
         # 만약.. 들어오는 입력이 반말이라면, 굳이 반말인 경우를 수정할 필요가 없다.
-        self.assertEqual("자네만 믿고 있겠네", self.tuner(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("믿고 있겠어요", self.tuner(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("믿고 있겠습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("자네만 믿고 있겠네", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("믿고 있겠어요", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("믿고 있겠습니다", self.styler(sent, self.formal[0], self.formal[1]))
 
     @unittest.skip
     def test_contextual(self):
         # 이런 식으로 맥락이 필요한 경우도 대응이 어렵다.
         # 이제, 밥을 등, 단어 선택에 따라 formal의 형태가 달라지는데, 이것에 대응하는 것은 불가능하다.
         sent = "자 이제 먹어요"
-        self.assertEqual("자 이제 먹읍시다", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("자 이제 먹읍시다", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "전 밥을 먹어요"
-        self.assertEqual("전 밥을 먹습니다", self.tuner(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("전 밥을 먹습니다", self.styler(sent, self.formal[0], self.formal[1]))

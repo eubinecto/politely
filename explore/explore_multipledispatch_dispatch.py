@@ -30,9 +30,7 @@ def add(a: list) -> int:
 class Styler:
 
     @dispatch(str, str, str)
-    def __call__(self, sent: str,
-                 listener: str,
-                 environ: str):
+    def __call__(self, sent: str, listener: str, environ: str):
         """
         Tune the sentence, but determine the politeness
         from the given options.

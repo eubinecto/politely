@@ -4,7 +4,8 @@ from soynlp.lemmatizer._conjugation import conjugate
 api = khaiii.KhaiiiApi()
 
 
-# you probably don't need to reinvent the wheel/
+# you probably don't need to reinvent the wheel.... yeah, just don't reinvent the wheel.
+# build on top of this already useful library, if you can.
 def main():
     # we need to get this conjugations working
     print(conjugate("줍", "어", debug=True))
@@ -20,6 +21,9 @@ def main():
         print(token)
     print(conjugate("일컫", "어요"))  # -> 일컬어요
     # basic alogorithm; work on it chunk-by-chunk
+    print(conjugate("떠나", "ㅂ시다"))  # -> 일컬어요
+    print(conjugate("되", "ㄴ대요"))  # -> 일컬어요
+    print(conjugate("떠나", "어요"))  # -> 일컬어요
 
 
 if __name__ == '__main__':
