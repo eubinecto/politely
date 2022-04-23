@@ -1,36 +1,36 @@
 import unittest
 from unittest import TestCase
-from politely.processors import KPS
+from politely.processors import Styler
 
 
 class TestKPS(TestCase):
 
-    tuner: KPS
+    tuner: Styler
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.tuner = KPS()
+        cls.tuner = Styler()
         cls.ban = ("adult family 👨‍👩‍👧‍👦", "comfortable & informal")
         cls.jon = ("adult family 👨‍👩‍👧‍👦", "formal")
         cls.formal = ("boss at work 💼", "formal")
 
     def test_apply_preprocess(self):
         sent = "이것은 예시 문장이다"
-        self.tuner.sent = sent
+        self.tuner.args['sent'] = sent
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
         sent = "이것은 예시 문장이다."
-        self.tuner.sent = sent
+        self.tuner.args['sent'] = sent
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
     def test_apply_preprocess_trailing_spaces(self):
         sent = "이것은 예시 문장이다  "
-        self.tuner.sent = sent
+        self.tuner.args['sent'] = sent
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
         sent = "이것은 예시 문장이다. "
-        self.tuner.sent = sent
+        self.tuner.args['sent'] = sent
         self.tuner.preprocess()
         self.assertEqual("이것은 예시 문장이다.", self.tuner.out)
 
