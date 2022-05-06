@@ -1,6 +1,6 @@
 # Politely
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://korean-politeness-styler.herokuapp.com)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely.herokuapp.com)
 
 
 
