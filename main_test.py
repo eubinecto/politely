@@ -105,9 +105,9 @@ class TestStyler(TestCase):
         self.assertEqual("어디 가셔?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("어디 가셔요?", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("어디 가십니까?", self.styler(sent, self.formal[0], self.formal[1]))
-        sent = "어디 가셔요?"
+        sent = "어디 가세요?"
         self.assertEqual("어디 가셔?", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("어디 가셔요?", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("어디 가세요?", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("어디 가십니까?", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_EF_boa(self):
@@ -279,7 +279,7 @@ class TestStyler(TestCase):
         self.assertEqual("저기로 가세요.", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("저기로 가십시오.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "저기로 가세요."
-        self.assertEqual("저기로 가.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("저기로 가셔.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("저기로 가세요.", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("저기로 가십시오.", self.styler(sent, self.formal[0], self.formal[1]))
 
@@ -292,7 +292,7 @@ class TestStyler(TestCase):
         self.assertEqual("이리 오세요.", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("이리 오십시오.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "이리 오세요."
-        self.assertEqual("이리 와.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("이리 오셔.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("이리 오세요.", self.styler(sent, self.jon[0], self.jon[1]))
         self.assertEqual("이리 오십시오.", self.styler(sent, self.formal[0], self.formal[1]))
 
@@ -372,7 +372,7 @@ class TestStyler(TestCase):
         self.assertEqual("이참에 돈을 걷어갑시다", self.styler(sent, self.formal[0], self.formal[1]))
 
     @unittest.skip
-    def test_contextual(self):
+    def test_contextual_1(self):
         # 이런 식으로 맥락이 필요한 경우도 대응이 어렵다.
         # 이제, 밥을 등, 단어 선택에 따라 formal의 형태가 달라지는데, 이것에 대응하는 것은 불가능하다.
         sent = "자 이제 먹어요"
