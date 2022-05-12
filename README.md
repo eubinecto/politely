@@ -4,7 +4,7 @@
 
 
 
-KPS is a rule-based politeness styler for anyone trying to learn Korean honorifics.
+Politely is a rule-based politeness styler learners of Korean honorifics.
 
  example |
 --- |
