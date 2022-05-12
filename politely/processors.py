@@ -212,6 +212,7 @@ class Styler:
                             # e.g. 먹 + ㅂ시다 -> 먹읍시다
                             left += "읍"
                         left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, f"설명을 추가해주세요"))
                     else:
                         # rely on soynlp for the remaining cases
                         # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
