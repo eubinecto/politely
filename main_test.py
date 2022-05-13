@@ -308,12 +308,12 @@ class TestStyler(TestCase):
         """
         sent = "나는 그리하지 아니하였다."
         self.assertEqual("나는 그리하지 아니하였다.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
-        self.assertEqual("저는 그리하지 아니하였어요.", self.styler(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("저는 그리하지 아니하였습니다.", self.styler(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("저는 그리하지 아니했어요.", self.styler(sent, self.jon[0], self.jon[1]))
+        self.assertEqual("저는 그리하지 아니했습니다.", self.styler(sent, self.formal[0], self.formal[1]))
         sent = "저는 그리하지 아니하였어요."
-        self.assertEqual("나는 그리하지 아니하였어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
+        self.assertEqual("나는 그리하지 아니했어.", self.styler(sent, self.ban[0], self.ban[1]))  # noqa
         self.assertEqual("저는 그리하지 아니하였어요.", self.styler(sent, self.jon[0], self.jon[1]))
-        self.assertEqual("저는 그리하지 아니하였습니다.", self.styler(sent, self.formal[0], self.formal[1]))
+        self.assertEqual("저는 그리하지 아니했습니다.", self.styler(sent, self.formal[0], self.formal[1]))
 
     def test_irregular_drop_hiut(self):
         """
