@@ -148,7 +148,9 @@ class Styler:
             # if something has changed, then go for it, but otherwise just use the lex.
             before = [morph.split("/")[0] for morph in morphs]
             after = [morph.split("/")[0] for morph in tuned.split("+")]
-            if before != after:
+            print("before:", before)
+            print("after:", after)
+            if "".join(before) != "".join(after):
                 self.out.append(after)
             else:
                 self.out.append(lex)
