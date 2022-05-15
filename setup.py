@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-
+from os import path
 with open("requirements.txt") as fh:
     requirements = fh.read().split("\n")
 
@@ -13,4 +13,8 @@ setup(
     license='MIT LICENSE',
     packages=find_packages(),
     install_requires=requirements,
+    package_data={
+        'politely': [path.join('resources', 'honorifics.yaml'),
+                     path.join('resources', 'rules.yaml')]
+    }
 )
