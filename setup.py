@@ -8,7 +8,7 @@ setup(
     version='v2.6',
     description='A Korean politeness styler',
     author='Eu-Bin KIM',
-    python_requires='>=3.8',
+    python_requires='>=3.7.12',
     author_email='tlrndk123@gmail.com',
     license='MIT LICENSE',
     packages=find_packages(),
