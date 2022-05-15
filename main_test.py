@@ -101,6 +101,26 @@ class TestStyler(TestCase):
         self.assertEqual("제 패션을 함부로 비꼬지마요.", self.styler(sent, 2))
         self.assertEqual("제 패션을 함부로 비꼬지마십시오.", self.styler(sent, 3))
 
+    def test_EF_boa(self):
+        sent = "좀만 더 버텨봐"
+        self.assertEqual("좀만 더 버텨봐.", self.styler(sent, 1))
+        self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, 2))
+        self.assertEqual("좀만 더 버텨봅시다.", self.styler(sent, 3))
+        sent = "좀만 더 버텨봐요"
+        self.assertEqual("좀만 더 버텨봐.", self.styler(sent, 1))
+        self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, 2))
+        self.assertEqual("좀만 더 버텨봅시다.", self.styler(sent, 3))
+
+    def test_EF_dae_q(self):
+        sent = "걔 오늘 기분이 왜 이렇게 좋대?"
+        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대?", self.styler(sent, 1))
+        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대요?", self.styler(sent, 2))
+        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋습니까?", self.styler(sent, 3))
+        sent = "걔 오늘 기분이 왜 이렇게 좋대요?"
+        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대?", self.styler(sent, 1))
+        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대요?", self.styler(sent, 2))
+        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋습니까?", self.styler(sent, 3))
+
     def test_EF_eo_q(self):
         """
         어?
@@ -114,25 +134,20 @@ class TestStyler(TestCase):
         self.assertEqual("어제 공부는 마무리 했어?", self.styler(sent, 1))  
         self.assertEqual("어제 공부는 마무리 했어요?", self.styler(sent, 2))
         self.assertEqual("어제 공부는 마무리 했습니까?", self.styler(sent, 3))
+
+    def test_EF_si_eo_q(self):
+        """
+        시어?
+        """
         # 가셔? (가시어?)
         sent = "어디 가셔?"
-        self.assertEqual("어디 가셔?", self.styler(sent, 1))  
+        self.assertEqual("어디 가셔?", self.styler(sent, 1))
         self.assertEqual("어디 가셔요?", self.styler(sent, 2))
         self.assertEqual("어디 가십니까?", self.styler(sent, 3))
         sent = "어디 가세요?"
-        self.assertEqual("어디 가셔?", self.styler(sent, 1))  
+        self.assertEqual("어디 가셔?", self.styler(sent, 1))
         self.assertEqual("어디 가세요?", self.styler(sent, 2))
         self.assertEqual("어디 가십니까?", self.styler(sent, 3))
-
-    def test_EF_boa(self):
-        sent = "좀만 더 버텨봐"
-        self.assertEqual("좀만 더 버텨봐.", self.styler(sent, 1))  
-        self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, 2))
-        self.assertEqual("좀만 더 버텨봅시다.", self.styler(sent, 3))
-        sent = "좀만 더 버텨봐요"
-        self.assertEqual("좀만 더 버텨봐.", self.styler(sent, 1))  
-        self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, 2))
-        self.assertEqual("좀만 더 버텨봅시다.", self.styler(sent, 3))
 
     def test_EF_ddae_q(self):
         sent = "순서를 바꾸는건 어때?"
