@@ -21,7 +21,7 @@ Politely is a rule-based politeness styler for Korean |
 !pip3 install package_python/.
 ```
 
-### use the `Styler` to speak politely 👏
+### use the `Styler` to speak `politely`
 
 ```python3
 from politely.processors import Styler
@@ -32,18 +32,32 @@ print(styler("전 제 목표를 향해 달려요.", 1))  # polite -> casual
 print(styler("전 제 목표를 향해 달려요.", 3))  # polite -> formal
 ```
 ```
-# add the examples here
-...
+전 제 목표를 향해 달려요.
+전 제 목표를 향해 달립니다.
+난 내 목표를 향해 달려.
+전 제 목표를 향해 달립니다.
+```
+```python3
+print(styler("오늘이 어제보다 더워.", 2))
+print(styler("오늘이 어제보다 더워.", 3))
+print(styler("오늘이 어제보다 더워요.", 1))
+print(styler("오늘이 어제보다 더워요.", 3))
+```
+```
+오늘이 어제보다 더워요.
+오늘이 어제보다 덥습니다.
+오늘이 어제보다 더워.
+오늘이 어제보다 덥습니다.
 ```
 
-### Hosting the interactive demo locally
+## Hosting the interactive demo 
 
 You can either host the interactive demo locally:
 ```shell
 # get your api tokens for using papago API from: https://developers.naver.com/docs/papago/README.md
 export NAVER_CLIENT_ID = ...
 export NAVER_CLIENT_SECRET = ...
-# host an interactive demo locally
+# host the demo via streamlit
 streamlit run main_deploy.py
 ```
 Or just visit [the demo that we have deployed on the web](https://eubinecto-politely.herokuapp.com) for you.
