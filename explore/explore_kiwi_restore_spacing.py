@@ -23,11 +23,8 @@ def main():
         token.form + " " if spacing else token.form
         for token, spacing in zip(tokens, spacings)
     ]
+    # 하지만 이렇게 spacing을 복구해두어도, 이미 형태소로 쪼개져버린 기존의 단어는 훼손된다.
     sent = "".join(texts)
-    # 이걸 뭐라고 부르나? 줄임말?
-    # 이렇게 바뀌어가는 lineage를 계속 기록해나가는 것도 중요할듯!
-    sent = sent.replace("하어", "해")
-    sent = sent.replace("리어", "려")
     print(sent)
 
 

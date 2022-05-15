@@ -170,9 +170,15 @@ class Styler:
                     r_first = right[0]
                     l_cho, l_jung, l_jong = decompose(l_last)  # decompose the last element
                     r_cho, r_jung, r_jong = decompose(r_first)  # decompose the first element
-                    if l_jong != " " and re.match(r'[ㅂ습]니.+', right):
+                    if l_jong == " " and r_first == "읍":
+                        # e.g. 전 이제 떠나읍니다 -> 전 이제 떠납니다
+                        left = left[:-1] + compose(l_cho, l_jung, "ㅂ")
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, f"어간에 받침이 없고 어미가 읍인 경우, ㅂ은 어간의 받침으로 쓰임"))
+                    elif l_jong != " " and right.startswith("읍니"):
+                        # e.g. 갔읍니다 -> 갔습니다ㄷ
                         left += f"습{right[1:]}"
-                        self.logs.conjugations.add((l_last, r_first, f"종성(x) + `ㅂ니` -> 습니"))
+                        self.logs.conjugations.add((l_last, r_first, f"종성있음 + `읍니` -> 습니"))
                     elif l_jong == "ㅎ" and r_first == "어":
                         # e.g. 어떻 + 어요 -> 어때요, 좋어요 -> 좋아요
                         left = left[:-1] + compose(l_cho, "ㅐ",  " ")
@@ -206,11 +212,14 @@ class Styler:
                         left += right[1:]
                         print(left, right)
                         self.logs.conjugations.add((l_last, r_first, f"설명을 추가해주세요"))
+                    elif l_jung == "ㅏ" and l_jong == " " and r_first == "어":
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, f"동모음 탈락"))
                     else:
                         # rely on soynlp for the remaining cases
                         # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
                         # warning - popping an element from the set maybe non-deterministic
-                        left = min(soynlp_conjugate(left, right), key=lambda x: len(x))
+                        left = min(soynlp_conjugate(left, right, debug=True), key=lambda x: len(x))
                         self.logs.conjugations.add((l_last, r_first, f"conjugations done by soynlp"))
                 # after the for loop ends
                 out.append(left)
