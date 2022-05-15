@@ -27,7 +27,6 @@ class TestStyler(TestCase):
         self.styler.preprocess(sent)
         self.assertEqual("이것은 예시 문장이다.", self.styler.out)
 
-    # --- casual --- #
     def test_EF_ja(self):
         sent = "자 이제 먹자."
         self.assertEqual("자 이제 먹자.", self.styler(sent, 1))  
@@ -37,6 +36,24 @@ class TestStyler(TestCase):
         self.assertEqual("자 이제 먹어.", self.styler(sent, 1))  
         self.assertEqual("자 이제 먹어요.", self.styler(sent, 2))
         self.assertEqual("자 이제 먹습니다.", self.styler(sent, 3))
+
+    def test_EF_nieun_dae(self):
+        """
+        종결어미 ㄴ대
+        """
+        sent = "밥먹고 누우면 안 된대."
+        self.assertEqual("밥먹고 누우면 안 된대.", self.styler(sent, 1))
+        self.assertEqual("밥먹고 누우면 안 된대요.", self.styler(sent, 2))
+        self.assertEqual("밥먹고 누우면 안 된답니다.", self.styler(sent, 3))
+
+    def test_EF_nieun_dae_yo(self):
+        """
+        종결어미 ㄴ대요
+        """
+        sent = "밥먹고 누우면 안 된대요."
+        self.assertEqual("밥먹고 누우면 안 된대.", self.styler(sent, 1))
+        self.assertEqual("밥먹고 누우면 안 된대요.", self.styler(sent, 2))
+        self.assertEqual("밥먹고 누우면 안 된답니다.", self.styler(sent, 3))
 
     def test_EF_gae(self):
         sent = "회의를 시작할게."
@@ -128,6 +145,36 @@ class TestStyler(TestCase):
         self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, 3))
 
     # --- tests by irregular conjugations --- #
+    def test_irregular_ah_1(self):
+        """
+        동모음 탈락
+        걸어가어요 (x)
+        걸어가요 (o)
+        """
+        sent = "가까우니까 걸어가자."
+        self.assertEqual("가까우니까 걸어가자.", self.styler(sent, 1))
+        self.assertEqual("가까우니까 걸어가요.", self.styler(sent, 2))
+        self.assertEqual("가까우니까 걸어갑시다.", self.styler(sent, 3))
+        sent = "가까우니까 걸어가요."
+        self.assertEqual("가까우니까 걸어가자.", self.styler(sent, 1))
+        self.assertEqual("가까우니까 걸어가요.", self.styler(sent, 2))
+        self.assertEqual("가까우니까 걸어갑시다.", self.styler(sent, 3))
+
+    def test_irregular_ah_2(self):
+        """
+        동모음 탈락
+        떠나어요 (x)
+        떠나요 (o)
+        """
+        sent = "자, 떠나자. 동해바다로."
+        self.assertEqual("자, 떠나자. 동해바다로.", self.styler(sent, 1))
+        self.assertEqual("자, 떠나요. 동해바다로.", self.styler(sent, 2))
+        self.assertEqual("자, 떠납시다. 동해바다로.", self.styler(sent, 3))
+        sent = "자, 떠나요. 동해바다로."
+        self.assertEqual("자, 떠나자. 동해바다로.", self.styler(sent, 1))
+        self.assertEqual("자, 떠나요. 동해바다로.", self.styler(sent, 2))
+        self.assertEqual("자, 떠납시다. 동해바다로.", self.styler(sent, 3))
+
     def test_irregular_digud(self):
         """
         ㄷ 불규칙
@@ -160,7 +207,7 @@ class TestStyler(TestCase):
         self.assertEqual("지금은 좀 일러요.", self.styler(sent, 2))
         self.assertEqual("지금은 좀 이릅니다.", self.styler(sent, 3))
 
-    def test_irregular_bieup_harmonious_with_syllables(self):
+    def test_irregular_bieup_1(self):
         """
         ㅂ 불규칙 (모음 조화 o)
         """
@@ -173,7 +220,7 @@ class TestStyler(TestCase):
         self.assertEqual("모래가 참 고와요.", self.styler(sent, 2))
         self.assertEqual("모래가 참 곱습니다.", self.styler(sent, 3))
 
-    def test_irregular_bieup_not_harmonious_with_syllables(self):
+    def test_irregular_bieup_2(self):
         """
         ㅂ 불규칙 (모음 조화 x)
         """
@@ -185,6 +232,15 @@ class TestStyler(TestCase):
         self.assertEqual("참 아름다워.", self.styler(sent, 1))  
         self.assertEqual("참 아름다워요.", self.styler(sent, 2))
         self.assertEqual("참 아름답습니다.", self.styler(sent, 3))
+
+    def test_irregular_bieup_3(self):
+        """
+        더워의 경우.
+        """
+        sent = "오늘이 어제보다 더워."
+        self.assertEqual("오늘이 어제보다 더워.", self.styler(sent, 1))
+        self.assertEqual("오늘이 어제보다 더워요.", self.styler(sent, 2))
+        self.assertEqual("오늘이 어제보다 덥습니다.", self.styler(sent, 3))
 
     def test_irregular_r_cho_is_bieup(self):
         """
