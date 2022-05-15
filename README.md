@@ -2,16 +2,9 @@
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely.herokuapp.com)
 
-
-
-Politely is a rule-based politeness styler learners of Korean honorifics.
-
- example |
---- |
-input | 
-<img width="691" alt="image" src="https://user-images.githubusercontent.com/56193069/155671048-7e3054ff-671e-40c5-aed8-0296984d1f57.png"> |
-output | 
-<img width="681" alt="image" src="https://user-images.githubusercontent.com/56193069/155671094-72a7703b-351d-4c37-82d0-2f75a4d7c734.png">| 
+Politely is a rule-based politeness styler for Korean | 
+--- | 
+<img width="1010" alt="image" src="https://user-images.githubusercontent.com/56193069/168471756-084409db-5d72-48b7-820f-05e1de6b1f5a.png"> | 
 
 
 
