@@ -195,11 +195,16 @@ class Styler:
                         left = left[:-1] + compose(l_cho, "ㅐ",  " ")
                         left += right[1:]
                         self.logs.conjugations.add((l_last, r_first, left, f"`ㅎ` + `어` -> `ㅐ`"))
-                    elif l_jung == "ㅣ" and r_first == "어":
+                    elif l_jung == "ㅣ" and l_jong == " " and r_first == "어":
                         # e.g. 시어 -> 셔
+                        # 하지만 e.g. 있어 -> 있어
                         left = left[:-1] + compose(l_cho, "ㅕ",  " ")
                         left += right[1:]
                         self.logs.conjugations.add((l_last, r_first, left, f"`ㅣ`+ `ㅓ` -> `ㅕ`"))
+                    elif l_jung == "ㅏ" and l_jong != " " and r_first == "어":
+                        # e.g. 같어요 -> 같아요
+                        left += f"아{right[1:]}"
+                        self.logs.conjugations.add((l_last, r_first, left, f"`ㅏ (종성o)`+ `ㅓ` -> `ㅕ`"))
                     elif l_last == "하" and r_jung in ("ㅓ", "ㅕ"):
                         # e.g. 하어요 -> 해요, 하여요 -> 해요, 하었어요 -> 했어요  -> 하였어요 -> 했어요
                         left = left[:-1] + compose(l_cho, "ㅐ",  r_jong)
@@ -225,7 +230,7 @@ class Styler:
                         # rely on soynlp for the remaining cases
                         # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
                         # warning - popping an element from the set maybe non-deterministic
-                        left = min(soynlp_conjugate(left, right), key=lambda x: len(x))
+                        left = min(soynlp_conjugate(left, right, debug=True), key=lambda x: len(x))
                         self.logs.conjugations.add((l_last, r_first, left, f"conjugations done by soynlp"))
                 # after the for loop ends
                 out.append(left)
@@ -260,7 +265,7 @@ class Translator:
         data = {
             "source": "en",
             "target": "ko",
-            "text": sent
+            "text": sent,
         }
         r = requests.post(url, headers=headers, data=data)
         r.raise_for_status()
