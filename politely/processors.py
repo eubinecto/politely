@@ -166,19 +166,30 @@ class Styler:
                 left = chunk[0]
                 for i in range(len(chunk) - 1):
                     right = chunk[i + 1]
-                    l_last = left[-1]
                     r_first = right[0]
+                    l_last = left[-1]
+                    print("left, right", left, right)
                     l_cho, l_jung, l_jong = decompose(l_last)  # decompose the last element
                     r_cho, r_jung, r_jong = decompose(r_first)  # decompose the first element
-                    if l_jong == " " and r_first == "읍":
-                        # e.g. 전 이제 떠나읍니다 -> 전 이제 떠납니다
+                    if l_jong == " " and right.startswith("ㅂ니"):
+                        # e.g. 전 이제 떠나ㅂ니다 -> 전 이제 떠납니다
                         left = left[:-1] + compose(l_cho, l_jung, "ㅂ")
                         left += right[1:]
                         self.logs.conjugations.add((l_last, r_first, f"어간에 받침이 없고 어미가 읍인 경우, ㅂ은 어간의 받침으로 쓰임"))
-                    elif l_jong != " " and right.startswith("읍니"):
-                        # e.g. 갔읍니다 -> 갔습니다ㄷ
+                    elif l_jong != " " and right.startswith("ㅂ니"):
+                        # e.g. 갔ㅂ니다 -> 갔습니다
                         left += f"습{right[1:]}"
-                        self.logs.conjugations.add((l_last, r_first, f"종성있음 + `읍니` -> 습니"))
+                        self.logs.conjugations.add((l_last, r_first, f"종성있음 + `ㅂ니` -> 습니"))
+                    elif l_jong != " " and right.startswith("ㅂ시"):
+                        # 줍은 예외
+                        if left == "줍":
+                            left = left[:-1] + "주웁"
+                            left += right[1:]
+                            self.logs.conjugations.add((l_last, r_first, f"줍 예외"))
+                        else:
+                            # e.g. 먹ㅂ시다
+                            left += f"읍{right[1:]}"
+                            self.logs.conjugations.add((l_last, r_first, f"종성있음 + `ㅂ시` -> 읍니"))
                     elif l_jong == "ㅎ" and r_first == "어":
                         # e.g. 어떻 + 어요 -> 어때요, 좋어요 -> 좋아요
                         left = left[:-1] + compose(l_cho, "ㅐ",  " ")
@@ -207,11 +218,6 @@ class Styler:
                         left = left[:-1] + compose(l_cho, l_jung,  "ㄹ")
                         left += right
                         self.logs.conjugations.add((l_last, r_first, f"`ㄷ` 종성 + `ㅇ` 초성 -> `ㄹ` 종성"))
-                    elif l_last == "줍" and r_jong == "ㅂ":
-                        left = left[:-1] + "주웁"
-                        left += right[1:]
-                        print(left, right)
-                        self.logs.conjugations.add((l_last, r_first, f"설명을 추가해주세요"))
                     elif l_jung == "ㅏ" and l_jong == " " and r_first == "어":
                         left += right[1:]
                         self.logs.conjugations.add((l_last, r_first, f"동모음 탈락"))
