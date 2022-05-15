@@ -23,11 +23,19 @@ output |
 
 ## Quick Start
 
+### from casual to polite & formal
+
+### from polite to casual & formal
+
+
+### Hosting an interactive demo locally
+
 Hosting local:
 ```shell
 export NAVER_CLIENT_ID = ...
 export NAVER_CLIENT_SECRET = ...
 streamlit run main_deploy.py
+
 ```
 Running tests:
 ```shell
