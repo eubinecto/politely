@@ -148,8 +148,6 @@ class Styler:
             # if something has changed, then go for it, but otherwise just use the lex.
             before = [morph.split("/")[0] for morph in morphs]
             after = [morph.split("/")[0] for morph in tuned.split("+")]
-            print("before:", before)
-            print("after:", after)
             if "".join(before) != "".join(after):
                 self.out.append(after)
             else:
@@ -168,9 +166,6 @@ class Styler:
                 left = chunk[0]
                 for i in range(len(chunk) - 1):
                     right = chunk[i + 1]
-                    if right in (".", "?", "!"):  # just a quirk with soynlp
-                        left += right
-                        continue
                     l_last = left[-1]
                     r_first = right[0]
                     l_cho, l_jung, l_jong = decompose(l_last)  # decompose the last element
@@ -206,20 +201,16 @@ class Styler:
                         left = left[:-1] + compose(l_cho, l_jung,  "ㄹ")
                         left += right
                         self.logs.conjugations.add((l_last, r_first, f"`ㄷ` 종성 + `ㅇ` 초성 -> `ㄹ` 종성"))
-                    elif l_jong != " " and r_first == "ㅂ":
-                        if l_jung == "ㅜ":
-                            # e.g. 줍 + ㅂ시다 -> 주웁시다
-                            left += "웁"
-                        else:
-                            # e.g. 먹 + ㅂ시다 -> 먹읍시다
-                            left += "읍"
+                    elif l_last == "줍" and r_jong == "ㅂ":
+                        left = left[:-1] + "주웁"
                         left += right[1:]
+                        print(left, right)
                         self.logs.conjugations.add((l_last, r_first, f"설명을 추가해주세요"))
                     else:
                         # rely on soynlp for the remaining cases
                         # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
                         # warning - popping an element from the set maybe non-deterministic
-                        left = min(soynlp_conjugate(left, right, debug=True), key=lambda x: len(x))
+                        left = min(soynlp_conjugate(left, right), key=lambda x: len(x))
                         self.logs.conjugations.add((l_last, r_first, f"conjugations done by soynlp"))
                 # after the for loop ends
                 out.append(left)
