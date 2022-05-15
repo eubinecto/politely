@@ -171,9 +171,9 @@ class TestStyler(TestCase):
         self.assertEqual("자, 떠나요. 동해바다로.", self.styler(sent, 2))
         self.assertEqual("자, 떠납시다. 동해바다로.", self.styler(sent, 3))
         sent = "자, 떠나요. 동해바다로."
-        self.assertEqual("자, 떠나자. 동해바다로.", self.styler(sent, 1))
+        self.assertEqual("자, 떠나. 동해바다로.", self.styler(sent, 1))
         self.assertEqual("자, 떠나요. 동해바다로.", self.styler(sent, 2))
-        self.assertEqual("자, 떠납시다. 동해바다로.", self.styler(sent, 3))
+        self.assertEqual("자, 떠납니다. 동해바다로.", self.styler(sent, 3))
 
     def test_irregular_digud(self):
         """
@@ -487,3 +487,15 @@ class TestStyler(TestCase):
         self.assertEqual("같이 쓰레기를 줍자.", self.styler(sent, 1))
         self.assertEqual("같이 쓰레기를 주워요.", self.styler(sent, 2))
         self.assertEqual("같이 쓰레기를 주웁시다.", self.styler(sent, 3))
+
+    @unittest.skip
+    def test_contextual_4(self):
+        """
+        이것도 마찬가지로 맥락이 필요하다.
+        떠나요 -> 떠나 / 떠나자, 둘 중 무엇이 정답인지는 맥락을 보아야만 알 수 있다.
+        떠나요 -> 떠납니다 / 떠납시다 -> 둘 중 무엇이 맞는지도... 마찬가지
+        """
+        sent = "자, 떠나요. 동해바다로."
+        self.assertEqual("자, 떠나자. 동해바다로.", self.styler(sent, 1))
+        self.assertEqual("자, 떠나요. 동해바다로.", self.styler(sent, 2))
+        self.assertEqual("자, 떠납시다. 동해바다로.", self.styler(sent, 3))
