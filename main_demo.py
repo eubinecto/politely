@@ -26,7 +26,6 @@ SENTS = [
     "자 떠나자. 동해 바다로",
     "그는 전설이다",
     "그는 전설이에요",
-    "그는 전설입니다"
 ]
 
 styler = Styler()
@@ -37,8 +36,9 @@ def main():
     for sent in SENTS:
         listener = "friends and junior"
         environ = "formal"
-        sent = styler(sent, listener, environ)
-        print(sent)
+        styled = styler(sent, listener, environ)
+        print(sent, "->", styled)
+        print(styler.logs.conjugations)
 
     # the other way of using it - politeness is determined
     print("--------")

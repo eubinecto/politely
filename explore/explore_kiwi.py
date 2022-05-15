@@ -16,7 +16,6 @@ def main():
     print(kiwi.tokenize(text="아버지는 진지를 드신다"))
 
 
-
 if __name__ == '__main__':
     main()
 

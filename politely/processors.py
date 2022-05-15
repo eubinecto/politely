@@ -24,7 +24,7 @@ class Styler:
         case: dict = field(default_factory=dict)
         steps: list = field(default_factory=list)
         honorifics: Set[Tuple[str, str]] = field(default_factory=set)
-        conjugations: Set[Tuple[str, str, str]] = field(default_factory=set)
+        conjugations: Set[Tuple[str, str, str, str]] = field(default_factory=set)
     # class-owned attributes
     RULES: dict = fetch_rules()
     HONORIFICS: dict = fetch_honorifics()
@@ -87,6 +87,7 @@ class Styler:
         self.logs.args.clear()
         self.logs.steps.clear()
         self.logs.honorifics.clear()
+        self.logs.conjugations.clear()
         return self
 
     def log(self):
@@ -148,7 +149,7 @@ class Styler:
             # if something has changed, then go for it, but otherwise just use the lex.
             before = [morph.split("/")[0] for morph in morphs]
             after = [morph.split("/")[0] for morph in tuned.split("+")]
-            if before != after:
+            if "".join(before) != "".join(after):
                 self.out.append(after)
             else:
                 self.out.append(lex)
@@ -163,46 +164,75 @@ class Styler:
         for chunk in self.out:
             if isinstance(chunk, list):
                 # you should conjugate these
-                original = chunk[0]
-                left = original
-                for idx in range(len(chunk) - 1):
-                    right = chunk[idx + 1]
-                    if right in (".", "?", "!"):  # just a quirk with soynlp
-                        left += right
-                    else:
-                        l_cho, l_jung, l_jong = decompose(left[-1])
-                        r_cho, r_jung, r_jong = decompose(right[0])
-                        if l_jong != " " and re.match(r'[ㅂ습]니.+', right):
-                            left += f"습{right[1:]}"
-                            self.logs.conjugations.add((original, left, f"종성 + `ㅂ니` -> 습니"))
-                        elif l_jong == "ㅎ" and re.match(r'어.+', right):
-                            # e.g. 어떻 + 어요 -> 어때요
-                            left = left[:-1] + compose(l_cho, "ㅐ",  " ")
-                            left += re.findall(r'어(.*)', right)[0]
-                            self.logs.conjugations.add((original, left, f"`ㅎ` + `어` -> `ㅐ`"))
-                        elif l_jung == "ㅣ" and re.match(r'어.+', right):
-                            # e.g. 시어 -> 셔
-                            left = left[:-1] + compose(l_cho, "ㅕ",  " ")
-                            left += re.findall(r'어(.*)', right)[0]
-                            self.logs.conjugations.add((original, left, f"`ㅣ`+ `ㅓ` -> `ㅕ`"))
-                        elif l_jung == "ㅏ" and re.match(r"[ㅓㅕ]", r_jung):
-                            # e.g. 하어요 -> 해요, 하여요 -> 해요, 하었어요 -> 했어요  -> 하였어요 -> 했어요
-                            left = left[:-1] + compose(l_cho, "ㅐ",  r_jong)
+                left = chunk[0]
+                for i in range(len(chunk) - 1):
+                    right = chunk[i + 1]
+                    r_first = right[0]
+                    l_last = left[-1]
+                    l_cho, l_jung, l_jong = decompose(l_last)  # decompose the last element
+                    r_cho, r_jung, r_jong = decompose(r_first)  # decompose the first element
+                    if l_jong == " " and right.startswith("ㅂ니"):
+                        # e.g. 전 이제 떠나ㅂ니다 -> 전 이제 떠납니다
+                        left = left[:-1] + compose(l_cho, l_jung, "ㅂ")
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, left, f"어간에 받침이 없고 어미가 읍인 경우, ㅂ은 어간의 받침으로 쓰임"))
+                    elif l_jong != " " and right.startswith("ㅂ니"):
+                        # e.g. 갔ㅂ니다 -> 갔습니다
+                        left += f"습{right[1:]}"
+                        self.logs.conjugations.add((l_last, r_first, left, f"종성있음 + `ㅂ니` -> 습니"))
+                    elif l_jong != " " and right.startswith("ㅂ시"):
+                        # 줍은 예외
+                        if left == "줍":
+                            left = left[:-1] + "주웁"
                             left += right[1:]
-                            self.logs.conjugations.add((original, left, f"`ㅏ`+ (`ㅓ` 또는 `ㅕ`) -> `ㅐ`"))
-                        elif l_jung == "ㅏ" and right == "의":
-                            # e.g. 나의 -> 내 ("내"가 더 많이 쓰이므로)
-                            left = left[:-1] + compose(l_cho, "ㅐ",  " ")
-                            self.logs.conjugations.add((original, left, f"`ㅏ`+ `의` -> `ㅐ`"))
-                        elif l_jung == "ㅓ" and right == "의":
-                            # e.g. 저의 -> 제 ("제"가 더 많이 쓰이므로)
-                            left = left[:-1] + compose(l_cho, "ㅔ",  " ")
-                            self.logs.conjugations.add((original, left, f"`ㅓ`+ `의` -> `ㅔ`"))
+                            self.logs.conjugations.add((l_last, r_first, left, f"줍 예외"))
                         else:
-                            # rely on soynlp for the remaining cases
-                            # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
-                            left = min(soynlp_conjugate(left, right, debug=True), key=lambda x: len(x))
-                            self.logs.conjugations.add((original, left, f"regular conjugations"))
+                            # e.g. 먹ㅂ시다
+                            left += f"읍{right[1:]}"
+                            self.logs.conjugations.add((l_last, r_first, left, f"종성있음 + `ㅂ시` -> 읍니"))
+                    elif l_jong == "ㅎ" and r_first == "어":
+                        # e.g. 어떻 + 어요 -> 어때요, 좋어요 -> 좋아요
+                        left = left[:-1] + compose(l_cho, "ㅐ",  " ")
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, left, f"`ㅎ` + `어` -> `ㅐ`"))
+                    elif l_jung == "ㅣ" and l_jong == " " and r_first == "어":
+                        # e.g. 시어 -> 셔
+                        # 하지만 e.g. 있어 -> 있어
+                        left = left[:-1] + compose(l_cho, "ㅕ",  " ")
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, left, f"`ㅣ`+ `ㅓ` -> `ㅕ`"))
+                    elif l_jung == "ㅏ" and l_jong != " " and r_first == "어":
+                        # e.g. 같어요 -> 같아요
+                        left += f"아{right[1:]}"
+                        self.logs.conjugations.add((l_last, r_first, left, f"`ㅏ (종성o)`+ `ㅓ` -> `ㅕ`"))
+                    elif l_last == "하" and r_jung in ("ㅓ", "ㅕ"):
+                        # e.g. 하어요 -> 해요, 하여요 -> 해요, 하었어요 -> 했어요  -> 하였어요 -> 했어요
+                        left = left[:-1] + compose(l_cho, "ㅐ",  r_jong)
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, left, f"`하`+ (`ㅓ` 또는 `ㅕ`) -> `해`"))
+                    elif l_jung == "ㅏ" and r_first == "의":
+                        # e.g. 나의 -> 내 ("내"가 더 많이 쓰이므로)
+                        left = left[:-1] + compose(l_cho, "ㅐ",  " ")
+                        self.logs.conjugations.add((l_last, r_first, left, f"`ㅏ`+ `의` -> `ㅐ`"))
+                    elif l_jung == "ㅓ" and r_first == "의":
+                        # e.g. 저의 -> 제 ("제"가 더 많이 쓰이므로)
+                        left = left[:-1] + compose(l_cho, "ㅔ",  " ")
+                        self.logs.conjugations.add((l_last, r_first, left, f"`ㅓ`+ `의` -> `ㅔ`"))
+                    elif l_jong == 'ㄷ' and r_cho == "ㅇ":
+                        # e.g. 깨닫아 -> 깨달아
+                        left = left[:-1] + compose(l_cho, l_jung,  "ㄹ")
+                        left += right
+                        self.logs.conjugations.add((l_last, r_first, left, f"`ㄷ` 종성 + `ㅇ` 초성 -> `ㄹ` 종성"))
+                    elif l_jung == "ㅏ" and l_jong == " " and r_first == "어":
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, left, f"동모음 탈락"))
+                    else:
+                        # rely on soynlp for the remaining cases
+                        # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
+                        # warning - popping an element from the set maybe non-deterministic
+                        left = min(soynlp_conjugate(left, right, debug=True), key=lambda x: len(x))
+                        self.logs.conjugations.add((l_last, r_first, left, f"conjugations done by soynlp"))
+                # after the for loop ends
                 out.append(left)
             else:
                 out.append(chunk)
@@ -235,7 +265,7 @@ class Translator:
         data = {
             "source": "en",
             "target": "ko",
-            "text": sent
+            "text": sent,
         }
         r = requests.post(url, headers=headers, data=data)
         r.raise_for_status()
