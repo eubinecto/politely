@@ -241,6 +241,23 @@ class TestStyler(TestCase):
         self.assertEqual("오늘이 어제보다 더워.", self.styler(sent, 1))
         self.assertEqual("오늘이 어제보다 더워요.", self.styler(sent, 2))
         self.assertEqual("오늘이 어제보다 덥습니다.", self.styler(sent, 3))
+        sent = "오늘이 어제보다 더워요."
+        self.assertEqual("오늘이 어제보다 더워.", self.styler(sent, 1))
+        self.assertEqual("오늘이 어제보다 더워요.", self.styler(sent, 2))
+        self.assertEqual("오늘이 어제보다 덥습니다.", self.styler(sent, 3))
+
+    def test_irregular_bieup_4(self):
+        """
+        가려워의 경우.
+        """
+        sent = "너무 가려워."
+        self.assertEqual("너무 가려워.", self.styler(sent, 1))
+        self.assertEqual("너무 가려워요.", self.styler(sent, 2))
+        self.assertEqual("너무 가렵습니다.", self.styler(sent, 3))
+        sent = "너무 가려워요."
+        self.assertEqual("너무 가려워.", self.styler(sent, 1))
+        self.assertEqual("너무 가려워요.", self.styler(sent, 2))
+        self.assertEqual("너무 가렵습니다.", self.styler(sent, 3))
 
     def test_irregular_r_cho_is_bieup(self):
         """
