@@ -230,7 +230,7 @@ class Styler:
                         # rely on soynlp for the remaining cases
                         # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
                         # warning - popping an element from the set maybe non-deterministic
-                        left = min(soynlp_conjugate(left, right, debug=True), key=lambda x: len(x))
+                        left = min(soynlp_conjugate(left, right), key=lambda x: len(x))
                         self.logs.conjugations.add((l_last, r_first, left, f"conjugations done by soynlp"))
                 # after the for loop ends
                 out.append(left)
