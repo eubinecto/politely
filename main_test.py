@@ -170,10 +170,6 @@ class TestStyler(TestCase):
         self.assertEqual("가까우니까 걸어가자.", self.styler(sent, 1))
         self.assertEqual("가까우니까 걸어가요.", self.styler(sent, 2))
         self.assertEqual("가까우니까 걸어갑시다.", self.styler(sent, 3))
-        sent = "가까우니까 걸어가요."
-        self.assertEqual("가까우니까 걸어가자.", self.styler(sent, 1))
-        self.assertEqual("가까우니까 걸어가요.", self.styler(sent, 2))
-        self.assertEqual("가까우니까 걸어갑시다.", self.styler(sent, 3))
 
     def test_irregular_ah_2(self):
         """
@@ -413,6 +409,19 @@ class TestStyler(TestCase):
         self.assertEqual("하늘이 파래요.", self.styler(sent, 2))
         self.assertEqual("하늘이 파랗습니다.", self.styler(sent, 3))
 
+    def test_irregular_drop_yi(self):
+        """
+        ㅓ + 이.
+        """
+        sent = "이렇게 하는 거야?"
+        self.assertEqual("이렇게 하는 거야?", self.styler(sent, 1))
+        self.assertEqual("이렇게 하는 거죠?", self.styler(sent, 2))
+        self.assertEqual("이렇게 하는 겁니까?", self.styler(sent, 3))
+        sent = "이렇게 하는 거죠?"
+        self.assertEqual("이렇게 하는 거야?", self.styler(sent, 1))
+        self.assertEqual("이렇게 하는 거죠?", self.styler(sent, 2))
+        self.assertEqual("이렇게 하는 겁니까?", self.styler(sent, 3))
+
     # --- known issues --- #
     @unittest.skip
     def test_more_1(self):
@@ -467,6 +476,13 @@ class TestStyler(TestCase):
         self.assertEqual("이참에 돈을 걷어가자.", self.styler(sent, 1))
         self.assertEqual("이참에 돈을 걷어가요.", self.styler(sent, 2))
         self.assertEqual("이참에 돈을 걷어갑시다.", self.styler(sent, 3))
+
+    @unittest.skip
+    def test_khaiii_error_3(self):
+        sent = "가까우니까 걸어가요."
+        self.assertEqual("가까우니까 걸어가자.", self.styler(sent, 1))
+        self.assertEqual("가까우니까 걸어가요.", self.styler(sent, 2))
+        self.assertEqual("가까우니까 걸어갑시다.", self.styler(sent, 3))
 
     @unittest.skip
     def test_contextual_1(self):

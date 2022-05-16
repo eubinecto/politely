@@ -201,8 +201,9 @@ class Styler:
                         left = left[:-1] + compose(l_cho, "ㅕ",  " ")
                         left += right[1:]
                         self.logs.conjugations.add((l_last, r_first, left, f"`ㅣ`+ `ㅓ` -> `ㅕ`"))
-                    elif l_jung == "ㅏ" and l_jong != " " and r_first == "어":
+                    elif l_jung == "ㅏ" and l_jong in ("ㄷ", "ㅌ") and r_first == "어":
                         # e.g. 같어요 -> 같아요
+                        # e.g  닫어요 -> 닫아요
                         left += f"아{right[1:]}"
                         self.logs.conjugations.add((l_last, r_first, left, f"`ㅏ (종성o)`+ `ㅓ` -> `ㅕ`"))
                     elif l_last == "하" and r_jung in ("ㅓ", "ㅕ"):
@@ -218,6 +219,10 @@ class Styler:
                         # e.g. 저의 -> 제 ("제"가 더 많이 쓰이므로)
                         left = left[:-1] + compose(l_cho, "ㅔ",  " ")
                         self.logs.conjugations.add((l_last, r_first, left, f"`ㅓ`+ `의` -> `ㅔ`"))
+                    elif l_jung == "ㅓ" and l_jong == " " and r_first == "이":
+                        # e.g. 거이죠 -> 거죠?
+                        left += right[1:]
+                        self.logs.conjugations.add((l_last, r_first, left, f"ㅓ+ 이 -> ㅓ (이 탈락)"))
                     elif l_jong == 'ㄷ' and r_cho == "ㅇ":
                         # e.g. 깨닫아 -> 깨달아
                         left = left[:-1] + compose(l_cho, l_jung,  "ㄹ")
