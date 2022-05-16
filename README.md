@@ -1,6 +1,8 @@
 # Politely
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely.herokuapp.com)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1W79NzS7xU4VS2HxAKjDB_QwsZp6e2jKu?usp=sharing)
+
 
 Politely is an explainable politeness styler for the Korean language | 
 --- | 
