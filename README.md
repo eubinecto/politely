@@ -42,10 +42,10 @@ print(styler("전 제 목표를 향해 달려요.", 3))  # polite -> formal
 전 제 목표를 향해 달립니다.
 ```
 ```python3
-print(styler("오늘이 어제보다 더워.", 2))
-print(styler("오늘이 어제보다 더워.", 3))
-print(styler("오늘이 어제보다 더워요.", 1))
-print(styler("오늘이 어제보다 더워요.", 3))
+print(styler("오늘이 어제보다 더워.", 2))  # casual -> polite
+print(styler("오늘이 어제보다 더워.", 3))  # casual -> formal
+print(styler("오늘이 어제보다 더워요.", 1))  # polite -> casual 
+print(styler("오늘이 어제보다 더워요.", 3))  # polite -> formal
 ```
 ```
 오늘이 어제보다 더워요.
