@@ -52,9 +52,33 @@ print(styler("오늘이 어제보다 더워요.", 3))
 오늘이 어제보다 덥습니다.
 ```
 
+## Coverage 📈
+
+We have test-covered, and will test-cover, the following cases. Please feel free to contribute if you feel like you could cover more of these cases.
+
+ - [X] -ㄴ대요
+ - [X] -게
+ - [X] -어
+ - [X] -이야
+ - [X] -마
+ - [X] -봐
+ - [X] -대?
+ - [X] -어?
+ - [X] -시어?
+ - [X] -때?
+ - [X] 동모음 탈락
+ - [X] ㄷ 불규칙
+ - [X] ㅅ 불규칙
+ - [X] ㅎ 불규칙
+ - [X] 오 불규칙
+ - [X] 가라 불규칙
+ - [X] 너라 불규칙
+ - [ ] 으 불규칙
+ - [ ] 르 불규칙
+ - [ ] 우 불규칙
+ - [ ] ㅂ 불규칙
+ - [ ] ... (more to be added)
 ## Hosting the interactive demo 
-
-
 
 You can either host the interactive demo locally ([you first have to sign up for papago API to get your secrets](https://developers.naver.com/docs/papago/README.md))
 ```shell
@@ -69,28 +93,18 @@ Or just visit [the demo we are hosting](https://eubinecto-politely.herokuapp.com
 <img width="749" alt="image" src="https://user-images.githubusercontent.com/56193069/168508652-687acb98-0bf6-4834-b56c-74d236bee031.png"> | 
 
 
-
 ## What Politely can't 🙅
 
-`politely`'s  `Styler`cannnot take contexts into account, since its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's.
-
-Therefore, (here is a list of examples)
+`politely`'s `Styler` cannnot take contexts into account because its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's. As a consequence of this, `Styler` can't disambiguate context-dependent conjugations, like s:  
 
 ```python3
-print("나는 쓰레기를 주워.", 3)
-print("같이 쓰레기를 주워.", 3)
+print(styler("저는 쓰레기를 주워요.", 3))
+print(styler("자, 같이 쓰레기를 주워요.", 3))
 ```
-
-```python3
-print("전 내일 여행을 떠나요.", 3)
-print("자, 떠나요, 동해바다로.", 3)
 ```
-
-```python3
-
+저는 쓰레기를 줍습니다.
+자, 같이 쓰레기를 줍습니다. (should be "자, 같이 쓰레기를 주웁시다")
 ```
-
-Have any ideas how you could fix this? 
 
 
 ## By whom? 👏
