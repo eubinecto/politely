@@ -503,22 +503,14 @@ class TestStyler(TestCase):
         이건 -러 불규칙과 구분히 불가능하다. 나중에 맥락까지 고려할 수 있게된다면 그 때 해보자.
         여기 이슈참고: https://github.com/eubinecto/politely/issues/56#issue-1233231686
         """
+        sent = "하지말라고 일렀다."
+        self.assertEqual("하지말라고 일렀다.", self.styler(sent, 1))
+        self.assertEqual("하지말라고 일렀어요.", self.styler(sent, 2))
+        self.assertEqual("하지말라고 일렀습니다.", self.styler(sent, 3))
         sent = "드디어 정상에 이르렀다."
         self.assertEqual("드디어 정상에 이르렀다.", self.styler(sent, 1))  
         self.assertEqual("드디어 정상에 이르렀어요.", self.styler(sent, 2))
         self.assertEqual("드디어 정상에 이르렀습니다.", self.styler(sent, 3))
-        sent = "드디어 정상에 이르렀어요."
-        self.assertEqual("드디어 정상에 이르렀어.", self.styler(sent, 1))  
-        self.assertEqual("드디어 정상에 이르렀어요.", self.styler(sent, 2))
-        self.assertEqual("드디어 정상에 이르렀습니다.", self.styler(sent, 3))
-        sent = "가을이 되면 하늘이 유독 푸르르다."
-        self.assertEqual("가을이 되면 하늘이 유독 푸르르다.", self.styler(sent, 1))  
-        self.assertEqual("가을이 되면 하늘이 유독 푸르러요.", self.styler(sent, 2))
-        self.assertEqual("가을이 되면 하늘이 유독 푸르릅니다.", self.styler(sent, 3))
-        sent = "가을이 되면 하늘이 유독 푸르러요."
-        self.assertEqual("가을이 되면 하늘이 유독 푸르르다.", self.styler(sent, 1))  
-        self.assertEqual("가을이 되면 하늘이 유독 푸르러요.", self.styler(sent, 2))
-        self.assertEqual("가을이 되면 하늘이 유독 푸르릅니다.", self.styler(sent, 3))
         
     @unittest.skip
     def test_contextual_3(self):

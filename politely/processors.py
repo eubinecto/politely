@@ -198,6 +198,7 @@ class Styler:
                     elif l_jung == "ㅣ" and l_jong == " " and r_first == "어":
                         # e.g. 시어 -> 셔
                         # 하지만 e.g. 있어 -> 있어
+                        # 히지만 e.g. 이어
                         left = left[:-1] + compose(l_cho, "ㅕ",  " ")
                         left += right[1:]
                         self.logs.conjugations.add((l_last, r_first, left, f"`ㅣ`+ `ㅓ` -> `ㅕ`"))

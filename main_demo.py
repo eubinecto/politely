@@ -38,6 +38,7 @@ def main():
         environ = "formal"
         styled = styler(sent, listener, environ)
         print(sent, "->", styled)
+        print(styler.logs.honorifics)
         print(styler.logs.conjugations)
 
     # the other way of using it - politeness is determined
