@@ -2,26 +2,28 @@
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely.herokuapp.com)
 
-Politely is a rule-based politeness styler for Korean | 
+Politely is an explainable politeness styler for the Korean language | 
 --- | 
 <img width="1010" alt="image" src="https://user-images.githubusercontent.com/56193069/168471756-084409db-5d72-48b7-820f-05e1de6b1f5a.png"> | 
 
 
 ## Quick Start 🚀
-### setup `politely`
-```
-# install politely
-!pip3 install git+https://github.com/eubinecto/politely.git@v2.6
+### 1️⃣ setup `politely`
 
-# install khaiii (politely heavily relies on khaiii to anaylze endings)
-!git clone https://github.com/kakao/khaiii.git
-!mkdir khaiii/build
-!cmake khaiii
-!make package_python
-!pip3 install package_python/.
+Install `politely` directly from github
+```
+pip3 install git+https://github.com/eubinecto/politely.git@v2.6
+```
+`politely` heavily relies on `khaiii` for morpheme analysis. Install `khaiii`, as instructed in [the official document](https://github.com/kakao/khaiii/wiki/빌드-및-설치)
+```
+git clone https://github.com/kakao/khaiii.git
+mkdir khaiii/build
+cmake khaiii
+make package_python
+pip3 install package_python/.
 ```
 
-### use the `Styler` to speak `politely`
+### 2️⃣ Speak `politely` with `Styler`
 
 ```python3
 from politely.processors import Styler
@@ -52,20 +54,43 @@ print(styler("오늘이 어제보다 더워요.", 3))
 
 ## Hosting the interactive demo 
 
-You can either host the interactive demo locally:
+
+
+You can either host the interactive demo locally ([you first have to sign up for papago API to get your secrets](https://developers.naver.com/docs/papago/README.md))
 ```shell
-# get your api tokens for using papago API from: https://developers.naver.com/docs/papago/README.md
 export NAVER_CLIENT_ID = ...
 export NAVER_CLIENT_SECRET = ...
 # host the demo via streamlit
 streamlit run main_deploy.py
 ```
-Or just visit [the demo that we have deployed on the web](https://eubinecto-politely.herokuapp.com) for you.
+
+Or just visit [the demo we are hosting](https://eubinecto-politely.herokuapp.com) for you | 
+--- |
+<img width="749" alt="image" src="https://user-images.githubusercontent.com/56193069/168508652-687acb98-0bf6-4834-b56c-74d236bee031.png"> | 
 
 
-## What Politely cannot do 🙅
 
+## What Politely can't 🙅
 
+`politely`'s  `Styler`cannnot take contexts into account, since its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's.
+
+Therefore, (here is a list of examples)
+
+```python3
+print("나는 쓰레기를 주워.", 3)
+print("같이 쓰레기를 주워.", 3)
+```
+
+```python3
+print("전 내일 여행을 떠나요.", 3)
+print("자, 떠나요, 동해바다로.", 3)
+```
+
+```python3
+
+```
+
+Have any ideas how you could fix this? 
 
 
 ## By whom? 👏
