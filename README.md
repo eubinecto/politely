@@ -4,7 +4,7 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1W79NzS7xU4VS2HxAKjDB_QwsZp6e2jKu?usp=sharing)
 
 
-Politely is an explainable politeness styler for the Korean language | 
+Politely is an explainable politeness styler for the Korean language (work in progress) | 
 --- | 
 <img width="1010" alt="image" src="https://user-images.githubusercontent.com/56193069/168471756-084409db-5d72-48b7-820f-05e1de6b1f5a.png"> | 
 
