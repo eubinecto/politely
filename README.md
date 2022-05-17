@@ -97,7 +97,7 @@ Or just visit [the demo we are hosting](https://eubinecto-politely.herokuapp.com
 
 ## What Politely can't 🙅
 
-`politely`'s `Styler` cannnot take contexts into account because its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's. As a consequence of this, `Styler` can't disambiguate context-dependent conjugations, like s:  
+`politely`'s `Styler` cannnot take contexts into account because its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's. As a consequence of this, `Styler` can't disambiguate context-dependent conjugations, like so:  
 
 ```python3
 print(styler("저는 쓰레기를 주워요.", 3))
