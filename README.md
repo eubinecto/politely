@@ -100,12 +100,22 @@ Or just visit [the demo we are hosting](https://eubinecto-politely.herokuapp.com
 `politely`'s `Styler` cannnot take contexts into account because its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's. As a consequence of this, `Styler` can't disambiguate context-dependent conjugations, like so:  
 
 ```python3
+# 권유 / 청유의 차이는 맥락에 의존
 print(styler("저는 쓰레기를 주워요.", 3))
 print(styler("자, 같이 쓰레기를 주워요.", 3))
 ```
 ```
 저는 쓰레기를 줍습니다.
 자, 같이 쓰레기를 줍습니다. (should be "자, 같이 쓰레기를 주웁시다")
+```
+```python3
+# 이르 + 어 -> 이르러/일러 또한 맥락에 의존
+print(styler("하지 말라고 일렀다.", 3))
+print(styler("정상에 이르렀다.", 3))
+```
+```
+하지 말라고 일렀습니다.
+정상에 일렀습니다. (should be "정상에 이르렀습니다")
 ```
 
 
