@@ -14,7 +14,7 @@ Politely is an explainable politeness styler for the Korean language (work in pr
 
 Install `politely` directly from github
 ```
-pip3 install git+https://github.com/eubinecto/politely.git@v2.6
+pip3 install git+https://github.com/eubinecto/politely.git@v2.6.1
 ```
 `politely` heavily relies on `khaiii` for morpheme analysis. Install `khaiii`, as instructed in [the official document](https://github.com/kakao/khaiii/wiki/빌드-및-설치)
 ```
