@@ -28,7 +28,7 @@ pip3 install package_python/.
 ### 2️⃣ Speak `politely` with `Styler`
 
 ```python3
-from politely.styler import Styler
+from politely import Styler
 
 styler = Styler()
 print(styler("난 내 목표를 향해 달려.", 2))  # casual -> polite
