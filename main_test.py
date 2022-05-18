@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from politely.processors import Styler
+from politely import Styler
 
 
 class TestStyler(TestCase):

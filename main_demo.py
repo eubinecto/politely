@@ -1,5 +1,5 @@
 
-from politely.processors import Styler
+from politely import Styler
 
 SENTS = [
     # ㅂ 불규칙

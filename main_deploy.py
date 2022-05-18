@@ -3,12 +3,12 @@ It's okay to write dirty stuff, at least as of right now.
 """
 from typing import Tuple
 import streamlit as st
-from politely.processors import Styler, Explainer, Translator
+from politely import Styler, Explainer, Translator
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 
 
 # instantiate processors here
-# @st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True)
 def cache_resources() -> Tuple[Styler, Explainer, Translator]:
     styler = Styler()
     explainer = Explainer(styler.logs)

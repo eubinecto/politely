@@ -1,5 +1,5 @@
 
-from politely.processors import Translator
+from politely import Translator
 
 
 def main():
