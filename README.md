@@ -29,7 +29,6 @@ pip3 install package_python/.
 
 ```python3
 from politely import Styler
-
 styler = Styler()
 print(styler("난 내 목표를 향해 달려.", 2))  # casual -> polite
 print(styler("난 내 목표를 향해 달려.", 3))  # casual -> formal
