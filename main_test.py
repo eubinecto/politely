@@ -27,6 +27,20 @@ class TestStyler(TestCase):
         self.styler.preprocess(sent)
         self.assertEqual("이것은 예시 문장이다.", self.styler.out)
 
+    def test_EF_ra(self):
+        """
+        종결어미 -라
+        """
+        sent = "최선을 다하라."
+        self.assertEqual("최선을 다하라.", self.styler(sent, 1))
+        self.assertEqual("최선을 다하세요.", self.styler(sent, 2))
+        self.assertEqual("최선을 다합시다.", self.styler(sent, 3))
+        # 이미 규칙으로 존재하는 -세요 때문에 얘는 달라져야함
+        sent = "최선을 다하세요."
+        self.assertEqual("최선을 다해.", self.styler(sent, 1))
+        self.assertEqual("최선을 다하세요.", self.styler(sent, 2))
+        self.assertEqual("최선을 다하십시오.", self.styler(sent, 3))
+
     def test_EF_ja(self):
         sent = "자 이제 먹자."
         self.assertEqual("자 이제 먹자.", self.styler(sent, 1))  
