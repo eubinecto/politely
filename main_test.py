@@ -125,7 +125,19 @@ class TestStyler(TestCase):
         self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, 2))
         self.assertEqual("좀만 더 버텨봅시다.", self.styler(sent, 3))
 
+    def test_EF_ni_q(self):
+        """
+        의문형 종결어미 -니?
+        """
+        sent = "오늘 하루 잘 보냈니?"
+        self.assertEqual("오늘 하루 잘 보냈니?", self.styler(sent, 1))
+        self.assertEqual("오늘 하루 잘 보냈나요?", self.styler(sent, 2))
+        self.assertEqual("오늘 하루 잘 보냈습니까?", self.styler(sent, 3))
+
     def test_EF_dae_q(self):
+        """
+        의문형 종결어미 -대?
+        """
         sent = "걔 오늘 기분이 왜 이렇게 좋대?"
         self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대?", self.styler(sent, 1))
         self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대요?", self.styler(sent, 2))
@@ -135,9 +147,15 @@ class TestStyler(TestCase):
         self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대요?", self.styler(sent, 2))
         self.assertEqual("걔 오늘 기분이 왜 이렇게 좋습니까?", self.styler(sent, 3))
 
+    def test_EF_daeyo_q(self):
+        sent = "잘 하시겠대요?"
+        self.assertEqual("잘 하시겠대?", self.styler(sent, 1))
+        self.assertEqual("잘 하시겠대요?", self.styler(sent, 2))
+        self.assertEqual("잘 하시겠답니까?", self.styler(sent, 3))
+
     def test_EF_eo_q(self):
         """
-        어?
+        의문형 종결어미 -어?
         """
         # 했어?
         sent = "어제 공부는 마무리 했어?"
@@ -148,6 +166,24 @@ class TestStyler(TestCase):
         self.assertEqual("어제 공부는 마무리 했어?", self.styler(sent, 1))  
         self.assertEqual("어제 공부는 마무리 했어요?", self.styler(sent, 2))
         self.assertEqual("어제 공부는 마무리 했습니까?", self.styler(sent, 3))
+
+    def test_EF_eoyo_q(self):
+        """
+        의문형 종결어미 -어요?
+        """
+        sent = "괜찮겠어요?"
+        self.assertEqual("괜찮겠어?", self.styler(sent, 1))
+        self.assertEqual("괜찮겠어요?", self.styler(sent, 2))
+        self.assertEqual("괜찮겠습니까?", self.styler(sent, 3))
+
+    def test_EF_jo_q(self):
+        """
+        의문형 종결어미 -죠?
+        """
+        sent = "괜찮겠죠?"
+        self.assertEqual("괜찮겠지?", self.styler(sent, 1))
+        self.assertEqual("괜찮겠죠?", self.styler(sent, 2))
+        self.assertEqual("괜찮겠습니까?", self.styler(sent, 3))
 
     def test_EF_si_eo_q(self):
         """
