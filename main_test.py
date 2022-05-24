@@ -46,8 +46,10 @@ class TestStyler(TestCase):
         self.assertEqual("자 이제 먹자.", self.styler(sent, 1))  
         self.assertEqual("자 이제 먹어요.", self.styler(sent, 2))
         self.assertEqual("자 이제 먹읍시다.", self.styler(sent, 3))
+
+    def test_EF_eoyo(self):
         sent = "자 이제 먹어요."
-        self.assertEqual("자 이제 먹어.", self.styler(sent, 1))  
+        self.assertEqual("자 이제 먹어.", self.styler(sent, 1))
         self.assertEqual("자 이제 먹어요.", self.styler(sent, 2))
         self.assertEqual("자 이제 먹습니다.", self.styler(sent, 3))
 
@@ -120,6 +122,8 @@ class TestStyler(TestCase):
         self.assertEqual("좀만 더 버텨봐.", self.styler(sent, 1))
         self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, 2))
         self.assertEqual("좀만 더 버텨봅시다.", self.styler(sent, 3))
+
+    def test_boa_yo(self):
         sent = "좀만 더 버텨봐요"
         self.assertEqual("좀만 더 버텨봐.", self.styler(sent, 1))
         self.assertEqual("좀만 더 버텨봐요.", self.styler(sent, 2))
@@ -138,20 +142,22 @@ class TestStyler(TestCase):
         """
         의문형 종결어미 -대?
         """
-        sent = "걔 오늘 기분이 왜 이렇게 좋대?"
-        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대?", self.styler(sent, 1))
-        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대요?", self.styler(sent, 2))
-        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋습니까?", self.styler(sent, 3))
-        sent = "걔 오늘 기분이 왜 이렇게 좋대요?"
-        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대?", self.styler(sent, 1))
-        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋대요?", self.styler(sent, 2))
-        self.assertEqual("걔 오늘 기분이 왜 이렇게 좋습니까?", self.styler(sent, 3))
+        sent = "걔 오늘 기분이 왜 그렇게 좋대?"
+        self.assertEqual("걔 오늘 기분이 왜 그렇게 좋대?", self.styler(sent, 1))
+        self.assertEqual("걔 오늘 기분이 왜 그렇게 좋대요?", self.styler(sent, 2))
+        self.assertEqual("걔 오늘 기분이 왜 그렇게 좋습니까?", self.styler(sent, 3))
 
-    def test_EF_daeyo_q(self):
+    def test_EF_daeyo_q_1(self):
         sent = "잘 하시겠대요?"
         self.assertEqual("잘 하시겠대?", self.styler(sent, 1))
         self.assertEqual("잘 하시겠대요?", self.styler(sent, 2))
         self.assertEqual("잘 하시겠답니까?", self.styler(sent, 3))
+
+    def test_EF_daeyo_q_2(self):
+        sent = "걔 오늘 기분이 왜 그렇게 좋대요?"
+        self.assertEqual("걔 오늘 기분이 왜 그렇게 좋대?", self.styler(sent, 1))
+        self.assertEqual("걔 오늘 기분이 왜 그렇게 좋대요?", self.styler(sent, 2))
+        self.assertEqual("걔 오늘 기분이 왜 그렇게 좋습니까?", self.styler(sent, 3))
 
     def test_EF_eo_q(self):
         """
@@ -162,12 +168,18 @@ class TestStyler(TestCase):
         self.assertEqual("어제 공부는 마무리 했어?", self.styler(sent, 1))  
         self.assertEqual("어제 공부는 마무리 했어요?", self.styler(sent, 2))
         self.assertEqual("어제 공부는 마무리 했습니까?", self.styler(sent, 3))
-        sent = "어제 공부는 마무리 했어요?"
-        self.assertEqual("어제 공부는 마무리 했어?", self.styler(sent, 1))  
-        self.assertEqual("어제 공부는 마무리 했어요?", self.styler(sent, 2))
-        self.assertEqual("어제 공부는 마무리 했습니까?", self.styler(sent, 3))
 
-    def test_EF_eoyo_q(self):
+    def test_EF_si_eo_q(self):
+        """
+        시 + 의문형 종결어미 -어?
+        """
+        # 가셔? (가시어?)
+        sent = "어디 가셔?"
+        self.assertEqual("어디 가셔?", self.styler(sent, 1))
+        self.assertEqual("어디 가셔요?", self.styler(sent, 2))
+        self.assertEqual("어디 가십니까?", self.styler(sent, 3))
+
+    def test_EF_eoyo_q_1(self):
         """
         의문형 종결어미 -어요?
         """
@@ -175,6 +187,12 @@ class TestStyler(TestCase):
         self.assertEqual("괜찮겠어?", self.styler(sent, 1))
         self.assertEqual("괜찮겠어요?", self.styler(sent, 2))
         self.assertEqual("괜찮겠습니까?", self.styler(sent, 3))
+
+    def test_EF_eoyo_q_2(self):
+        sent = "순서를 바꾸는건 어때요?"
+        self.assertEqual("순서를 바꾸는건 어때?", self.styler(sent, 1))
+        self.assertEqual("순서를 바꾸는건 어때요?", self.styler(sent, 2))
+        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, 3))
 
     def test_EF_jo_q(self):
         """
@@ -185,26 +203,83 @@ class TestStyler(TestCase):
         self.assertEqual("괜찮겠죠?", self.styler(sent, 2))
         self.assertEqual("괜찮겠습니까?", self.styler(sent, 3))
 
-    def test_EF_si_eo_q(self):
+    def test_EF_ya_q(self):
         """
-        시어?
+        의문형 종결어미 -야?
         """
-        # 가셔? (가시어?)
-        sent = "어디 가셔?"
-        self.assertEqual("어디 가셔?", self.styler(sent, 1))
-        self.assertEqual("어디 가셔요?", self.styler(sent, 2))
-        self.assertEqual("어디 가십니까?", self.styler(sent, 3))
-        sent = "어디 가세요?"
-        self.assertEqual("어디 가셔?", self.styler(sent, 1))
-        self.assertEqual("어디 가세요?", self.styler(sent, 2))
-        self.assertEqual("어디 가십니까?", self.styler(sent, 3))
+        sent = "나랑 같이 갈꺼야?"
+        self.assertEqual("나랑 같이 갈꺼야?", self.styler(sent, 1))
+        self.assertEqual("저랑 같이 갈꺼죠?", self.styler(sent, 2))
+        self.assertEqual("저랑 같이 갈껍니까?", self.styler(sent, 3))
+
+    def test_EF_supnigga_q(self):
+        """
+        의문형 종결어미 -습니까?
+        """
+        sent = "다 했습니까?"
+        self.assertEqual("다 했어?", self.styler(sent, 1))
+        self.assertEqual("다 했어요?", self.styler(sent, 2))
+        self.assertEqual("다 했습니까?", self.styler(sent, 3))
+
+    def test_EF_bieup_nigga_q(self):
+        """
+        의문형 종결어미 -ㅂ니까?
+        """
+        sent = "이제 시작합니까?"
+        self.assertEqual("이제 시작해?", self.styler(sent, 1))
+        self.assertEqual("이제 시작해요?", self.styler(sent, 2))
+        self.assertEqual("이제 시작합니까?", self.styler(sent, 3))
+
+    def test_EF_rieul_ggayo_q(self):
+        """
+        의문형 종결어미 ㄹ까요?
+        """
+        sent = "시작해볼까요?"
+        self.assertEqual("이제 사잭해볼까?", self.styler(sent, 1))
+        self.assertEqual("이제 시작해볼까요?", self.styler(sent, 2))
+        self.assertEqual("이제 시작해보겠습니까?", self.styler(sent, 3))
+
+    def test_EF_ji_q(self):
+        """
+        의문형 종결어미 -지?
+        """
+        sent = "해낼 수 있지?"
+        self.assertEqual("해낼 수 있지?", self.styler(sent, 1))
+        self.assertEqual("해낼 수 있죠?", self.styler(sent, 2))
+        self.assertEqual("해낼 수 있습니까?", self.styler(sent, 3))
+
+    def test_EF_eulgga_q(self):
+        """
+        의문형 종결어미 -을까?
+        """
+        sent = "왜 그랬을까?"
+        self.assertEqual("왜 그랬을까?", self.styler(sent, 1))
+        self.assertEqual("왜 그랬을까요?", self.styler(sent, 2))
+        self.assertEqual("왜 그랬습니까?", self.styler(sent, 3))
+
+    def test_EF_eulggayo_q(self):
+        """
+        의문형 종결어미 -을까요?
+        """
+        sent = "왜 그랬을까요?"
+        self.assertEqual("왜 그랬을까?", self.styler(sent, 1))
+        self.assertEqual("왜 그랬을까요?", self.styler(sent, 2))
+        self.assertEqual("왜 그랬습니까?", self.styler(sent, 3))
+
+    def test_EF_nayo_q(self):
+        """
+        의문형 종결어미 -나요?
+        """
+        sent = "왜 그랬나요?"
+        self.assertEqual("왜 그랬어?", self.styler(sent, 1))
+        self.assertEqual("왜 그랬나요?", self.styler(sent, 2))
+        self.assertEqual("왜 그랬습니까?", self.styler(sent, 3))
 
     def test_EF_ddae_q(self):
+        """
+        의문형 종결어미 -떄?
+        """
         sent = "순서를 바꾸는건 어때?"
-        self.assertEqual("순서를 바꾸는건 어때?", self.styler(sent, 1))  
-        self.assertEqual("순서를 바꾸는건 어때요?", self.styler(sent, 2))
-        self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, 3))
-        sent = "순서를 바꾸는건 어때요?"
         self.assertEqual("순서를 바꾸는건 어때?", self.styler(sent, 1))  
         self.assertEqual("순서를 바꾸는건 어때요?", self.styler(sent, 2))
         self.assertEqual("순서를 바꾸는건 어떻습니까?", self.styler(sent, 3))
@@ -589,3 +664,13 @@ class TestStyler(TestCase):
         self.assertEqual("자, 떠나자. 동해바다로.", self.styler(sent, 1))
         self.assertEqual("자, 떠나요. 동해바다로.", self.styler(sent, 2))
         self.assertEqual("자, 떠납시다. 동해바다로.", self.styler(sent, 3))
+
+    @unittest.skip
+    def test_multiple_1(self):
+        # 음... 이걸 하나만 지정하는게 아니라, 그냥 여러개가 가능하도록 허용하는게?
+        # 죠? -> 야? / 지? 둘다 가능함. assertIn으로 바뀌어야함.
+        sent = "저랑 같이 갈꺼죠?"
+        self.assertIn("나랑 같이 갈꺼야?", self.styler(sent, 1))
+        self.assertIn("나랑 같이 갈꺼지?", self.styler(sent, 1))
+        self.assertIn("저랑 같이 갈꺼죠?", self.styler(sent, 2))
+        self.assertIn("저랑 같이 갈껍니까?", self.styler(sent, 3))
