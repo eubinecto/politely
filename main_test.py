@@ -7,7 +7,7 @@ def styler():
     return Styler()
 
 
-def test_preprocess():
+def test_preprocess(styler):
     sent = "이것은 예시 문장이다"
     styler.preprocess(sent)
     assert "이것은 예시 문장이다.", styler.out
@@ -16,7 +16,7 @@ def test_preprocess():
     assert "이것은 예시 문장이다.", styler.out
 
 
-def test_preprocess_trailing_spaces():
+def test_preprocess_trailing_spaces(styler):
     sent = "이것은 예시 문장이다  "
     styler.preprocess(sent)
     assert "이것은 예시 문장이다.", styler.out
@@ -25,7 +25,7 @@ def test_preprocess_trailing_spaces():
     assert "이것은 예시 문장이다.", styler.out
 
 
-def test_honorify_ra():
+def test_honorify_ra(styler):
     """
     종결어미 -라
     """
@@ -35,7 +35,7 @@ def test_honorify_ra():
     assert "최선을 다합시다.", styler(sent, 3)
 
 
-def test_honorify_ja():
+def test_honorify_ja(styler):
     """
     종결어미 -자
     """
@@ -45,7 +45,7 @@ def test_honorify_ja():
     assert "자 이제 먹읍시다.", styler(sent, 3)
 
 
-def test_honorify_nieun_dae():
+def test_honorify_nieun_dae(styler):
     """
     종결어미 ㄴ대
     """
@@ -55,7 +55,7 @@ def test_honorify_nieun_dae():
     assert "밥먹고 누우면 안 된답니다.", styler(sent, 3)
 
 
-def test_honorify_nieun_dae_yo():
+def test_honorify_nieun_dae_yo(styler):
     """
     종결어미 ㄴ대요
     """
@@ -65,14 +65,14 @@ def test_honorify_nieun_dae_yo():
     assert "밥먹고 누우면 안 된답니다.", styler(sent, 3)
 
 
-def test_honorify_gae():
+def test_honorify_gae(styler):
     sent = "회의를 시작할게."
     assert "회의를 시작할게.", styler(sent, 1)
     assert "회의를 시작할게요.", styler(sent, 2)
     assert "회의를 시작하겠습니다.", styler(sent, 3)
 
 
-def test_honorify_eo():
+def test_honorify_eo(styler):
     """
     종결어미 -어
     """
@@ -82,7 +82,7 @@ def test_honorify_eo():
     assert "그 일은 제가 처리했습니다.", styler(sent, 3)
 
 
-def test_honorify_yo():
+def test_honorify_yo(styler):
     """
     종결어미 -요
     """
@@ -92,7 +92,7 @@ def test_honorify_yo():
     assert "제 패션을 함부로 비꼬지마십시오.", styler(sent, 3)
 
 
-def test_honorify_ge_yo():
+def test_honorify_ge_yo(styler):
     """
     게 + 종결어미 -요
     """
@@ -102,7 +102,7 @@ def test_honorify_ge_yo():
     assert "회의를 시작하겠습니다.", styler(sent, 3)
 
 
-def test_honorify_yi_ya():
+def test_honorify_yi_ya(styler):
     """
     이+야
     """
@@ -112,7 +112,7 @@ def test_honorify_yi_ya():
     assert "그 일은 제 담당입니다.", styler(sent, 3)
 
 
-def test_honorify_se_yo():
+def test_honorify_se_yo(styler):
     """
     세+요
     """
@@ -123,7 +123,7 @@ def test_honorify_se_yo():
     assert "최선을 다하십시오.", styler(sent, 3)
 
 
-def test_honorify_yi_eyo():
+def test_honorify_yi_eyo(styler):
     """
     이 + 에요
     """
@@ -133,7 +133,7 @@ def test_honorify_yi_eyo():
     assert "그 일은 제 담당입니다.", styler(sent, 3)
 
 
-def test_honorify_eu_yo_1():
+def test_honorify_eu_yo_1(styler):
     """
     종결어미 -어요 (1)
     """
@@ -143,7 +143,7 @@ def test_honorify_eu_yo_1():
     assert "자 이제 먹습니다.", styler(sent, 3)
 
 
-def test_honorify_eu_yo_2():
+def test_honorify_eu_yo_2(styler):
     """
     종결어미 -어요 (2)
     """
@@ -153,7 +153,7 @@ def test_honorify_eu_yo_2():
     assert "그 일은 제가 처리했습니다.", styler(sent, 3)
 
 
-def test_honorify_bo_ayo():
+def test_honorify_bo_ayo(styler):
     """
     보 + 종결어미 -아요
     """
@@ -163,35 +163,35 @@ def test_honorify_bo_ayo():
     assert "좀만 더 버텨봅시다.", styler(sent, 3)
 
 
-def test_honorify_ma():
+def test_honorify_ma(styler):
     sent = "내 패션을 함부로 비꼬지마"
     assert "내 패션을 함부로 비꼬지마.", styler(sent, 1)
     assert "제 패션을 함부로 비꼬지마요.", styler(sent, 2)
     assert "제 패션을 함부로 비꼬지마십시오.", styler(sent, 3)
 
 
-def test_honorify_bo_a():
+def test_honorify_bo_a(styler):
     sent = "좀만 더 버텨봐"
     assert "좀만 더 버텨봐.", styler(sent, 1)
     assert "좀만 더 버텨봐요.", styler(sent, 2)
     assert "좀만 더 버텨봅시다.", styler(sent, 3)
 
 
-def test_honorify_dae_q():
+def test_honorify_dae_q(styler):
     sent = "걔 오늘 기분이 왜 이렇게 좋대?"
     assert "걔 오늘 기분이 왜 이렇게 좋대?", styler(sent, 1)
     assert "걔 오늘 기분이 왜 이렇게 좋대요?", styler(sent, 2)
     assert "걔 오늘 기분이 왜 이렇게 좋습니까?", styler(sent, 3)
 
 
-def test_honorify_dae_yo_q():
+def test_honorify_dae_yo_q(styler):
     sent = "걔 오늘 기분이 왜 이렇게 좋대요?"
     assert "걔 오늘 기분이 왜 이렇게 좋대?", styler(sent, 1)
     assert "걔 오늘 기분이 왜 이렇게 좋대요?", styler(sent, 2)
     assert "걔 오늘 기분이 왜 이렇게 좋습니까?", styler(sent, 3)
 
 
-def test_honorify_eo_q():
+def test_honorify_eo_q(styler):
     """
     어?
     """
@@ -202,7 +202,7 @@ def test_honorify_eo_q():
     assert "어제 공부는 마무리 했습니까?", styler(sent, 3)
 
 
-def test_honorify_eo_yo_q_1():
+def test_honorify_eo_yo_q_1(styler):
     """
     의문형 종결어미 -어요? (1)
     """
@@ -212,7 +212,7 @@ def test_honorify_eo_yo_q_1():
     assert "어제 공부는 마무리 했습니까?", styler(sent, 3)
 
 
-def test_honorify_eo_yo_q_2():
+def test_honorify_eo_yo_q_2(styler):
     """
     의문형 종결어미 -어요 (2)
     """
@@ -222,7 +222,7 @@ def test_honorify_eo_yo_q_2():
     assert "어디 가십니까?", styler(sent, 3)
 
 
-def test_honorify_si_eo_q():
+def test_honorify_si_eo_q(styler):
     """
     시 + 의문형 종결어미 -어?
     """
@@ -233,7 +233,7 @@ def test_honorify_si_eo_q():
     assert "어디 가십니까?", styler(sent, 3)
 
 
-def test_honorify_ddae_q():
+def test_honorify_ddae_q(styler):
     sent = "순서를 바꾸는건 어때?"
     assert "순서를 바꾸는건 어때?", styler(sent, 1)
     assert "순서를 바꾸는건 어때요?", styler(sent, 2)
@@ -245,7 +245,7 @@ def test_honorify_ddae_q():
 
 
 # --- tests by irregular conjugations --- #
-def test_conjugate_ah_1():
+def test_conjugate_ah_1(styler):
     """
     동모음 탈락
     걸어가어요 (x)
@@ -257,7 +257,7 @@ def test_conjugate_ah_1():
     assert "가까우니까 걸어갑시다.", styler(sent, 3)
 
 
-def test_conjugate_ah_2():
+def test_conjugate_ah_2(styler):
     """
     동모음 탈락
     떠나어요 (x)
@@ -269,7 +269,7 @@ def test_conjugate_ah_2():
     assert "자, 떠납시다. 동해바다로.", styler(sent, 3)
 
 
-def test_conjugate_ah_3():
+def test_conjugate_ah_3(styler):
     """
     동모음 탈락 (3)
     """
@@ -279,7 +279,7 @@ def test_conjugate_ah_3():
     assert "자, 떠납니다. 동해바다로.", styler(sent, 3)
 
 
-def test_conjugate_digud():
+def test_conjugate_digud(styler):
     """
     ㄷ 불규칙
     """
@@ -293,7 +293,7 @@ def test_conjugate_digud():
     assert "저는 오늘 그 사실을 깨달았습니다.", styler(sent, 3)
 
 
-def test_conjugate_ru():
+def test_conjugate_ru(styler):
     """
     르 불규칙
     e.g. 들르 + 어 -> 들러
@@ -313,7 +313,7 @@ def test_conjugate_ru():
     assert "지금은 좀 이릅니다.", styler(sent, 3)
 
 
-def test_conjugate_bieup_1():
+def test_conjugate_bieup_1(styler):
     """
     ㅂ 불규칙 (모음 조화 o)
     """
@@ -327,7 +327,7 @@ def test_conjugate_bieup_1():
     assert "모래가 참 곱습니다.", styler(sent, 3)
 
 
-def test_conjugate_bieup_2():
+def test_conjugate_bieup_2(styler):
     """
     ㅂ 불규칙 (모음 조화 x)
     """
@@ -341,7 +341,7 @@ def test_conjugate_bieup_2():
     assert "참 아름답습니다.", styler(sent, 3)
 
 
-def test_conjugate_bieup_3():
+def test_conjugate_bieup_3(styler):
     """
     더워의 경우.
     """
@@ -355,7 +355,7 @@ def test_conjugate_bieup_3():
     assert "오늘이 어제보다 덥습니다.", styler(sent, 3)
 
 
-def test_conjugate_bieup_4():
+def test_conjugate_bieup_4(styler):
     """
     가려워의 경우.
     """
@@ -369,7 +369,7 @@ def test_conjugate_bieup_4():
     assert "너무 가렵습니다.", styler(sent, 3)
 
 
-def test_conjugate_r_cho_is_bieup():
+def test_conjugate_r_cho_is_bieup(styler):
     """
     ㅂ니다
     """
@@ -379,7 +379,7 @@ def test_conjugate_r_cho_is_bieup():
     assert "이름은 김유빈입니다.", styler(sent, 3)
 
 
-def test_conjugate_siot():
+def test_conjugate_siot(styler):
     """
     ㅅ 불규칙
     """
@@ -393,7 +393,7 @@ def test_conjugate_siot():
     assert "거기에 선을 긋습니다.", styler(sent, 3)
 
 
-def test_conjugate_siot_exception():
+def test_conjugate_siot_exception(styler):
     """
     ㅅ 불규칙 (벗어는 예외)
     """
@@ -407,7 +407,7 @@ def test_conjugate_siot_exception():
     assert "한국의 목욕탕에서는 옷을 벗습니다.", styler(sent, 3)
 
 
-def test_conjugate_u():
+def test_conjugate_u(styler):
     """
     우 불규칙
     """
@@ -421,7 +421,7 @@ def test_conjugate_u():
     assert "이 포스팅 퍼가겠습니다.", styler(sent, 3)
 
 
-def test_conjugate_u_jup():
+def test_conjugate_u_jup(styler):
     """
     우 불규칙 - 줍은 예외
     """
@@ -435,7 +435,7 @@ def test_conjugate_u_jup():
     assert "쓰레기를 줍습니다.", styler(sent, 3)
 
 
-def test_conjugate_o():
+def test_conjugate_o(styler):
     """
     오 불규칙
     """
@@ -449,7 +449,7 @@ def test_conjugate_o():
     assert "오늘 제주도로 여행왔습니다.", styler(sent, 3)
 
 
-def test_conjugate_drop_ue():
+def test_conjugate_drop_ue(styler):
     """
     으 탈락 불규칙
     """
@@ -463,7 +463,7 @@ def test_conjugate_drop_ue():
     assert "전등을 껐습니다.", styler(sent, 3)
 
 
-def test_conjugate_gara():
+def test_conjugate_gara(styler):
     """
     -가라 불규칙
     """
@@ -477,7 +477,7 @@ def test_conjugate_gara():
     assert "저기로 가십시오.", styler(sent, 3)
 
 
-def test_conjugate_neura():
+def test_conjugate_neura(styler):
     """
     -너라 불규칙
     """
@@ -491,7 +491,7 @@ def test_conjugate_neura():
     assert "이리 오십시오.", styler(sent, 3)
 
 
-def test_conjugate_yue():
+def test_conjugate_yue(styler):
     """
     -여 불규칙
     """
@@ -505,7 +505,7 @@ def test_conjugate_yue():
     assert "저는 그리하지 아니했습니다.", styler(sent, 3)
 
 
-def test_conjugate_drop_hiut():
+def test_conjugate_drop_hiut(styler):
     """
     ㅎ 탈락
     """
@@ -519,7 +519,7 @@ def test_conjugate_drop_hiut():
     assert "하늘이 파랗습니다.", styler(sent, 3)
 
 
-def test_conjugate_drop_yi():
+def test_conjugate_drop_yi(styler):
     """
     ㅓ + 이.
     """
@@ -552,7 +552,7 @@ def test_more_2():
 
 
 @pytest.mark.skip()
-def test_khaiii_error_1():
+def test_khaiii_error_1(styler):
     """
     이건 khaiii에서의 문제다.
     "줍"만을 어간으로 추출해야하는데 알 수 없는 이유로 그렇게 되지 않는다.
@@ -571,7 +571,7 @@ def test_khaiii_error_1():
 
 
 @pytest.mark.skip()
-def test_khaiii_error_2():
+def test_khaiii_error_2(styler):
     """
     이것도 khaiii에서의 문제다.
     걷어를 맥락을 고려하지 않고 무조건적으로 걸어로 분석한다.
@@ -583,7 +583,7 @@ def test_khaiii_error_2():
 
 
 @pytest.mark.skip()
-def test_khaiii_error_3():
+def test_khaiii_error_3(styler):
     sent = "가까우니까 걸어가요."
     assert "가까우니까 걸어가자.", styler(sent, 1)
     assert "가까우니까 걸어가요.", styler(sent, 2)
@@ -591,7 +591,7 @@ def test_khaiii_error_3():
 
 
 @pytest.mark.skip()
-def test_contextual_1():
+def test_contextual_1(styler):
     # 이런 식으로 맥락이 필요한 경우도 대응이 어렵다. (존대 종결어미 선정에 맥락이 관여하는 경우)
     # 이제, 밥을 등, 단어 선택에 따라 formal의 형태가 달라지는데, 이것에 대응하는 것은 불가능하다.
     # 맥락이 필요하다. 오직 규칙만으로는 불가능하다.
@@ -602,7 +602,7 @@ def test_contextual_1():
 
 
 @pytest.mark.skip()
-def test_contextual_2():
+def test_contextual_2(styler):
     """
     -르 불규칙 (conjugation 규칙에 맥락이 관여하는 경우)
     e.g. 이르 + 어 -> 이르러
@@ -621,7 +621,7 @@ def test_contextual_2():
 
 
 @pytest.mark.skip()
-def test_contextual_3():
+def test_contextual_3(styler):
     """
     쓰레기를 주워요 -> 쓰레기를 주웁시다 / 쓰레기를 줍습니다 (존대 종결어미 선정에 맥락이 관여하는 경우)
     둘다 가능하다. 이 경우는 맥락이 필요하다. 규칙만으로는 불가능하다.
@@ -638,7 +638,7 @@ def test_contextual_3():
 
 
 @pytest.mark.skip()
-def test_contextual_4():
+def test_contextual_4(styler):
     """
     이것도 마찬가지로 맥락이 필요하다.
     떠나요 -> 떠나 / 떠나자, 둘 중 무엇이 정답인지는 맥락을 보아야만 알 수 있다.
