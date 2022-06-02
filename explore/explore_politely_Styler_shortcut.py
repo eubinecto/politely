@@ -1,4 +1,3 @@
-
 from politely import Styler
 
 
@@ -7,5 +6,5 @@ def main():
     print(styler("나한테 왜 그런거야?", 2))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

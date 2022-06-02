@@ -13,5 +13,5 @@ def main():
     # 음... 둘의 pos에 별 차이가 없네..
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

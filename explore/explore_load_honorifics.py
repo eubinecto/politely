@@ -12,5 +12,6 @@ def main():
     df = pd.DataFrame(honorifics)
     print(df)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

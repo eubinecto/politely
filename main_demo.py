@@ -1,4 +1,3 @@
-
 from politely import Styler
 
 SENTS = [
@@ -50,5 +49,5 @@ def main():
         print(sent, "->", ban, "|", jon, "|", formal)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

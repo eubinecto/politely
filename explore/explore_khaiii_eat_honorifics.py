@@ -7,5 +7,5 @@ def main():
         print(token)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

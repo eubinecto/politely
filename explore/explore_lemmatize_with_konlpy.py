@@ -1,6 +1,6 @@
-from konlpy.tag import Okt,  Kkma
+from konlpy.tag import Okt, Kkma
 
-JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java'
+JVM_PATH = "/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java"
 
 
 examples = [
@@ -12,7 +12,7 @@ examples = [
     "나는 그 상자를 들어요",
     "아 목마르다",
     "나는 공부할래",
-    "그가 여기로 오네"
+    "그가 여기로 오네",
 ]
 
 # 한국어 -> lemmatizer가.. 좀 문제가 많네.
@@ -33,5 +33,5 @@ def main():
     #     print(tokens)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

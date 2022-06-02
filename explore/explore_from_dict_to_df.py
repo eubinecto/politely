@@ -8,5 +8,6 @@ def main():
     df = pd.DataFrame(fetch_honorifics())
     print(df.transpose())
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

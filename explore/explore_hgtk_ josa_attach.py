@@ -1,21 +1,20 @@
-
 import hgtk
 
 
 def main():
     # 단어에.. 조사를 붙일 수 있다.
-    print(hgtk.josa.attach('하늘', hgtk.josa.EUN_NEUN))
-    print(hgtk.josa.attach('바다', hgtk.josa.EUN_NEUN))
-    print(hgtk.josa.attach('하늘', hgtk.josa.EUL_REUL))
-    print(hgtk.josa.attach('바다', hgtk.josa.EUL_REUL))
-    print(hgtk.josa.attach('여러분', hgtk.josa.EUL_REUL))
-    print(hgtk.josa.attach('하늘', hgtk.josa.IDA_DA))
-    print(hgtk.josa.attach('바다', hgtk.josa.IDA_DA))
-    print(hgtk.josa.attach('하늘', hgtk.josa.EURO_RO))
-    print(hgtk.josa.attach('바다', hgtk.josa.EURO_RO))
-    print(hgtk.josa.attach('태양', hgtk.josa.EURO_RO))
-    print(hgtk.josa.attach('하늘', hgtk.josa.GWA_WA))
-    print(hgtk.josa.attach('바다', hgtk.josa.GWA_WA))
+    print(hgtk.josa.attach("하늘", hgtk.josa.EUN_NEUN))
+    print(hgtk.josa.attach("바다", hgtk.josa.EUN_NEUN))
+    print(hgtk.josa.attach("하늘", hgtk.josa.EUL_REUL))
+    print(hgtk.josa.attach("바다", hgtk.josa.EUL_REUL))
+    print(hgtk.josa.attach("여러분", hgtk.josa.EUL_REUL))
+    print(hgtk.josa.attach("하늘", hgtk.josa.IDA_DA))
+    print(hgtk.josa.attach("바다", hgtk.josa.IDA_DA))
+    print(hgtk.josa.attach("하늘", hgtk.josa.EURO_RO))
+    print(hgtk.josa.attach("바다", hgtk.josa.EURO_RO))
+    print(hgtk.josa.attach("태양", hgtk.josa.EURO_RO))
+    print(hgtk.josa.attach("하늘", hgtk.josa.GWA_WA))
+    print(hgtk.josa.attach("바다", hgtk.josa.GWA_WA))
 
     # 다음과 같이 조사를 두음법칙에 맞게 붙이는 것이 가능하다.
     """
@@ -33,5 +32,5 @@ def main():
     """
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

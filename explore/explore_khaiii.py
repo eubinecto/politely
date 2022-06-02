@@ -1,5 +1,5 @@
 from khaiii import KhaiiiApi
-
+from politely import analyser
 
 sents = [
     "좋아요.",
@@ -36,7 +36,7 @@ sents = [
     "모든 것을 걸게요.",
     "안녕하세요.",
     "안녕하십니까.",
-    "끝나겠네요."
+    "끝나겠네요.",
 ]
 
 
@@ -47,6 +47,10 @@ def main():
             print("=====")
             print(token)
 
+    for sent in sents:
+        for token in analyser.analyze(sent):
+            print("=====")
+            print(token)
 
 """
 # 굉장히 빠르고 정확하다! 띄어쓰기를 훼손하지도 않고... 심플하고... 정확히 내가 바라던 것인 것 같다.
@@ -62,5 +66,5 @@ konlpy, kiwi에 걸쳐... 여기에 종착하게 되는 것인가?
 깼다.	깨/VV + 었/EP + 다/EF + ./SF
 """
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

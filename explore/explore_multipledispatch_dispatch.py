@@ -11,7 +11,7 @@ from multipledispatch import dispatch
 
 
 @dispatch(int, int)
-def add(a: int,  b: int) -> int:
+def add(a: int, b: int) -> int:
     """
     add two numbers
     """
@@ -28,7 +28,6 @@ def add(a: list) -> int:
 
 # you can do this with a member instance as well
 class Styler:
-
     @dispatch(str, str, str)
     def __call__(self, sent: str, listener: str, environ: str):
         """
@@ -53,5 +52,5 @@ def main():
     styler("hi", 2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

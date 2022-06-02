@@ -6,5 +6,5 @@ def main():
     print(hgtk.letter.compose(chosung="ㄴ", joongsung="ㅏ", jongsung="ㄴ"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

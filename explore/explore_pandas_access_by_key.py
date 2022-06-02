@@ -1,4 +1,3 @@
-
 """
 reference:
 https://stackoverflow.com/a/59381603
@@ -11,10 +10,10 @@ import pandas as pd
 def main():
     rules = fetch_rules()
     df = pd.DataFrame(rules)
-    print(df.loc['teacher']['private'])
+    print(df.loc["teacher"]["private"])
     print(df.index)
     print(df.columns)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
