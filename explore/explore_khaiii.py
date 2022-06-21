@@ -48,9 +48,10 @@ def main():
             print(token)
 
     for sent in sents:
-        for token in analyser.analyze(sent):
+        for token in analyser._analyze(sent):
             print("=====")
             print(token)
+
 
 """
 # 굉장히 빠르고 정확하다! 띄어쓰기를 훼손하지도 않고... 심플하고... 정확히 내가 바라던 것인 것 같다.

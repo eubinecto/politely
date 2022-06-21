@@ -1,12 +1,11 @@
-from politely.fetchers import fetch_rules, fetch_honorifics
-from politely.stylers import styler
-from khaiii.khaiii import KhaiiiApi
+from politely.fetchers import fetch_rules, fetch_honorifics, fetch_listeners, fetch_environs
 import pandas as pd  # noqa
 
-# initialise the resources to use
+# initialise the global constants here
 RULES = fetch_rules()
 HONORIFICS = fetch_honorifics()
-LISTENERS = pd.DataFrame(RULES).transpose().index
-ENVIRONS = pd.DataFrame(RULES).transpose().columns
-# initialise the analyser to use
-analyser = KhaiiiApi()
+LISTENERS = fetch_listeners()
+ENVIRONS = fetch_environs()
+
+# quick access
+from politely.stylers import style
