@@ -1,5 +1,5 @@
 from politely import style
-from politely.stylers import _preprocess  # noqa
+from politely.style import _preprocess  # noqa
 import pytest
 
 

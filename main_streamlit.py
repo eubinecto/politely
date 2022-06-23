@@ -5,15 +5,8 @@ import streamlit as st
 import pandas as pd
 import os
 import requests
-from politely import Styler
+from politely import style
 from politely.errors import EFNotIncludedError, EFNotSupportedError
-
-
-# instantiate a styler from here
-@st.cache(allow_output_mutation=True)
-def load_styler() -> Styler:
-    styler = Styler()
-    return styler
 
 
 def translate(sent: str) -> str:
@@ -33,7 +26,7 @@ def translate(sent: str) -> str:
     return r.json()["message"]["result"]["translatedText"]
 
 
-def explain(logs: Styler.Logs):
+def explain():
     # CSS to inject contained in a string
     hide_table_row_index = """
                        <style>
@@ -83,9 +76,9 @@ def explain(logs: Styler.Logs):
     st.markdown("🚧 on development 🚧")
 
 
-def describe_case(styler: Styler, sent: str, listener: str, environ: str):
+def describe_case(sent: str, listener: str, environ: str):
     try:
-        tuned = styler(sent, listener, environ)
+        tuned = style(sent, listener, environ)
     except EFNotIncludedError as e1:
         st.error("ERROR: " + str(e1))
     except EFNotSupportedError as e2:
@@ -93,12 +86,11 @@ def describe_case(styler: Styler, sent: str, listener: str, environ: str):
     else:
         st.write(tuned)
         with st.expander("Need an explanation?"):
-            explain(styler.logs)
+            explain()
 
 
 def main():
     # parsing the arguments
-    styler = load_styler()
     st.title("Politely: an explainable Politeness Styler for the Korean language")
     desc = (
         "- 💡: [Jieun Kiaer](https://www.orinst.ox.ac.uk/people/jieun-kiaer) & [Eu-Bin"
@@ -121,11 +113,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(styler, target, listener, environ)
+                describe_case(target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(styler, target, listener, environ)
+                describe_case(target, listener, environ)
             # 2
             st.markdown("---")
             listener = "boss at work"
@@ -134,11 +126,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(styler, target, listener, environ)
+                describe_case(target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(styler, target, listener, environ)
+                describe_case(target, listener, environ)
             # 3
             st.markdown("---")
             listener = "adult family"
@@ -147,11 +139,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(styler, target, listener, environ)
+                describe_case(target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(styler, target, listener, environ)
+                describe_case(target, listener, environ)
 
 
 if __name__ == "__main__":

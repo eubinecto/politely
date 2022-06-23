@@ -1,4 +1,9 @@
+"""
+A script for styling it.
+"""
+
 import re
+from typing import Tuple
 import requests  # noqa
 import pandas as pd  # noqa
 from politely.errors import EFNotIncludedError, EFNotSupportedError
@@ -102,7 +107,7 @@ def _conjugate(tokens: list) -> str:
 
 # --- stylers --- #
 @dispatch(str, int)
-def style(sent: str, politeness: int) -> str:
+def style(sent: str, politeness: int) -> Tuple[str, dict]:
     """
     The first way of using style.
     """
@@ -111,15 +116,17 @@ def style(sent: str, politeness: int) -> str:
     out = _check(out)
     out = _honorify(out, politeness)
     out = _conjugate(out)
-    return out
+    # TODO: collect all the logs here
+    logs = ...
+    return out, logs
 
 
 @dispatch(str, str, str)
-def style(sent: str, listener: str, environ: str) -> str:
+def style(sent: str, listener: str, environ: str) -> Tuple[str, dict]:
     """
     The second way of using style.
     """
     case = RULES[listener][environ]
-    # TODO: log the case
-    out = style(sent, case["politeness"])
-    return out
+    out, logs = style(sent, case["politeness"])
+    logs.update(...)
+    return out, logs
