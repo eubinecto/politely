@@ -19,14 +19,11 @@ def main():
     lens = np.array([token.len for token in tokens] + [0])
     sums = np.array(starts) + np.array(lens)
     spacings = (starts[1:] - sums[:-1]) > 0  # if it is greater than 1, than it should be spaced.
-    texts = [
-        token.form + " " if spacing else token.form
-        for token, spacing in zip(tokens, spacings)
-    ]
+    texts = [token.form + " " if spacing else token.form for token, spacing in zip(tokens, spacings)]
     # 하지만 이렇게 spacing을 복구해두어도, 이미 형태소로 쪼개져버린 기존의 단어는 훼손된다.
     sent = "".join(texts)
     print(sent)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -4,9 +4,10 @@ https://github.com/konlpy/konlpy/issues/353#issuecomment-916166604
 """
 
 from konlpy.tag import Okt
+
 # zulu - macOS/arm64/version15 설치 이후.
 # 해당 path를 지정.
-JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java'
+JVM_PATH = "/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java"
 
 
 def main():
@@ -19,5 +20,5 @@ def main():
     print(tok2pos)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

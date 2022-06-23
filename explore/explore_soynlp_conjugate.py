@@ -38,5 +38,5 @@ def main():
     print(conjugate("되", "ㅂ니다"))  # -> 일컬어요 ddd
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

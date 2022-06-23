@@ -1,5 +1,4 @@
-
-from politely import Styler
+from politely import style
 
 SENTS = [
     # ㅂ 불규칙
@@ -28,27 +27,17 @@ SENTS = [
     "그는 전설이에요",
 ]
 
-styler = Styler()
 
-
-def main():
-    # first way of using it - politeness is not determined
-    for sent in SENTS:
-        listener = "friends and junior"
-        environ = "formal"
-        styled = styler(sent, listener, environ)
-        print(sent, "->", styled)
-        print(styler.logs.honorifics)
-        print(styler.logs.conjugations)
-
-    # the other way of using it - politeness is determined
-    print("--------")
-    for sent in SENTS:
-        ban = styler(sent, 1)
-        jon = styler(sent, 2)
-        formal = styler(sent, 3)
-        print(sent, "->", ban, "|", jon, "|", formal)
-
-
-if __name__ == '__main__':
-    main()
+# first way of using it - politeness is not determined
+for sent in SENTS:
+    listener = "friends and junior"
+    environ = "formal"
+    styled = style(sent, listener, environ)
+    print(sent, "->", styled)
+# the other way of using it - politeness is determined
+print("----------------------------------------------")
+for sent in SENTS:
+    ban = style(sent, 1)
+    jon = style(sent, 2)
+    formal = style(sent, 3)
+    print(sent, "->", ban, "|", jon, "|", formal)

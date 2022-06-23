@@ -1,4 +1,3 @@
-
 from politely.fetchers import fetch_okt
 from kiwipiepy import Kiwi
 
@@ -31,5 +30,6 @@ def main():
 
     # 결론 = 그래서 konlpy보단 kiwi를 쓰는 편이 더 정확할 것이다.
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
