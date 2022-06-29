@@ -10,19 +10,10 @@ Politely is an explainable politeness styler for the Korean language (work in pr
 
 
 ## Quick Start 🚀
-### 1️⃣ setup `politely`
+### 1️⃣ Install `politely`
 
-Install `politely` directly from github
-```
-pip3 install git+https://github.com/eubinecto/politely.git@v2.6.1
-```
-`politely` heavily relies on `khaiii` for morpheme analysis. Install `khaiii`, as instructed in [the official document](https://github.com/kakao/khaiii/wiki/빌드-및-설치)
-```
-git clone https://github.com/kakao/khaiii.git
-mkdir khaiii/build
-cmake khaiii
-make package_python
-pip3 install package_python/.
+```python3
+pip3 install politely
 ```
 
 ### 2️⃣ Speak `politely` with `Styler`

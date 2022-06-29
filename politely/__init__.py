@@ -8,3 +8,6 @@ ENVIRONS = fetch_environs()
 
 # quick access
 from politely.styler import Styler
+
+
+__version__ = "v2.7.0.dev0"
