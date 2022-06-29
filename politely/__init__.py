@@ -10,4 +10,4 @@ ENVIRONS = fetch_environs()
 from politely.styler import Styler
 
 
-__version__ = "v2.7.0.dev0"
+__version__ = "v3.0.0"
