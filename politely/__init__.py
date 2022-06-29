@@ -7,4 +7,4 @@ LISTENERS = fetch_listeners()
 ENVIRONS = fetch_environs()
 
 # quick access
-from politely.style import style
+from politely.styler import Styler

@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 import os
 import requests
-from politely import style
+from politely import Styler, RULES
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 
 
@@ -26,7 +26,7 @@ def translate(sent: str) -> str:
     return r.json()["message"]["result"]["translatedText"]
 
 
-def explain():
+def explain(logs: dict):
     # CSS to inject contained in a string
     hide_table_row_index = """
                        <style>
@@ -38,7 +38,7 @@ def explain():
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     # --- step 1 ---
     msg_1 = "### 1️⃣ Politeness"
-    politeness = logs.case["politeness"]
+    politeness = logs["__call__"]["in"]["politeness"]
     politeness = (
         "casual style (-어)"
         if politeness == 1
@@ -46,25 +46,25 @@ def explain():
         if politeness == 2
         else "formal style (-습니다)"
     )
-    reason = logs.case["reason"]
+    reason = logs["case"]["reason"]
     msg_1 += (
-        f"\nYou should speak in a `{politeness}` to your `{logs.args['listener']}`"
-        f" when you are in a `{logs.args['environ']}` environment."
+        f"\nYou should speak in a `{politeness}` to your `{logs['listener']}`"
+        f" when you are in a `{logs['environ']}` environment."
     )
     msg_1 += f"\n\n Why so? {reason}"
     st.markdown(msg_1)
     # --- step 2 ---
     msg_2 = f"### 2️⃣ Morphemes"
-    before = logs.args["sent"].split(" ")
-    after = ["".join(list(map(str, token.morphs))) for token in logs.steps[0]]
+    before = logs["__call__"]["in"]["sent"].split(" ")
+    after = ["".join(list(map(str, token.morphs))) for token in logs["analyze"]["out"]]
     df = pd.DataFrame(zip(before, after), columns=["before", "after"])
     st.markdown(msg_2)
     st.markdown(df.to_markdown(index=False))
     # --- step 3 ---
     msg_3 = f"### 3️⃣ Honorifics"
-    before = " ".join(["".join(list(map(str, token.morphs))) for token in logs.steps[0]])
-    after = " ".join(["".join(elem) if isinstance(elem, list) else elem for elem in logs.steps[1]])
-    for key, val in logs.honorifics:
+    before = " ".join(["".join(list(map(str, token.morphs))) for token in logs["analyze"]["out"]])
+    after = " ".join(["".join(elem) if isinstance(elem, list) else elem for elem in logs["honorify"]["out"]])
+    for key, val in logs["honorifics"]:
         before = before.replace(key, f"`{key}`")
         after = after.replace(val, f"`{val}`")
     df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=["before", "after"])
@@ -76,9 +76,10 @@ def explain():
     st.markdown("🚧 on development 🚧")
 
 
-def describe_case(sent: str, listener: str, environ: str):
+def describe_case(styler: Styler, sent: str, listener: str, environ: str):
     try:
-        tuned = style(sent, listener, environ)
+        case = RULES[listener][environ]
+        tuned = styler(sent, case["politeness"])
     except EFNotIncludedError as e1:
         st.error("ERROR: " + str(e1))
     except EFNotSupportedError as e2:
@@ -86,7 +87,8 @@ def describe_case(sent: str, listener: str, environ: str):
     else:
         st.write(tuned)
         with st.expander("Need an explanation?"):
-            explain()
+            styler.logs.update({"listener": listener, "environ": environ, "case": case})
+            explain(styler.logs)
 
 
 def main():
@@ -103,6 +105,7 @@ def main():
     )
     st.markdown(desc)
     sent = st.text_input("Type an English sentence to translate", value="I run towards my goal")
+    styler = Styler()
     if st.button(label="Translate"):
         with st.spinner("Please wait..."):
             target = translate(sent)
@@ -113,11 +116,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(target, listener, environ)
+                describe_case(styler, target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(target, listener, environ)
+                describe_case(styler, target, listener, environ)
             # 2
             st.markdown("---")
             listener = "boss at work"
@@ -126,11 +129,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(target, listener, environ)
+                describe_case(styler, target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(target, listener, environ)
+                describe_case(styler, target, listener, environ)
             # 3
             st.markdown("---")
             listener = "adult family"
@@ -139,11 +142,11 @@ def main():
             with left:
                 environ = "comfortable & informal"
                 st.subheader(f"`{environ}`")
-                describe_case(target, listener, environ)
+                describe_case(styler, target, listener, environ)
             with right:
                 environ = "formal"
                 st.subheader(f"`{environ}`")
-                describe_case(target, listener, environ)
+                describe_case(styler, target, listener, environ)
 
 
 if __name__ == "__main__":

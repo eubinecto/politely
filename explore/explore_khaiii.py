@@ -48,7 +48,7 @@ def main():
             print(token)
 
     for sent in sents:
-        for token in analyser._analyze(sent):
+        for token in analyser.analyze(sent):
             print("=====")
             print(token)
 

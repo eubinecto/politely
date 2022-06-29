@@ -12,7 +12,7 @@ def decompose(letter: str) -> Tuple[str, str, str]:
     return soy_decompose(letter)
 
 
-def conjugate(left: str, right: str) -> str:
+def conjugate(left: str, right: str) -> Tuple[str, tuple]:
     r_first = right[0]
     l_last = left[-1]
     l_cho, l_jung, l_jong = decompose(l_last)  # decompose the last element
@@ -85,4 +85,5 @@ def conjugate(left: str, right: str) -> str:
         left = min(soy_conjugate(left, right), key=lambda x: len(x))
         # TODO: logging with logging module
         log = l_last, r_first, left, f"conjugations done by soynlp"
-    return left
+
+    return left, log
