@@ -1,3 +1,7 @@
+이/VCP+다/EF+./SF:
+  1: 이/VCP+다/EF+./SF
+  2: 이/VCP+에요/EF+./SF
+  3: 이/VCP+읍니다/EF+./SF
 말/VX+어/EF+./SF:
   1: 말/VX+어/EF+./SF
   2: 말/VX+어요/EF+./SF
@@ -78,8 +82,8 @@
   1: 어/EF+?/SF
   2: 나요/EF+?/SF
   3: 읍니까/EF+?/SF
-ㄴ다/EF+./SF:
-  1: ㄴ다/EF+./SF
+ᆫ다/EF+./SF:
+  1: ᆫ다/EF+./SF
   2: 어요/EF+./SF
   3: 읍니다/EF+./SF
 는다/EF+./SF:

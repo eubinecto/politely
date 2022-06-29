@@ -2,9 +2,9 @@
 It's okay to write dirty stuff, at least as of right now.
 """
 import streamlit as st
-import pandas as pd
+import pandas as pd  # noqa
 import os
-import requests
+import requests  # noqa
 from politely import Styler, RULES
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 
@@ -20,6 +20,7 @@ def translate(sent: str) -> str:
         "source": "en",
         "target": "ko",
         "text": sent,
+        "honorific": False
     }
     r = requests.post(url, headers=headers, data=data)
     r.raise_for_status()
@@ -55,19 +56,18 @@ def explain(logs: dict):
     st.markdown(msg_1)
     # --- step 2 ---
     msg_2 = f"### 2️⃣ Morphemes"
-    before = logs["__call__"]["in"]["sent"].split(" ")
-    after = ["".join(list(map(str, token.morphs))) for token in logs["analyze"]["out"]]
-    df = pd.DataFrame(zip(before, after), columns=["before", "after"])
+    morphemes = [token.tagged_form for token in logs["analyze"]["out"]]
+    df = pd.DataFrame(morphemes, columns=["morphemes"])
     st.markdown(msg_2)
     st.markdown(df.to_markdown(index=False))
     # --- step 3 ---
     msg_3 = f"### 3️⃣ Honorifics"
-    before = " ".join(["".join(list(map(str, token.morphs))) for token in logs["analyze"]["out"]])
-    after = " ".join(["".join(elem) if isinstance(elem, list) else elem for elem in logs["honorify"]["out"]])
+    before = "+".join(morphemes)
+    after = logs["honorify"]["out"]
     for key, val in logs["honorifics"]:
-        before = before.replace(key, f"`{key}`")
-        after = after.replace(val, f"`{val}`")
-    df = pd.DataFrame(zip(before.split(" "), after.split(" ")), columns=["before", "after"])
+        before = before.replace(key, f"`{key.replace('+', '')}`")
+        after = after.replace(val, f"`{val.replace('+', '')}`")
+    df = pd.DataFrame(zip(before.split("+"), after.split("+")), columns=["before", "after"])
     st.markdown(msg_3)
     st.markdown(df.to_markdown(index=False))
     # # --- step 4 ---
