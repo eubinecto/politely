@@ -27,7 +27,7 @@ SENTS = [
     "자 떠나자. 동해 바다로",
     "그는 전설이다",
     "그는 전설이에요",
-    "나는 내 꿈을 향해 달려"
+    "나는 내 꿈을 향해 달려",
 ]
 
 styler = Styler()
@@ -35,9 +35,6 @@ styler = Styler()
 
 for sent in SENTS:
     ban = styler(sent, 1)
-    pprint(styler.logs)
     jon = styler(sent, 2)
-    pprint(styler.logs)
     formal = styler(sent, 3)
-    pprint(styler.logs)
     print(sent, "->", ban, "|", jon, "|", formal)
