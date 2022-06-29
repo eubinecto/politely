@@ -2,11 +2,12 @@ import re
 import requests  # noqa
 import pandas as pd  # noqa
 from _kiwipiepy import Token
-from kiwipiepy import Kiwi
 from typing import Any, List
 from politely import HONORIFICS
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 from functools import wraps
+
+from politely.fetchers import fetch_kiwi
 
 
 def log(f):
@@ -32,7 +33,7 @@ class Styler:
 
     def __init__(self):
         # object-owned attributes
-        self.kiwi = Kiwi()
+        self.kiwi = fetch_kiwi()
         self.out: Any = None
         self.logs = dict()
 

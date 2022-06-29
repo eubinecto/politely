@@ -23,6 +23,12 @@ def main():
     print(kiwi.tokenize(text="이리 오십시오."))
     print(kiwi.tokenize(text="여러분, 당신이 오셨습니다."))
     print(kiwi.tokenize(text="가까우니 걸어갑시다."))
+    print(kiwi.tokenize(text="이리 오세요."))
+    print(kiwi.tokenize(text="한국의 목욕탕에서는 옷을 벗어."))
+    print(kiwi.tokenize(text="바로 누우면 안된대."))
+    print(kiwi.tokenize(text="버텨 봐요."))
+    print(kiwi.tokenize(text="좀만 더 버텨 봐."))
+    print(kiwi.tokenize(text="하지 마요."))
 
 
 if __name__ == "__main__":

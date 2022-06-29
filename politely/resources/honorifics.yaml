@@ -1,3 +1,27 @@
+말/VX+어/EF+./SF:
+  1: 말/VX+어/EF+./SF
+  2: 말/VX+어요/EF+./SF
+  3: 마/VX+십시오/EF+./SF
+말/VX+어요/EF+./SF:
+  1: 말/VX+어/EF+./SF
+  2: 말/VX+어요/EF+./SF
+  3: 마/VX+십시오/EF+./SF
+보/VX+어/EF+./SF:
+  1: 보/VX+어/EF+./SF
+  2: 보/VX+어요/EF+./SF
+  3: 보/VX+읍시다/EF+./SF
+보/VX+어요/EF+./SF:
+  1: 보/VX+어/EF+./SF
+  2: 보/VX+어요/EF+./SF
+  3: 보/VX+읍시다/EF+./SF
+시/EP+어요/EF+./SF:
+  1: 어/EF+./SF
+  2: 시/EP+어요/EF+./SF
+  3: 십/EP+시오/EF+./SF
+시/EP+어요/EF+?/SF:
+  1: 어/EF+?/SF
+  2: 시/EP+어요/EF+?/SF
+  3: 시/EP+읍니까/EF+?/SF
 니/EF+?/SF:
   1: 니/EF+?/SF
   2: 나요/EF+?/SF
@@ -5,7 +29,7 @@
 대/EF+?/SF:
   1: 대/EF+?/SF
   2: 대요/EF+?/SF
-  3: 읍니까/EF+?/SF
+  3: 답니까/EF+?/SF
 대요/EF+?/SF:
   1: 대/EF+?/SF
   2: 대요/EF+?/SF
@@ -57,11 +81,11 @@
 ㄴ다/EF+./SF:
   1: ㄴ다/EF+./SF
   2: 어요/EF+./SF
-  3: 읍니다/EF+/SF
+  3: 읍니다/EF+./SF
 는다/EF+./SF:
   1: 는다/EF+./SF
   2: 어요/EF+./SF
-  3: 읍니다/EF+/SF
+  3: 읍니다/EF+./SF
 마/EF+./SF:
   1: 마/EF+./SF
   2: 마요/EF+./SF
@@ -70,14 +94,14 @@
   1: 마/EF+./SF
   2: 마요/EF+./SF
   3: 말/VX+시/EP+ᆸ시오/EF+./SF
-ㄴ대요/EF+./SF:
+ᆫ대요/EF+./SF:
   1: ᆫ대/EF+./SF
-  2: ㄴ대요/EF+./SF
-  3: ㄴ답니다/EF+./SF
+  2: ᆫ대요/EF+./SF
+  3: ᆫ답니다/EF+./SF
 아/EF+./SF:
   1: 아/EF+./SF
   2: 아요/EF+./SF
-  3: 읍니다/EF+./SF
+  3: 읍시다/EF+./SF
 다/EF+./SF:
   1: 다/EF+./SF
   2: 어요/EF+./SF
@@ -86,26 +110,30 @@
   1: 자/EF+./SF
   2: 어요/EF+./SF
   3: 읍시다/EF+./SF
-ㄹ게/EF+./SF:
-  1: ㄹ게/EF+./SF
-  2: ㄹ게요/EF+./SF
+ᆯ게/EF+./SF:
+  1: ᆯ게/EF+./SF
+  2: ᆯ게요/EF+./SF
   3: 겠/EP+습니다/EF+./SF
-ㄹ게요/EF+./SF:
-  1: ㄹ게/EF+./SF
-  2: ㄹ게요/EF+./SF
+ᆯ게요/EF+./SF:
+  1: ᆯ게/EF+./SF
+  2: ᆯ게요/EF+./SF
   3: 겠/EP+습니다/EF+./SF
 어/EF+./SF:
   1: 어/EF+./SF
   2: 어요/EF+./SF
   3: 읍니다/EF+./SF
+야/EF+./SF:
+  1: 야/EF+./SF
+  2: 에요/EF+./SF
+  3: 읍니다/EF+./SF
 어요/EF+./SF:
   1: 어/EF+./SF
-  2: 어요/EF+/SF
+  2: 어요/EF+./SF
   3: 읍니다/EF+./SF
 아요/EF+./SF:
  1: 아/EF+./SF
  2: 아요/EF+./SF
- 3: 읍니다/EF+./SF
+ 3: 읍시다/EF+./SF
 네요/EF+./SF:
   1: 네/EF+./SF
   2: 네요/EF+./SF
@@ -123,17 +151,21 @@
   2: 에요/EF+./SF
   3: 읍니다/EF+./SF
 ᆫ대/EF+./SF:
-  1: ㄴ대/EF+./SF
-  2: ㄴ대요/EF+./SF
-  3: ㄴ답니다/EF+/SF
+  1: ᆫ대/EF+./SF
+  2: ᆫ대요/EF+./SF
+  3: ᆫ답니다/EF+./SF
+세요/EF+/SF:
+  1: 어/EF+./SF
+  2: 세요/EF+./SF
+  3: 십/EP+시오/EF+./SF
 너라/EF+./SF:
   1: 너라/EF+./SF
   2: 세요/EF+./SF
-  3: 시/EP+ㅂ시오/EF+./SF
+  3: 십/EP+시오/EF+./SF
 거라/EF+./SF:
   1: 거라/EF+./SF
   2: 세요/EF+./SF
-  3: 시/EP+ㅂ시오/EF+./SF
+  3: 십/EP+시오/EF+./SF
 네/EF+./SF:
   1: 네/EF+./SF
   2: 네요/EF+./SF
@@ -141,7 +173,7 @@
 라/EF+./SF:
   1: 라/EF+./SF
   2: 세요/EF+./SF
-  3: 시/EP+ㅂ시오/EF+./SF
+  3: 읍시다/EF+./SF
 # politely does not support: 3 -> 1,2
 ㅂ니다/EF+./SF:
   1: 어/EF+./SF
