@@ -1,6 +1,6 @@
 # Politely
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely.herokuapp.com)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely-main-streamlit-4vmces.streamlitapp.com)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1W79NzS7xU4VS2HxAKjDB_QwsZp6e2jKu?usp=sharing)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Feubinecto%2Fpolitely&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
@@ -81,7 +81,7 @@ export NAVER_CLIENT_SECRET = ...
 streamlit run main_deploy.py
 ```
 
-Or just visit [the demo we are hosting](https://eubinecto-politely.herokuapp.com) for you | 
+Or just visit [the demo we are hosting](https://eubinecto-politely-main-streamlit-4vmces.streamlitapp.com) for you | 
 --- |
 <img width="749" alt="image" src="https://user-images.githubusercontent.com/56193069/168508652-687acb98-0bf6-4834-b56c-74d236bee031.png"> | 
 
