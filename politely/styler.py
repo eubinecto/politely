@@ -17,6 +17,7 @@ def log(f):
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
         args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": args[0].out}
         return out
+
     return wrapper
 
 
@@ -94,10 +95,7 @@ class Styler:
         Progressively conjugate morphemes from left to right.
         """
         self.out: str
-        morphs = [
-            (token.split("/")[0], token.split("/")[1])
-            for token in self.out.split("+")
-        ]
+        morphs = [(token.split("/")[0], token.split("/")[1]) for token in self.out.split("+")]
         self.out = self.kiwi.join(morphs)
         # TODO: how do I log all the rules that have been applied?
         return self

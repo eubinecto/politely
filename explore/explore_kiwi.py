@@ -25,7 +25,5 @@ def main():
     print(kiwi.tokenize(text="가까우니 걸어갑시다."))
 
 
-
-
 if __name__ == "__main__":
     main()
