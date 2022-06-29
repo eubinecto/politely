@@ -4,5 +4,5 @@ oyaml==1.0
 cmake==3.22.3
 tabulate==0.8.9
 click==8.0.4
-multipledispatch==0.6.0
-soynlp==0.0.493
+kiwipiepy==0.13.0
+

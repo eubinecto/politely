@@ -1,11 +1,11 @@
 import re
 import requests  # noqa
 import pandas as pd  # noqa
-from khaiii.khaiii import KhaiiiApi
-from typing import Any
+from _kiwipiepy import Token
+from kiwipiepy import Kiwi
+from typing import Any, List
 from politely import HONORIFICS
 from politely.errors import EFNotIncludedError, EFNotSupportedError
-from politely.hangle import conjugate
 from functools import wraps
 
 
@@ -17,11 +17,10 @@ def log(f):
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
         args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": args[0].out}
         return out
-
     return wrapper
 
 
-def matched(pattern: str, string: str) -> bool:
+def matches(pattern: str, string: str) -> bool:
     return True if re.match(f"(^|.*\\+){re.escape(pattern)}(\\+.*|$)", string) else False
 
 
@@ -32,7 +31,7 @@ class Styler:
 
     def __init__(self):
         # object-owned attributes
-        self.khaiii = KhaiiiApi()
+        self.kiwi = Kiwi()
         self.out: Any = None
         self.logs = dict()
 
@@ -61,7 +60,7 @@ class Styler:
 
     @log
     def analyze(self):
-        tokens = self.khaiii.analyze(self.out)
+        tokens = self.kiwi.tokenize(self.out)
         self.out = tokens
         return self
 
@@ -69,39 +68,24 @@ class Styler:
         """
         Check if your assumption holds. Raises a custom error if any of them does not hold.
         """
-        efs = [
-            "+".join(map(str, token.morphs)) for token in self.out if "EF" in "+".join(map(str, token.morphs))
-        ]
+        self.out: List[Token]
+        self.out = "+".join([token.tagged_form for token in self.out])
         # assumption 1: the sentence must include more than 1 EF's
-        if not efs:
-            raise EFNotIncludedError("|".join(["+".join(map(str, token.morphs)) for token in self.out]))
-        # assumption 2: all EF's should be supported by KPS.
-        for ef in efs:
-            for pattern in HONORIFICS:
-                if matched(pattern, ef):
-                    break
-            else:
-                raise EFNotSupportedError(ef)
+        if "EF" not in self.out:
+            raise EFNotIncludedError(self.out)
+        # assumption 2: all EF's should be supported by politely.
+        if not any([matches(pattern, self.out) for pattern in HONORIFICS]):
+            raise EFNotSupportedError(self.out)
         return self
 
     @log
     def honorify(self, politeness: int):
-        lex2morphs = [(token.lex, list(map(str, token.morphs))) for token in self.out]
-        self.out = list()
-        for lex, morphs in lex2morphs:
-            tuned = "+".join(morphs)
-            for pattern in HONORIFICS.keys():
-                if matched(pattern, tuned):
-                    honorific = HONORIFICS[pattern][politeness]
-                    tuned = tuned.replace(pattern, honorific)
-                    self.logs["honorifics"].add((pattern, honorific))
-            # if something has changed, then go for it, but otherwise just use the lex.
-            before = [morph.split("/")[0] for morph in morphs]
-            after = [morph.split("/")[0] for morph in tuned.split("+")]
-            if "".join(before) != "".join(after):
-                self.out.append(after)
-            else:
-                self.out.append(lex)
+        self.out: str
+        for pattern in HONORIFICS.keys():
+            if matches(pattern, self.out):
+                honorific = HONORIFICS[pattern][politeness]
+                self.out = self.out.replace(pattern, honorific)
+                self.logs["honorifics"].add((pattern, honorific))
         return self
 
     @log
@@ -109,16 +93,11 @@ class Styler:
         """
         Progressively conjugate morphemes from left to right.
         """
-        out = list()
-        for chunk in self.out:
-            if isinstance(chunk, list):
-                left = chunk[0]
-                for i in range(len(chunk) - 1):
-                    right = chunk[i + 1]
-                    left, logs = conjugate(left, right)
-                    self.logs["conjugations"].add(logs)
-                out.append(left)
-            else:
-                out.append(chunk)
-        self.out = " ".join(out)
+        self.out: str
+        morphs = [
+            (token.split("/")[0], token.split("/")[1])
+            for token in self.out.split("+")
+        ]
+        self.out = self.kiwi.join(morphs)
+        # TODO: how do I log all the rules that have been applied?
         return self

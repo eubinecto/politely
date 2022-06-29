@@ -35,9 +35,6 @@ styler = Styler()
 
 for sent in SENTS:
     ban = styler(sent, 1)
-    pprint(styler.logs)
     jon = styler(sent, 2)
-    pprint(styler.logs)
     formal = styler(sent, 3)
-    pprint(styler.logs)
     print(sent, "->", ban, "|", jon, "|", formal)

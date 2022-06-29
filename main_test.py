@@ -1,5 +1,6 @@
 from politely import Styler
 import pytest
+from politely.errors import EFNotIncludedError, EFNotSupportedError
 
 
 @pytest.fixture(scope="session")
@@ -23,6 +24,18 @@ def test_preprocess_trailing_spaces(styler):
     sent = "이것은 예시 문장이다. "
     styler.preprocess(sent)
     assert "이것은 예시 문장이다.", styler.out
+
+
+def test_check_ef_not_included_error(styler):
+    sent = "가나다라마바사"
+    with pytest.raises(EFNotIncludedError):
+        styler.setup().preprocess(sent).analyze().check()
+
+
+def test_check_ef_not_supported_error(styler):
+    sent = "용서해주소서"
+    with pytest.raises(EFNotSupportedError):
+        styler.setup().preprocess(sent).analyze().check()
 
 
 def test_honorify_ra(styler):
@@ -86,7 +99,7 @@ def test_honorify_yo(styler):
     """
     종결어미 -요
     """
-    sent = "제 패션을 함부로 비꼬지마요"
+    sent = "제 패션을 함부로 비꼬지마요."
     assert "내 패션을 함부로 비꼬지마.", styler(sent, 1)
     assert "제 패션을 함부로 비꼬지마요.", styler(sent, 2)
     assert "제 패션을 함부로 비꼬지마십시오.", styler(sent, 3)
