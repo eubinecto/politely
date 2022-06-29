@@ -1,5 +1,3 @@
-
-
 def main():
     sent = "나는 물을 마시고 있어"
     # what happens if you replace them?
@@ -7,5 +5,5 @@ def main():
     # it is only the ...
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

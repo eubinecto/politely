@@ -1,5 +1,3 @@
-
-
 class EFNotSupportedError(Exception):
     def __init__(self, ef: str):
         self.ef = ef
@@ -9,7 +7,6 @@ class EFNotSupportedError(Exception):
 
 
 class EFNotIncludedError(Exception):
-
     def __init__(self, sent: str):
         self.sent = sent
 

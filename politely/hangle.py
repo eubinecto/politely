@@ -1,10 +1,7 @@
-"""
-most of the implementation is courtesy of soynlp.
-"""
-from typing import Tuple
 from soynlp.hangle import compose as soy_compose
 from soynlp.hangle import decompose as soy_decompose
 from soynlp.lemmatizer import conjugate as soy_conjugate
+from typing import Tuple
 
 
 def compose(cho: str, jung: str, jong: str) -> str:
@@ -15,7 +12,7 @@ def decompose(letter: str) -> Tuple[str, str, str]:
     return soy_decompose(letter)
 
 
-def conjugate(left: str, right: str) -> Tuple[str, Tuple[str, str, str, str]]:
+def conjugate(left: str, right: str) -> Tuple[str, tuple]:
     r_first = right[0]
     l_last = left[-1]
     l_cho, l_jung, l_jong = decompose(l_last)  # decompose the last element
@@ -73,7 +70,7 @@ def conjugate(left: str, right: str) -> Tuple[str, Tuple[str, str, str, str]]:
         # e.g. 거이죠 -> 거죠?
         left += right[1:]
         log = l_last, r_first, left, f"ㅓ+ 이 -> ㅓ (이 탈락)"
-    elif l_jong == 'ㄷ' and r_cho == "ㅇ":
+    elif l_jong == "ㄷ" and r_cho == "ㅇ":
         # e.g. 깨닫아 -> 깨달아
         left = left[:-1] + compose(l_cho, l_jung, "ㄹ")
         left += right
@@ -86,5 +83,7 @@ def conjugate(left: str, right: str) -> Tuple[str, Tuple[str, str, str, str]]:
         # always pop the shortest one (e.g. 마시어, 마셔, 둘 중 하나일 경우 마셔를 선택)
         # warning - popping an element from the set maybe non-deterministic
         left = min(soy_conjugate(left, right), key=lambda x: len(x))
+        # TODO: logging with logging module
         log = l_last, r_first, left, f"conjugations done by soynlp"
+
     return left, log

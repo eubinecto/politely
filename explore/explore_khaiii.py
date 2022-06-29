@@ -1,5 +1,5 @@
 from khaiii import KhaiiiApi
-
+from politely import analyser
 
 sents = [
     "좋아요.",
@@ -36,7 +36,7 @@ sents = [
     "모든 것을 걸게요.",
     "안녕하세요.",
     "안녕하십니까.",
-    "끝나겠네요."
+    "끝나겠네요.",
 ]
 
 
@@ -44,6 +44,11 @@ def main():
     api = KhaiiiApi()
     for sent in sents:
         for token in api.analyze(sent):
+            print("=====")
+            print(token)
+
+    for sent in sents:
+        for token in analyser.analyze(sent):
             print("=====")
             print(token)
 
@@ -62,5 +67,5 @@ konlpy, kiwi에 걸쳐... 여기에 종착하게 되는 것인가?
 깼다.	깨/VV + 었/EP + 다/EF + ./SF
 """
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

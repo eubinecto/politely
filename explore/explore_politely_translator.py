@@ -1,4 +1,3 @@
-
 from politely import Translator
 
 
@@ -7,5 +6,5 @@ def main():
     print(t("hello world"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

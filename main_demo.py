@@ -1,3 +1,4 @@
+from pprint import pprint
 
 from politely import Styler
 
@@ -26,29 +27,17 @@ SENTS = [
     "자 떠나자. 동해 바다로",
     "그는 전설이다",
     "그는 전설이에요",
+    "나는 내 꿈을 향해 달려"
 ]
 
 styler = Styler()
 
 
-def main():
-    # first way of using it - politeness is not determined
-    for sent in SENTS:
-        listener = "friends and junior"
-        environ = "formal"
-        styled = styler(sent, listener, environ)
-        print(sent, "->", styled)
-        print(styler.logs.honorifics)
-        print(styler.logs.conjugations)
-
-    # the other way of using it - politeness is determined
-    print("--------")
-    for sent in SENTS:
-        ban = styler(sent, 1)
-        jon = styler(sent, 2)
-        formal = styler(sent, 3)
-        print(sent, "->", ban, "|", jon, "|", formal)
-
-
-if __name__ == '__main__':
-    main()
+for sent in SENTS:
+    ban = styler(sent, 1)
+    pprint(styler.logs)
+    jon = styler(sent, 2)
+    pprint(styler.logs)
+    formal = styler(sent, 3)
+    pprint(styler.logs)
+    print(sent, "->", ban, "|", jon, "|", formal)

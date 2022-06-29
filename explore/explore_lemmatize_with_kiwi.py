@@ -25,5 +25,5 @@ def main():
     # 종결 어미(EF)만을 높이면 된다 ->
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -13,7 +13,7 @@ sents = [
     "엄마와 함께 밥을 먹고 있어.",
     "엄마가 심부름을 시켰어.",
     "그는 전설이다.",
-    "그는 전설이에요."
+    "그는 전설이에요.",
 ]
 
 HONORIFICS = {
@@ -26,14 +26,10 @@ HONORIFICS = {
     "나/NP": ("나/NP", "저/NP"),
     "저/NP": ("나/NP", "저/NP"),
     "가/JKS": ("가/JKS", "께서/JKS"),
-    "엄마/NNG": ("엄마/NNG", "어머니/NNG")
+    "엄마/NNG": ("엄마/NNG", "어머니/NNG"),
 }
 
-ABBREVIATIONS = {
-    "저ㄴ": "전",
-    "리어": "려",
-    "키었": "켰"
-}
+ABBREVIATIONS = {"저ㄴ": "전", "리어": "려", "키었": "켰"}
 
 
 def main():
@@ -69,6 +65,7 @@ def main():
         print("history:", history)
         print("out:", out)
         history.clear()
+
 
 """
 when politeness = 0
@@ -150,5 +147,5 @@ history: []
 out: 그는 전설이에요.
 """
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

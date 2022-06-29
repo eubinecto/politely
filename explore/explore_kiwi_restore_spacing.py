@@ -4,29 +4,20 @@ kiwi의 문제 = spacing이 사라져버린다... 음...s
 """
 import numpy as np
 from kiwipiepy import Kiwi
+from khaiii import KhaiiiApi
 
 
 def main():
-    sent = "나는 달려요"
-    sent = sent.replace(" ", " " * 2)  # just a quirk with kiwi - the spacings must be longer than 1.
+    sent = "시끄럽게 코고는 소리에 놀라서 난 잠이 깼다."
+    # --- khaiii로 띄어쓰기 및 원형 복구 --- #
+    api = KhaiiiApi()
+    tokens = api.analyze(sent)
+    print(" ".join([token.lex for token in tokens]))
+    # --- Kiwipiepy로 띄어쓰기 및 원형 복구 --- #
     kiwi = Kiwi()
     tokens = kiwi.tokenize(sent)
-    print(tokens)
-    # --- the logic for restoring the spacings starts here --- #
-    # 이게 내가할 수 있는 최선... 토큰에 진작에 whitespace가 추가 되어 있었다면, 큰 문제가 되지는 않았을텐데.
-    # 물론 모델에다가 가장 노이즈가 없는 상태를 넣어야한다는 것은 공감이 가기는 하지만..
-    starts = np.array([token.start for token in tokens] + [0])
-    lens = np.array([token.len for token in tokens] + [0])
-    sums = np.array(starts) + np.array(lens)
-    spacings = (starts[1:] - sums[:-1]) > 0  # if it is greater than 1, than it should be spaced.
-    texts = [
-        token.form + " " if spacing else token.form
-        for token, spacing in zip(tokens, spacings)
-    ]
-    # 하지만 이렇게 spacing을 복구해두어도, 이미 형태소로 쪼개져버린 기존의 단어는 훼손된다.
-    sent = "".join(texts)
-    print(sent)
+    print(kiwi.join(tokens))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

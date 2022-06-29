@@ -19,7 +19,7 @@ SENTS = [
     "나는 내 목표를 향해 달린다",
     "한번 달려보자",
     "좀만 더 버텨보자",
-    "좀만 더 버텨봐"
+    "좀만 더 버텨봐",
 ]
 
 # these are pretty much all you need?
@@ -30,7 +30,7 @@ HONORIFICS = {
     "자+EF": ("어", "어요"),
     "어요+EF": ("어", "어요"),
     "나+NP": ("나", "저"),
-    "저+NP": ("나", "저")
+    "저+NP": ("나", "저"),
 }
 
 # https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&qna_seq=38766
@@ -45,7 +45,7 @@ ABBREVIATIONS = {
     "이어": "여",
     "보어": "봐",
     "나의": "내",
-    "저의": "제"
+    "저의": "제",
 }
 
 
@@ -58,19 +58,13 @@ def honorify(sent: str, honored: bool) -> str:
     sent = sent.replace(" ", " " * 2)  # for accurate spacing
     # tokenize the sentence, and replace all the EFs with their honorifics
     tokens = kiwi.tokenize(sent)
-    texts = [
-        HONORIFICS.get(f"{token.form}+{token.tag}", (token.form,) * 2)[honored]
-        for token in tokens
-    ]
+    texts = [HONORIFICS.get(f"{token.form}+{token.tag}", (token.form,) * 2)[honored] for token in tokens]
     # restore spacings
     starts = np.array([token.start for token in tokens] + [0])
     lens = np.array([token.len for token in tokens] + [0])
     sums = np.array(starts) + np.array(lens)
     spacings = (starts[1:] - sums[:-1]) > 0
-    sent = "".join([
-        text + " " if spacing else text
-        for text, spacing in zip(texts, spacings)
-    ])
+    sent = "".join([text + " " if spacing else text for text, spacing in zip(texts, spacings)])
     # abbreviate tokens
     for key, val in ABBREVIATIONS.items():
         sent = sent.replace(key, val)
@@ -102,5 +96,5 @@ def main():
     """
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

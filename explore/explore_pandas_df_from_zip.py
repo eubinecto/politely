@@ -1,21 +1,14 @@
-
 import pandas as pd
 
 
-before = [
-    "난",
-    "달려"
-]
+before = ["난", "달려"]
 
-after = [
-    "`전`",
-    "달`려요`"
-]
+after = ["`전`", "달`려요`"]
 
 
 def main():
     df = pd.DataFrame(zip(before, after), columns=["before", "after"])
-    df.style.hide(axis='index')
+    df.style.hide(axis="index")
     print(df)
 
 
@@ -26,5 +19,5 @@ def main():
 1     달려  달`려요`
 """
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

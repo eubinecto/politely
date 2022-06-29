@@ -1,6 +1,6 @@
 from konlpy.tag import Okt, Hannanum
 
-JVM_PATH = '/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java'
+JVM_PATH = "/Library/Java/JavaVirtualMachines/zulu-15.jdk/Contents/Home/bin/java"
 
 
 def main():
@@ -24,5 +24,5 @@ def main():
     print(tok2pos)  # tok2pos
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

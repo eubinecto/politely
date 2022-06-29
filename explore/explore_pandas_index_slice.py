@@ -12,6 +12,5 @@ def main():
     print(rules[subset[0]][subset[1]])  # 아하.
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

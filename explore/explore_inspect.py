@@ -19,5 +19,5 @@ def main():
     show_hello_world_basic()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

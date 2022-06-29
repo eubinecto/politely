@@ -1,4 +1,3 @@
-
 from kiwipiepy import Kiwi
 
 kiwi = Kiwi()
@@ -9,5 +8,5 @@ def main():
     print(kiwi.tokenize(sent))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
