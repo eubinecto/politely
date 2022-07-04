@@ -1,3 +1,8 @@
+"""
+Test Styler, on individual cases
+"""
+from pprint import pprint
+
 from politely import Styler
 import pytest  # noqa
 from politely.errors import EFNotIncludedError, EFNotSupportedError
@@ -24,6 +29,42 @@ def test_preprocess_trailing_spaces(styler):
     sent = "이것은 예시 문장이다. "
     styler.preprocess(sent)
     assert "이것은 예시 문장이다." == styler.out
+
+
+def test_analyze_and_join_long_paragraph_1(styler):
+    paragraph = "한글(韓㐎[1], 영어: Hangeul[2]또는 Hangul[3])은 한국어의 공식문자로서, 세종이 한국어를 표기하기 위하여 창제한 문자인 '훈민정음'(訓民正音)을 20세기 초반 이후 달리 이르는 명칭이다.[4][5] 한글이란 이름은 주시경 선생과 국어연구학회 회원들에 의해 지어진것으로 알려져 있으며[6][7][8][9] 그 뜻은 '으뜸이 되는 큰글', '오직 하나뿐인 큰글', '한국인의 글자'이다.[6][10] 한글의 또 다른 별칭으로는 정음(正音), 언문(諺文)[11], 언서(諺書), 반절(反切), 암클, 아햇글, 가갸글, 국문(國文)[12] 등이 있다.[5]"
+    try:
+        styler.setup().preprocess(paragraph).analyze()
+        pprint(styler.out)
+    except Exception as e:
+        pytest.fail(str(e))
+
+
+def test_analyze_long_paragraph_2(styler):
+    paragraph = "음소문자인 한글은 홀소리(모음)와 닿소리(자음) 모두 소리틀을 본떠 만들었으며[13] 창제된 초기에는 닿소리 17개에 홀소리 11개, 총 28개였으나, 점차 4자(ㅿ, ㆁ, ㆆ, ㆍ)를 사용하지 않게 되어 현재는 홀소리 10자, 닿소리 14자만 쓰고 있다. 한글은 표음문자(소리글자)이자 자질문자로서 표의문자인 한자에 비해서 배우기 쉽고 읽고 쓰기가 쉬운 장점을 가지고 있다. 조선민주주의인민공화국에서는 '조선글'이라 부른다."
+    try:
+        styler.setup().preprocess(paragraph).analyze()
+        pprint(styler.logs)
+    except Exception as e:
+        pytest.fail(str(e))
+
+
+def test_analyze_long_paragraph_3(styler):
+    paragraph = "한글(훈민정음)은 창제된 이후 약 500년 동안 많은 시련을 겪었다. 조선의 선비들은 한글을 무시하고 홀대했으며 연산군은 한글 사용을 탄압했다.[14][15][16] 일제는 조선어학회 사건(1942)을 조작하는 등 한국어와 한글 사용을 금지하는 민족정신 말살정책을 펼쳤다. 이런 어려움 속에서도 주시경, 최현배등 많은 선각자들이 한글을 체계적으로 연구하여 한글의 우수성을 알리고 널리 보급하려 노력하였다."
+    try:
+        styler.setup().preprocess(paragraph).analyze()
+        pprint(styler.logs)
+    except Exception as e:
+        pytest.fail(str(e))
+
+
+def test_analyze_long_paragraph_4(styler):
+    paragraph = "1908년 국어연구학회가 창립된 이래 여러 시련에도 불구하고 한글연구의 명맥은 꾸준히 이어졌으며, 한글날 제정, 사전편찬, 맞춤법 제정등 많은 성과들을 일구어냈다. 광복후 '조선어학회'가 활동을 재개하였고 1949년에 '한글학회'로 개칭되면서 한글 표준화 사업등 많은 노력이 있었다. 그 결과 한글은 한국어를 표기하는 국어로서의 위상을 지키게 되었다."
+    try:
+        styler.setup().preprocess(paragraph).analyze()
+        pprint(styler.logs)
+    except Exception as e:
+        pytest.fail(str(e))
 
 
 def test_check_ef_not_included_error(styler):
