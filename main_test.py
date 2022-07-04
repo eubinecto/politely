@@ -5,7 +5,14 @@ from politely.errors import EFNotIncludedError, EFNotSupportedError
 
 @pytest.fixture(scope="session")
 def styler():
-    return Styler()
+    return Styler(debug=True)
+
+
+# pytest teardown
+@pytest.fixture(autouse=True)
+def setup(styler):
+    # always make sure that styler is in debug mode
+    styler.debug = True
 
 
 def test_preprocess(styler):
@@ -26,16 +33,38 @@ def test_preprocess_trailing_spaces(styler):
     assert "이것은 예시 문장이다." == styler.out
 
 
-def test_check_ef_not_included_error(styler):
+def test_check_raises_ef_not_included_error_on_debug_true(styler):
     sent = "가나다라마바사"
     with pytest.raises(EFNotIncludedError):
         styler.setup().preprocess(sent).analyze().check()
 
 
-def test_check_ef_not_supported_error(styler):
+def test_check_does_not_raise_ef_not_included_error_on_debug_false(styler):
+    styler.debug = False
+    sent = "가나다라마바사"
+    try:
+        styler.setup().preprocess(sent).analyze().check()
+    except EFNotSupportedError:
+        pytest.fail("Exception raised")
+    except EFNotIncludedError:
+        pytest.fail("Exception raised")
+
+
+def test_check_raises_ef_not_supported_error_on_debug_true(styler):
     sent = "용서해주소서"
     with pytest.raises(EFNotSupportedError):
         styler.setup().preprocess(sent).analyze().check()
+
+
+def test_check_does_not_raise_ef_not_supported_error_on_debug_false(styler):
+    styler.debug = False
+    sent = "용서해주소서"
+    try:
+        styler.setup().preprocess(sent).analyze().check()
+    except EFNotSupportedError:
+        pytest.fail("Exception raised")
+    except EFNotIncludedError:
+        pytest.fail("Exception raised")
 
 
 def test_honorify_ra(styler):

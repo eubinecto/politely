@@ -1,12 +1,10 @@
 import re
 import requests  # noqa
 import pandas as pd  # noqa
-from _kiwipiepy import Token
-from typing import Any, List
+from typing import Any
 from politely import HONORIFICS
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 from functools import wraps
-
 from politely.fetchers import fetch_kiwi
 
 
@@ -18,22 +16,17 @@ def log(f):
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
         args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": args[0].out}
         return out
-
     return wrapper
-
-
-def matches(pattern: str, string: str) -> bool:
-    return True if re.match(f"(^|.*\\+){re.escape(pattern)}(\\+.*|$)", string) else False
 
 
 class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-
-    def __init__(self):
+    def __init__(self, debug: bool = False):
         # object-owned attributes
         self.kiwi = fetch_kiwi()
+        self.debug = debug
         self.out: Any = None
         self.logs = dict()
 
@@ -62,29 +55,31 @@ class Styler:
 
     @log
     def analyze(self):
+        self.out: str
         tokens = self.kiwi.tokenize(self.out)
-        self.out = tokens
+        self.out = "+".join([token.tagged_form for token in tokens])
         return self
 
     def check(self):
         """
         Check if your assumption holds. Raises a custom error if any of them does not hold.
         """
-        self.out: List[Token]
-        self.out = "+".join([token.tagged_form for token in self.out])
-        # assumption 1: the sentence must include more than 1 EF's
-        if "EF" not in self.out:
-            raise EFNotIncludedError(self.out)
-        # assumption 2: all EF's should be supported by politely.
-        if not any([matches(pattern, self.out) for pattern in HONORIFICS]):
-            raise EFNotSupportedError(self.out)
+        self.out: str
+        # raise exceptions only if you are in debug mode
+        if self.debug:
+            # assumption 1: the sentence must include more than 1 EF's
+            if "EF" not in self.out:
+                raise EFNotIncludedError(self.out)
+            # assumption 2: all EF's should be supported by politely.
+            if not any([self.matches(pattern, self.out) for pattern in HONORIFICS]):
+                raise EFNotSupportedError(self.out)
         return self
 
     @log
     def honorify(self, politeness: int):
         self.out: str
         for pattern in HONORIFICS.keys():
-            if matches(pattern, self.out):
+            if self.matches(pattern, self.out):
                 honorific = HONORIFICS[pattern][politeness]
                 self.out = self.out.replace(pattern, honorific)
                 self.logs["honorifics"].add((pattern, honorific))
@@ -98,5 +93,8 @@ class Styler:
         self.out: str
         morphs = [(token.split("/")[0], token.split("/")[1]) for token in self.out.split("+")]
         self.out = self.kiwi.join(morphs)
-        # TODO: how do I log all the rules that have been applied?
         return self
+
+    @staticmethod
+    def matches(pattern: str, string: str) -> bool:
+        return True if re.match(f"(^|.*\\+){re.escape(pattern)}(\\+.*|$)", string) else False
