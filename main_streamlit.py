@@ -63,15 +63,14 @@ def explain(logs: dict, eng: str):
     st.markdown(msg)
     # --- step 3 ---
     msg = f"### 3️⃣ Analyze morphemes"
-    morphemes = [token.tagged_form for token in logs["analyze"]["out"]]
     before = logs["__call__"]["in"]['sent']
-    after = "+".join(morphemes)
+    after = logs["analyze"]["out"].replace("+", " ")
     df = pd.DataFrame([(before, after)], columns=["before",  "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
     # --- step 4 ---
     msg = f"### 4️⃣ Apply honorifics"
-    before = "+".join(morphemes)
+    before = logs["analyze"]["out"]
     after = logs["honorify"]["out"]
     for key, val in logs["honorifics"]:
         before = before.replace(key, f"`{key.replace('+', '')}`")
@@ -81,7 +80,7 @@ def explain(logs: dict, eng: str):
     st.markdown(df.to_markdown(index=False))
     # # --- step 5 ---
     msg = "### 5️⃣ Conjugate morphemes"
-    before = logs["honorify"]["out"]
+    before = logs["analyze"]["out"].replace("+", " ")
     after = logs["conjugate"]["out"]
     df = pd.DataFrame([(before, after)], columns=["before",  "after"])
     st.markdown(msg)
