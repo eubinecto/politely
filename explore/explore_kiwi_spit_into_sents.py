@@ -29,4 +29,3 @@ print(kiwi.tokenize(text="버텨 봐요"))
 print(kiwi.tokenize(text="좀만 더 버텨 봐"))
 print(kiwi.tokenize(text="하지 마요"))
 print(kiwi.tokenize(text="하지 마요"))
-

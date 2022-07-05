@@ -1,7 +1,7 @@
 import os
 from politely.fetchers import fetch_honorifics
 
-DEL = "🔗"
+DEL = "⊕"
 os.environ["DEL"] = DEL
 HONORIFICS = fetch_honorifics()
 

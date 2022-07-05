@@ -38,14 +38,14 @@ LISTENERS = pd.DataFrame(RULES).transpose().index.tolist()
 ENVIRONS = pd.DataFrame(RULES).transpose().columns.tolist()
 
 
-def translate(sent: str) -> str:
+def translate(text: str) -> str:
     url = "https://openapi.naver.com/v1/papago/n2mt"
     headers = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "X-Naver-Client-Id": os.environ["NAVER_CLIENT_ID"],
         "X-Naver-Client-Secret": os.environ["NAVER_CLIENT_SECRET"],
     }
-    data = {"source": "en", "target": "ko", "text": sent, "honorific": False}
+    data = {"source": "en", "target": "ko", "text": text, "honorific": False}
     r = requests.post(url, headers=headers, data=data)
     r.raise_for_status()
     return r.json()["message"]["result"]["translatedText"]
@@ -62,9 +62,9 @@ def explain(logs: dict, eng: str):
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     # --- step 1 ---
-    msg = "### 1️⃣ Translate the sentence"
+    msg = "### 1️⃣ Translate the textence"
     before = eng
-    after = logs["__call__"]["in"]["sent"]
+    after = logs["__call__"]["in"]["text"]
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
@@ -87,7 +87,7 @@ def explain(logs: dict, eng: str):
     st.markdown(msg)
     # --- step 3 ---
     msg = f"### 3️⃣ Analyze morphemes"
-    before = logs["__call__"]["in"]["sent"]
+    before = logs["__call__"]["in"]["text"]
     after = logs["analyze"]["out"].replace(DEL, " ")
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
@@ -96,9 +96,6 @@ def explain(logs: dict, eng: str):
     msg = f"### 4️⃣ Apply honorifics"
     before = logs["analyze"]["out"]
     after = logs["honorify"]["out"]
-    for key, val in logs["honorifics"]:
-        before = before.replace(key, f"`{key.replace('+', '')}`")
-        after = after.replace(val, f"`{val.replace('+', '')}`")
     df = pd.DataFrame(
         zip(before.split(DEL), after.split(DEL)), columns=["before", "after"]
     )
@@ -142,7 +139,7 @@ def main():
     )
     st.markdown(desc)
     eng = st.text_input(
-        "Type an English sentence to translate with honorifics",
+        "Type an English textence to translate with honorifics",
         value="I run towards my goal",
     )
     styler = Styler(debug=True)

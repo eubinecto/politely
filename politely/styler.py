@@ -17,6 +17,7 @@ def log(f):
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
         args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": args[0].out}
         return out
+
     return wrapper
 
 
@@ -24,6 +25,7 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
+
     def __init__(self, debug: bool = False):
         # object-owned attributes
         self.kiwi = fetch_kiwi()
@@ -99,10 +101,14 @@ class Styler:
         Progressively conjugate morphemes from left to right.
         """
         self.out: str
-        morphs = [(token.split("/")[0], token.split("/")[1]) for token in self.out.split(DEL)]
+        morphs = [
+            (token.split("/")[0], token.split("/")[1]) for token in self.out.split(DEL)
+        ]
         self.out = self.kiwi.join(morphs)
         return self
 
     @staticmethod
     def matches(pattern: str, string: str) -> bool:
-        return True if re.findall(fr"(^|.*{DEL}){pattern}({DEL}.*|$)", string) else False
+        return (
+            True if re.findall(rf"(^|.*{DEL}){pattern}({DEL}.*|$)", string) else False
+        )
