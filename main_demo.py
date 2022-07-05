@@ -1,6 +1,5 @@
-from pprint import pprint
-
 from politely import Styler
+
 
 SENTS = [
     # ㅂ 불규칙
@@ -28,6 +27,8 @@ SENTS = [
     "그는 전설이다",
     "그는 전설이에요",
     "나는 내 꿈을 향해 달려",
+    # 지원 안함, 하지만 debug=False 인 경우 그대로 진행
+    "가나다라마바사",
 ]
 
 styler = Styler()
