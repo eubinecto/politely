@@ -58,13 +58,18 @@ def honorify(sent: str, honored: bool) -> str:
     sent = sent.replace(" ", " " * 2)  # for accurate spacing
     # tokenize the sentence, and replace all the EFs with their honorifics
     tokens = kiwi.tokenize(sent)
-    texts = [HONORIFICS.get(f"{token.form}+{token.tag}", (token.form,) * 2)[honored] for token in tokens]
+    texts = [
+        HONORIFICS.get(f"{token.form}+{token.tag}", (token.form,) * 2)[honored]
+        for token in tokens
+    ]
     # restore spacings
     starts = np.array([token.start for token in tokens] + [0])
     lens = np.array([token.len for token in tokens] + [0])
     sums = np.array(starts) + np.array(lens)
     spacings = (starts[1:] - sums[:-1]) > 0
-    sent = "".join([text + " " if spacing else text for text, spacing in zip(texts, spacings)])
+    sent = "".join(
+        [text + " " if spacing else text for text, spacing in zip(texts, spacings)]
+    )
     # abbreviate tokens
     for key, val in ABBREVIATIONS.items():
         sent = sent.replace(key, val)

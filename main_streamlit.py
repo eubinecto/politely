@@ -5,8 +5,37 @@ import streamlit as st
 import pandas as pd  # noqa
 import os
 import requests  # noqa
-from politely import Styler, RULES
+import yaml  # noqa
+from politely import Styler, DEL
 from politely.errors import EFNotIncludedError, EFNotSupportedError
+
+
+# --- constants --- #
+
+RULES_YAML_STR = """friends and junior:
+  comfortable & informal:
+    politeness: 1
+    reason: A comfortable and informal situation is a very relaxed situation for all, so you may speak to your friends and juniors in a casual style (`-어`).
+  formal:
+    politeness: 2
+    reason: If there are observers around or the situation is rather formal, then you and your listener may not find it completely relaxing. If so, you should speak in a polite style (`-어요`) even when you are speaking to your friends and juniors.
+boss at work:
+  comfortable & informal:
+    politeness: 2
+    reason: If you are in an informal situation with your boss, e.g. a company dinner, then you and your boss may find it a little more relaxing than at the work place. Therefore, it is not necessary to speak in a formal style, and you may speak to your boss in a polite style (`-어요`).
+  formal:
+    politeness: 3
+    reason: If you are in a highly formal environment, e.g. an important meeting, you should always speak in a formal style (`-읍니다`). This shows the appropriate respect to your listeners in a high-profile context.
+adult family:
+  comfortable & informal:
+    politeness: 1
+    reason: If you are in a relaxed setting, it is customary and allowed to speak to your family members in a casual style (`-어`) even when they are older than you.
+  formal:
+    politeness: 2
+    reason: If someone outside of your family, e.g. a neighbour, is partaking the conversation too, then it is customary to speak to your family in a polite style (`-어요`) so that you and your family come acorss polite to the outsiders."""
+RULES = yaml.safe_load(RULES_YAML_STR)
+LISTENERS = pd.DataFrame(RULES).transpose().index.tolist()
+ENVIRONS = pd.DataFrame(RULES).transpose().columns.tolist()
 
 
 def translate(sent: str) -> str:
@@ -16,12 +45,7 @@ def translate(sent: str) -> str:
         "X-Naver-Client-Id": os.environ["NAVER_CLIENT_ID"],
         "X-Naver-Client-Secret": os.environ["NAVER_CLIENT_SECRET"],
     }
-    data = {
-        "source": "en",
-        "target": "ko",
-        "text": sent,
-        "honorific": False
-    }
+    data = {"source": "en", "target": "ko", "text": sent, "honorific": False}
     r = requests.post(url, headers=headers, data=data)
     r.raise_for_status()
     return r.json()["message"]["result"]["translatedText"]
@@ -37,11 +61,11 @@ def explain(logs: dict, eng: str):
                        """
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
-    # --- step 1 --- 
+    # --- step 1 ---
     msg = "### 1️⃣ Translate the sentence"
     before = eng
-    after = logs["__call__"]["in"]['sent']
-    df = pd.DataFrame([(before, after)], columns=["before",  "after"])
+    after = logs["__call__"]["in"]["sent"]
+    df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
     # --- step 2 ---
@@ -63,9 +87,9 @@ def explain(logs: dict, eng: str):
     st.markdown(msg)
     # --- step 3 ---
     msg = f"### 3️⃣ Analyze morphemes"
-    before = logs["__call__"]["in"]['sent']
-    after = logs["analyze"]["out"].replace("+", " ")
-    df = pd.DataFrame([(before, after)], columns=["before",  "after"])
+    before = logs["__call__"]["in"]["sent"]
+    after = logs["analyze"]["out"].replace(DEL, " ")
+    df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
     # --- step 4 ---
@@ -75,14 +99,16 @@ def explain(logs: dict, eng: str):
     for key, val in logs["honorifics"]:
         before = before.replace(key, f"`{key.replace('+', '')}`")
         after = after.replace(val, f"`{val.replace('+', '')}`")
-    df = pd.DataFrame(zip(before.split("+"), after.split("+")), columns=["before", "after"])
+    df = pd.DataFrame(
+        zip(before.split(DEL), after.split(DEL)), columns=["before", "after"]
+    )
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
     # # --- step 5 ---
     msg = "### 5️⃣ Conjugate morphemes"
-    before = logs["analyze"]["out"].replace("+", " ")
+    before = logs["analyze"]["out"].replace(DEL, " ")
     after = logs["conjugate"]["out"]
-    df = pd.DataFrame([(before, after)], columns=["before",  "after"])
+    df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
 
@@ -115,8 +141,11 @@ def main():
         " leave a ⭐ if you like what we are building!"
     )
     st.markdown(desc)
-    eng = st.text_input("Type an English sentence to translate with honorifics", value="I run towards my goal")
-    styler = Styler()
+    eng = st.text_input(
+        "Type an English sentence to translate with honorifics",
+        value="I run towards my goal",
+    )
+    styler = Styler(debug=True)
     if st.button(label="Translate"):
         with st.spinner("Please wait..."):
             kor = translate(eng)

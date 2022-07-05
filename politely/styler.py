@@ -1,8 +1,9 @@
 import re
+
 import requests  # noqa
 import pandas as pd  # noqa
 from typing import Any
-from politely import HONORIFICS
+from politely import HONORIFICS, DEL
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 from functools import wraps
 from politely.fetchers import fetch_kiwi
@@ -31,11 +32,11 @@ class Styler:
         self.logs = dict()
 
     @log
-    def __call__(self, sent: str, politeness: int) -> str:
+    def __call__(self, text: str, politeness: int) -> str:
         """
         style a sentence with the given politeness (1, 2, 3)
         """
-        self.setup().preprocess(sent).analyze().check().honorify(politeness).conjugate()
+        self.setup().preprocess(text).analyze().check().honorify(politeness).conjugate()
         return self.out
 
     def setup(self):
@@ -47,17 +48,21 @@ class Styler:
         self.logs.update({"conjugations": set(), "honorifics": set()})
         return self
 
-    def preprocess(self, sent: str):
-        self.out = sent.strip()  # khaiii model is sensitive to empty spaces, so we should get rid of it.
+    def preprocess(self, text: str):
+        self.out = (
+            text.strip()
+        )  # khaiii model is sensitive to empty spaces, so we should get rid of it.
         if not self.out.endswith("?") and not self.out.endswith("!"):
-            self.out = self.out + "." if not self.out.endswith(".") else self.out  # for accurate pos-tagging
+            self.out = (
+                self.out + "." if not self.out.endswith(".") else self.out
+            )  # for accurate pos-tagging
         return self
 
     @log
     def analyze(self):
         self.out: str
-        tokens = self.kiwi.tokenize(self.out)
-        self.out = "+".join([token.tagged_form for token in tokens])
+        self.out = self.kiwi.tokenize(self.out)
+        self.out = DEL.join([token.tagged_form for token in self.out])
         return self
 
     def check(self):
@@ -67,10 +72,13 @@ class Styler:
         self.out: str
         # raise exceptions only if you are in debug mode
         if self.debug:
-            # assumption 1: the sentence must include more than 1 EF's
+            # assumption 1: every sentence should end with SF (., !, ?)
+            # TODO:
+            # assumption 2: every sentence must include more than 1 EF's
             if "EF" not in self.out:
                 raise EFNotIncludedError(self.out)
-            # assumption 2: all EF's should be supported by politely.
+            # assumption 3: all EF's should be supported by politely.
+            # TODO: does not really check if "all" EFs are supported by politely.
             if not any([self.matches(pattern, self.out) for pattern in HONORIFICS]):
                 raise EFNotSupportedError(self.out)
         return self
@@ -81,7 +89,7 @@ class Styler:
         for pattern in HONORIFICS.keys():
             if self.matches(pattern, self.out):
                 honorific = HONORIFICS[pattern][politeness]
-                self.out = self.out.replace(pattern, honorific)
+                self.out = re.sub(re.escape(pattern), honorific, self.out)
                 self.logs["honorifics"].add((pattern, honorific))
         return self
 
@@ -91,10 +99,10 @@ class Styler:
         Progressively conjugate morphemes from left to right.
         """
         self.out: str
-        morphs = [(token.split("/")[0], token.split("/")[1]) for token in self.out.split("+")]
+        morphs = [(token.split("/")[0], token.split("/")[1]) for token in self.out.split(DEL)]
         self.out = self.kiwi.join(morphs)
         return self
 
     @staticmethod
     def matches(pattern: str, string: str) -> bool:
-        return True if re.match(f"(^|.*\\+){re.escape(pattern)}(\\+.*|$)", string) else False
+        return True if re.findall(fr"(^|.*{DEL}){re.escape(pattern)}({DEL}.*|$)", string) else False

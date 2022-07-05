@@ -9,7 +9,9 @@ def lemmatize(sent: str) -> List[Tuple[str, str]]:
     tokens = kiwi.tokenize(sent)
     # 어미를 전부 -다로 교체하면... 되긴하는데... 음..
     lemmas = [
-        (token.form + "다", token.tag) if token.tag in ("XSV", "VV", "VA", "VX") else (token.form, token.tag)
+        (token.form + "다", token.tag)
+        if token.tag in ("XSV", "VV", "VA", "VX")
+        else (token.form, token.tag)
         for token in tokens
         if not token.tag.startswith("E")
     ]
