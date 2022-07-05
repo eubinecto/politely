@@ -1,8 +1,7 @@
 import re
-
 import requests  # noqa
 import pandas as pd  # noqa
-from typing import Any
+from typing import Any, List
 from politely import HONORIFICS, DEL
 from politely.errors import EFNotIncludedError, EFNotSupportedError
 from functools import wraps
@@ -51,43 +50,46 @@ class Styler:
         return self
 
     def preprocess(self, text: str):
-        self.out = (
-            text.strip()
-        )  # khaiii model is sensitive to empty spaces, so we should get rid of it.
-        if not self.out.endswith("?") and not self.out.endswith("!"):
-            self.out = (
-                self.out + "." if not self.out.endswith(".") else self.out
-            )  # for accurate pos-tagging
+        """
+        I know it is inefficient to tokenize twice (once here, and one more in analyze),
+        But I have to leave this here. Work on the speed later.
+        """
+        # first, split into sentences
+        out = [sent.text.strip() for sent in self.kiwi.split_into_sents(text)]
+        # second, append a period if it does not have any valid SF
+        self.out = [re.sub(r"([^!?.]+)$", r"\1.", sent) for sent in out]
         return self
 
     @log
     def analyze(self):
-        self.out: str
-        self.out = self.kiwi.tokenize(self.out)
-        self.out = DEL.join([token.tagged_form for token in self.out])
+        self.out: List[str]
+        self.out = [
+            DEL.join([token.tagged_form for token in self.kiwi.tokenize(sent)])
+            for sent in self.out
+        ]
         return self
 
     def check(self):
         """
         Check if your assumption holds. Raises a custom error if any of them does not hold.
         """
-        self.out: str
+        self.out: List[str]
         # raise exceptions only if you are in debug mode
         if self.debug:
-            # assumption 1: every sentence should end with SF (., !, ?)
+            # assumption 1: every sentence should end with SF. It should be one of: (., !, ?)
             # TODO:
             # assumption 2: every sentence must include more than 1 EF's
-            if "EF" not in self.out:
-                raise EFNotIncludedError(self.out)
+            if not all(["EF" in joined for joined in self.out]):
+                raise EFNotIncludedError("|".join(self.out))
             # assumption 3: all EF's should be supported by politely.
-            # TODO: does not really check if "all" EFs are supported by politely. This is fine for now, but should be fixed in the future.
-            if not any([self.matches(pattern, self.out) for pattern in HONORIFICS if "EF" in pattern]):
-                raise EFNotSupportedError(self.out)
+            if not all([any([self.matches(pattern, joined) for pattern in HONORIFICS.keys() if "EF" in pattern]) for joined in self.out]):
+                raise EFNotSupportedError("|".join(self.out))
         return self
 
     @log
     def honorify(self, politeness: int):
-        self.out: str
+        self.out: List[str]
+        self.out = DEL.join(self.out)
         for pattern in HONORIFICS.keys():
             if self.matches(pattern, self.out):
                 honorific = HONORIFICS[pattern][politeness]

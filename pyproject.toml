@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
   "pytest==7.0.1",
   "oyaml==1.0",
-  "kiwipiepy==0.13.0"
+  "kiwipiepy==0.13.1"
 ]
 dynamic = ["version"]
 
