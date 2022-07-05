@@ -3,7 +3,7 @@ class EFNotIncludedError(Exception):
         self.joined = joined
 
     def __str__(self) -> str:
-        return f"The sentence does not end with any valid endings: `{self.joined}`"
+        return f"Some sentences do not end with a valid ending: `{self.joined}`"
 
 
 class EFNotSupportedError(Exception):

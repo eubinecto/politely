@@ -15,22 +15,52 @@ def setup(styler):
     styler.debug = True
 
 
-def test_preprocess(styler):
-    sent = "이것은 예시 문장이다"
-    styler.preprocess(sent)
-    assert styler.out == "이것은 예시 문장이다."
+def test_preprocess_with_period(styler):
     sent = "이것은 예시 문장이다."
     styler.preprocess(sent)
-    assert styler.out == "이것은 예시 문장이다."
+    assert " ".join(styler.out) == "이것은 예시 문장이다."
 
 
-def test_preprocess_trailing_spaces(styler):
-    sent = "이것은 예시 문장이다  "
-    styler.preprocess(sent)
-    assert styler.out == "이것은 예시 문장이다."
+def test_preprocess_with_period_with_trailing_spaces(styler):
     sent = "이것은 예시 문장이다. "
     styler.preprocess(sent)
-    assert styler.out == "이것은 예시 문장이다."
+    assert " ".join(styler.out) == "이것은 예시 문장이다."
+
+
+def test_preprocess_no_period(styler):
+    sent = "이것은 예시 문장이다"
+    styler.preprocess(sent)
+    assert " ".join(styler.out) == "이것은 예시 문장이다."
+
+
+def test_preprocess_no_period_with_trailing_spaces(styler):
+    sent = "이것은 예시 문장이다  "
+    styler.preprocess(sent)
+    assert " ".join(styler.out) == "이것은 예시 문장이다."
+
+
+def test_preprocess_two_sentences_with_period(styler):
+    sent = "이것은 예시 문장이다. 그리고 이건 다음 문장이다."
+    styler.preprocess(sent)
+    assert " ".join(styler.out) == "이것은 예시 문장이다. 그리고 이건 다음 문장이다."
+
+
+def test_preprocess_two_sentences_without_a_period(styler):
+    sent = "이것은 예시 문장이다. 그리고 이건 다음 문장이다"
+    styler.preprocess(sent)
+    # a period should be added there
+    assert " ".join(styler.out) == "이것은 예시 문장이다. 그리고 이건 다음 문장이다."
+
+
+def test_preprocess_two_sentences_without_no_periods_at_all(styler):
+    """
+    This is what we need the most. Styler should automatically split a paragraph into sentences,
+    and insert a period at the end of each sentence.
+    """
+    sent = "이것은 예시 문장이다 그리고 이건 다음 문장이다"
+    styler.preprocess(sent)
+    # a period should be added there
+    assert " ".join(styler.out) == "이것은 예시 문장이다. 그리고 이건 다음 문장이다."
 
 
 def test_check_raises_ef_not_included_error_on_debug_true(styler):
@@ -352,20 +382,10 @@ def test_conjugate_ah_2(styler):
     떠나어요 (x)
     떠나요 (o)
     """
-    sent = "자, 떠나자. 동해 바다로."
-    assert styler(sent, 1) == "자, 떠나자. 동해 바다로."
-    assert styler(sent, 2) == "자, 떠나요. 동해 바다로."
-    assert styler(sent, 3) == "자, 떠납시다. 동해 바다로."
-
-
-def test_conjugate_ah_3(styler):
-    """
-    동모음 탈락 (3)
-    """
-    sent = "자, 떠나요. 동해 바다로."
-    assert styler(sent, 1) == "자, 떠나. 동해 바다로."
-    assert styler(sent, 2) == "자, 떠나요. 동해 바다로."
-    assert styler(sent, 3) == "자, 떠납니다. 동해 바다로."
+    sent = "자, 떠나자."
+    assert styler(sent, 1) == "자, 떠나자."
+    assert styler(sent, 2) == "자, 떠나요."
+    assert styler(sent, 3) == "자, 떠납시다."
 
 
 def test_conjugate_digud(styler):
@@ -682,7 +702,7 @@ def test_contextual_2(styler):
     -르 불규칙 (conjugation 규칙에 맥락이 관여하는 경우)
     e.g. 이르 + 어 -> 이르러
     e.g.
-    이건 -러 불규칙과 구분히 불가능하다. 나중에 맥락까지 고려할 수 있게된다면 그 때 해보자.
+    이건 -러 불규칙과 구분이 불가능하다. 나중에 맥락까지 고려할 수 있게된다면 그 때 해보자.
     여기 이슈참고: https://github.com/eubinecto/politely/issues/56#issue-1233231686
     """
     sent = "하지 말라고 일렀다."

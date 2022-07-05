@@ -88,13 +88,13 @@ def explain(logs: dict, eng: str):
     # --- step 3 ---
     msg = f"### 3️⃣ Analyze morphemes"
     before = logs["__call__"]["in"]["text"]
-    after = logs["analyze"]["out"].replace(DEL, " ")
+    after = " ".join(logs["analyze"]["out"]).replace(DEL, " ")
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
     # --- step 4 ---
     msg = f"### 4️⃣ Apply honorifics"
-    before = logs["analyze"]["out"]
+    before = DEL.join(logs["analyze"]["out"])
     after = logs["honorify"]["out"]
     df = pd.DataFrame(
         zip(before.split(DEL), after.split(DEL)), columns=["before", "after"]
