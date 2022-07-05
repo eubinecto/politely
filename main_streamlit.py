@@ -103,7 +103,7 @@ def explain(logs: dict, eng: str):
     st.markdown(df.to_markdown(index=False))
     # # --- step 5 ---
     msg = "### 5️⃣ Conjugate morphemes"
-    before = logs["analyze"]["out"].replace(DEL, " ")
+    before = logs["honorify"]["out"].replace(DEL, " ")
     after = logs["conjugate"]["out"]
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
