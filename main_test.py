@@ -67,7 +67,7 @@ def test_check_does_not_raise_ef_not_supported_error_on_debug_false(styler):
         pytest.fail("Exception raised")
 
 
-def test_honorify_ends_with_special_char(styler):
+def test_honorify_ends_with_special_char_1(styler):
     sent = "최선을 다 했어."
     assert styler(sent, 1) == "최선을 다 했어."
     assert styler(sent, 2) == "최선을 다 했어요."
@@ -80,6 +80,21 @@ def test_honorify_ends_with_special_char(styler):
     assert styler(sent, 1) == "최선을 다 했어!"
     assert styler(sent, 2) == "최선을 다 했어요!"
     assert styler(sent, 3) == "최선을 다 했습니다!"
+
+
+def test_honorify_ends_with_special_char_2(styler):
+    sent = "그 일은 내 담당이야."
+    assert styler(sent, 1) == "그 일은 내 담당이야."
+    assert styler(sent, 2) == "그 일은 제 담당예요."
+    assert styler(sent, 3) == "그 일은 제 담당입니다."
+    sent = "그 일은 내 담당이야?"
+    assert styler(sent, 1) == "그 일은 내 담당이야?"
+    assert styler(sent, 2) == "그 일은 제 담당이죠?"
+    assert styler(sent, 3) == "그 일은 제 담당입니까?"
+    sent = "그 일은 내 담당이야!"
+    assert styler(sent, 1) == "그 일은 내 담당이야!"
+    assert styler(sent, 2) == "그 일은 제 담당예요!"
+    assert styler(sent, 3) == "그 일은 제 담당입니다!"
 
 
 def test_honorify_ra(styler):

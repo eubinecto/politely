@@ -89,7 +89,7 @@ class Styler:
         for pattern in HONORIFICS.keys():
             if self.matches(pattern, self.out):
                 honorific = HONORIFICS[pattern][politeness]
-                self.out = re.sub(re.escape(pattern), honorific, self.out)
+                self.out = re.sub(pattern, honorific, self.out)
                 self.logs["honorifics"].add((pattern, honorific))
         return self
 
@@ -105,4 +105,4 @@ class Styler:
 
     @staticmethod
     def matches(pattern: str, string: str) -> bool:
-        return True if re.findall(fr"(^|.*{DEL}){re.escape(pattern)}({DEL}.*|$)", string) else False
+        return True if re.findall(fr"(^|.*{DEL}){pattern}({DEL}.*|$)", string) else False

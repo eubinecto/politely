@@ -1,191 +1,191 @@
-이/VCP${DEL}다/EF${DEL}./SF:
-  1: 이/VCP${DEL}다/EF${DEL}./SF
-  2: 이/VCP${DEL}에요/EF${DEL}./SF
-  3: 이/VCP${DEL}읍니다/EF${DEL}./SF
-말/VX${DEL}어/EF${DEL}./SF:
-  1: 말/VX${DEL}어/EF${DEL}./SF
-  2: 말/VX${DEL}어요/EF${DEL}./SF
-  3: 마/VX${DEL}십시오/EF${DEL}./SF
-말/VX${DEL}어요/EF${DEL}./SF:
-  1: 말/VX${DEL}어/EF${DEL}./SF
-  2: 말/VX${DEL}어요/EF${DEL}./SF
-  3: 마/VX${DEL}십시오/EF${DEL}./SF
-보/VX${DEL}어/EF${DEL}./SF:
-  1: 보/VX${DEL}어/EF${DEL}./SF
-  2: 보/VX${DEL}어요/EF${DEL}./SF
-  3: 보/VX${DEL}읍시다/EF${DEL}./SF
-보/VX${DEL}어요/EF${DEL}./SF:
-  1: 보/VX${DEL}어/EF${DEL}./SF
-  2: 보/VX${DEL}어요/EF${DEL}./SF
-  3: 보/VX${DEL}읍시다/EF${DEL}./SF
-시/EP${DEL}어요/EF${DEL}./SF:
-  1: 어/EF${DEL}./SF
-  2: 시/EP${DEL}어요/EF${DEL}./SF
-  3: 십/EP${DEL}시오/EF${DEL}./SF
-시/EP${DEL}어요/EF${DEL}?/SF:
-  1: 어/EF${DEL}?/SF
-  2: 시/EP${DEL}어요/EF${DEL}?/SF
-  3: 시/EP${DEL}읍니까/EF${DEL}?/SF
-니/EF${DEL}?/SF:
-  1: 니/EF${DEL}?/SF
-  2: 나요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-대/EF${DEL}?/SF:
-  1: 대/EF${DEL}?/SF
-  2: 대요/EF${DEL}?/SF
-  3: 답니까/EF${DEL}?/SF
-대요/EF${DEL}?/SF:
-  1: 대/EF${DEL}?/SF
-  2: 대요/EF${DEL}?/SF
-  3: 답니까/EF${DEL}?/SF
-어/EF${DEL}?/SF:
-  1: 어/EF${DEL}?/SF
-  2: 어요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-어요/EF${DEL}?/SF:
-  1: 어/EF${DEL}?/SF
-  2: 어요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-죠/EF${DEL}?/SF:
-  1: 지/EF${DEL}?/SF
-  2: 죠/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-야/EF${DEL}?/SF:
-  1: 야/EF${DEL}?/SF
-  2: 죠/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-습니까/EF${DEL}?/SF:
-  1: 어/EF${DEL}?/SF
-  2: 어요/EF${DEL}?/SF
-  3: 습니까/EF${DEL}?/SF
-ㅂ니까/EF${DEL}?/SF:
-  1: 어/EF${DEL}?/SF
-  2: 어요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-ㄹ까요/EF${DEL}?/SF:
-  1: ㄹ까/EF${DEL}?/SF
-  2: ㄹ까요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-지/EF${DEL}?/SF:
-  1: 지/EF${DEL}?/SF
-  2: 죠/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-을까/EF${DEL}?/SF:
-  1: 을까/EF${DEL}?/SF
-  2: 어요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-을까요/EF${DEL}?/SF:
-  1: 을까/EF${DEL}?/SF
-  2: 을까요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-나요/EF${DEL}?/SF:
-  1: 어/EF${DEL}?/SF
-  2: 나요/EF${DEL}?/SF
-  3: 읍니까/EF${DEL}?/SF
-ᆫ다/EF${DEL}./SF:
-  1: ᆫ다/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-는다/EF${DEL}./SF:
-  1: 는다/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-마/EF${DEL}./SF:
-  1: 마/EF${DEL}./SF
-  2: 마요/EF${DEL}./SF
-  3: 말/VX${DEL}시/EP${DEL}ᆸ시오/EF${DEL}./SF
-마요/EF${DEL}./SF:
-  1: 마/EF${DEL}./SF
-  2: 마요/EF${DEL}./SF
-  3: 말/VX${DEL}시/EP${DEL}ᆸ시오/EF${DEL}./SF
-ᆫ대요/EF${DEL}./SF:
-  1: ᆫ대/EF${DEL}./SF
-  2: ᆫ대요/EF${DEL}./SF
-  3: ᆫ답니다/EF${DEL}./SF
-아/EF${DEL}./SF:
-  1: 아/EF${DEL}./SF
-  2: 아요/EF${DEL}./SF
-  3: 읍시다/EF${DEL}./SF
-다/EF${DEL}./SF:
-  1: 다/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-자/EF${DEL}./SF:
-  1: 자/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍시다/EF${DEL}./SF
-ᆯ게/EF${DEL}./SF:
-  1: ᆯ게/EF${DEL}./SF
-  2: ᆯ게요/EF${DEL}./SF
-  3: 겠/EP${DEL}습니다/EF${DEL}./SF
-ᆯ게요/EF${DEL}./SF:
-  1: ᆯ게/EF${DEL}./SF
-  2: ᆯ게요/EF${DEL}./SF
-  3: 겠/EP${DEL}습니다/EF${DEL}./SF
-어/EF${DEL}./SF:
-  1: 어/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-야/EF${DEL}./SF:
-  1: 야/EF${DEL}./SF
-  2: 에요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-어요/EF${DEL}./SF:
-  1: 어/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-아요/EF${DEL}./SF:
- 1: 아/EF${DEL}./SF
- 2: 아요/EF${DEL}./SF
- 3: 읍시다/EF${DEL}./SF
-네요/EF${DEL}./SF:
-  1: 네/EF${DEL}./SF
-  2: 네요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-군요/EF${DEL}./SF:
-  1: 군/EF${DEL}./SF
-  2: 군요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-요/EF${DEL}./SF:
-  1: 어/EF${DEL}./SF
-  2: 요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-에요/EF${DEL}./SF:
-  1: 야/EF${DEL}./SF
-  2: 에요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-ᆫ대/EF${DEL}./SF:
-  1: ᆫ대/EF${DEL}./SF
-  2: ᆫ대요/EF${DEL}./SF
-  3: ᆫ답니다/EF${DEL}./SF
+이/VCP${DEL}다/EF${DEL}(\./SF|!/SF):
+  1: 이/VCP${DEL}다/EF${DEL}\1
+  2: 이/VCP${DEL}에요/EF${DEL}\1
+  3: 이/VCP${DEL}읍니다/EF${DEL}\1
+말/VX${DEL}어/EF${DEL}(\./SF|!/SF):
+  1: 말/VX${DEL}어/EF${DEL}\1
+  2: 말/VX${DEL}어요/EF${DEL}\1
+  3: 마/VX${DEL}십시오/EF${DEL}\1
+말/VX${DEL}어요/EF${DEL}(\./SF|!/SF):
+  1: 말/VX${DEL}어/EF${DEL}\1
+  2: 말/VX${DEL}어요/EF${DEL}\1
+  3: 마/VX${DEL}십시오/EF${DEL}\1
+보/VX${DEL}어/EF${DEL}(\./SF|!/SF):
+  1: 보/VX${DEL}어/EF${DEL}\1
+  2: 보/VX${DEL}어요/EF${DEL}\1
+  3: 보/VX${DEL}읍시다/EF${DEL}\1
+보/VX${DEL}어요/EF${DEL}(\./SF|!/SF):
+  1: 보/VX${DEL}어/EF${DEL}\1
+  2: 보/VX${DEL}어요/EF${DEL}\1
+  3: 보/VX${DEL}읍시다/EF${DEL}\1
+시/EP${DEL}어요/EF${DEL}(\./SF|!/SF):
+  1: 어/EF${DEL}\1
+  2: 시/EP${DEL}어요/EF${DEL}\1
+  3: 십/EP${DEL}시오/EF${DEL}\1
+시/EP${DEL}어요/EF${DEL}(\?/SF):
+  1: 어/EF${DEL}\1
+  2: 시/EP${DEL}어요/EF${DEL}\1
+  3: 시/EP${DEL}읍니까/EF${DEL}\1
+니/EF${DEL}(\?/SF):
+  1: 니/EF${DEL}\1
+  2: 나요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+대/EF${DEL}(\?/SF):
+  1: 대/EF${DEL}\1
+  2: 대요/EF${DEL}\1
+  3: 답니까/EF${DEL}\1
+대요/EF${DEL}(\?/SF):
+  1: 대/EF${DEL}\1
+  2: 대요/EF${DEL}\1
+  3: 답니까/EF${DEL}\1
+어/EF${DEL}(\?/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+어요/EF${DEL}(\?/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+죠/EF${DEL}(\?/SF):
+  1: 지/EF${DEL}\1
+  2: 죠/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+야/EF${DEL}(\?/SF):
+  1: 야/EF${DEL}\1
+  2: 죠/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+습니까/EF${DEL}(\?/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 습니까/EF${DEL}\1
+ㅂ니까/EF${DEL}(\?/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+ㄹ까요/EF${DEL}(\?/SF):
+  1: ㄹ까/EF${DEL}\1
+  2: ㄹ까요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+지/EF${DEL}(\?/SF):
+  1: 지/EF${DEL}\1
+  2: 죠/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+을까/EF${DEL}(\?/SF):
+  1: 을까/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+을까요/EF${DEL}(\?/SF):
+  1: 을까/EF${DEL}\1
+  2: 을까요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+나요/EF${DEL}(\?/SF):
+  1: 어/EF${DEL}\1
+  2: 나요/EF${DEL}\1
+  3: 읍니까/EF${DEL}\1
+ᆫ다/EF${DEL}(\./SF|!/SF):
+  1: ᆫ다/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+는다/EF${DEL}(\./SF|!/SF):
+  1: 는다/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+마/EF${DEL}(\./SF|!/SF):
+  1: 마/EF${DEL}\1
+  2: 마요/EF${DEL}\1
+  3: 말/VX${DEL}시/EP${DEL}ᆸ시오/EF${DEL}\1
+마요/EF${DEL}(\./SF|!/SF):
+  1: 마/EF${DEL}\1
+  2: 마요/EF${DEL}\1
+  3: 말/VX${DEL}시/EP${DEL}ᆸ시오/EF${DEL}\1
+ᆫ대요/EF${DEL}(\./SF|!/SF):
+  1: ᆫ대/EF${DEL}\1
+  2: ᆫ대요/EF${DEL}\1
+  3: ᆫ답니다/EF${DEL}\1
+아/EF${DEL}(\./SF|!/SF):
+  1: 아/EF${DEL}\1
+  2: 아요/EF${DEL}\1
+  3: 읍시다/EF${DEL}\1
+다/EF${DEL}(\./SF|!/SF):
+  1: 다/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+자/EF${DEL}(\./SF|!/SF):
+  1: 자/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍시다/EF${DEL}\1
+ᆯ게/EF${DEL}(\./SF|!/SF):
+  1: ᆯ게/EF${DEL}\1
+  2: ᆯ게요/EF${DEL}\1
+  3: 겠/EP${DEL}습니다/EF${DEL}\1
+ᆯ게요/EF${DEL}(\./SF|!/SF):
+  1: ᆯ게/EF${DEL}\1
+  2: ᆯ게요/EF${DEL}\1
+  3: 겠/EP${DEL}습니다/EF${DEL}\1
+어/EF${DEL}(\./SF|!/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+야/EF${DEL}(\./SF|!/SF):
+  1: 야/EF${DEL}\1
+  2: 에요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+어요/EF${DEL}(\./SF|!/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+아요/EF${DEL}(\./SF|!/SF):
+ 1: 아/EF${DEL}\1
+ 2: 아요/EF${DEL}\1
+ 3: 읍시다/EF${DEL}\1
+네요/EF${DEL}(\./SF|!/SF):
+  1: 네/EF${DEL}\1
+  2: 네요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+군요/EF${DEL}(\./SF|!/SF):
+  1: 군/EF${DEL}\1
+  2: 군요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+요/EF${DEL}(\./SF|!/SF):
+  1: 어/EF${DEL}\1
+  2: 요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+에요/EF${DEL}(\./SF|!/SF):
+  1: 야/EF${DEL}\1
+  2: 에요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+ᆫ대/EF${DEL}(\./SF|!/SF):
+  1: ᆫ대/EF${DEL}\1
+  2: ᆫ대요/EF${DEL}\1
+  3: ᆫ답니다/EF${DEL}\1
 세요/EF${DEL}/SF:
-  1: 어/EF${DEL}./SF
-  2: 세요/EF${DEL}./SF
-  3: 십/EP${DEL}시오/EF${DEL}./SF
-너라/EF${DEL}./SF:
-  1: 너라/EF${DEL}./SF
-  2: 세요/EF${DEL}./SF
-  3: 십/EP${DEL}시오/EF${DEL}./SF
-거라/EF${DEL}./SF:
-  1: 거라/EF${DEL}./SF
-  2: 세요/EF${DEL}./SF
-  3: 십/EP${DEL}시오/EF${DEL}./SF
-네/EF${DEL}./SF:
-  1: 네/EF${DEL}./SF
-  2: 네요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-라/EF${DEL}./SF:
-  1: 라/EF${DEL}./SF
-  2: 세요/EF${DEL}./SF
-  3: 읍시다/EF${DEL}./SF
-ᆸ니다/EF${DEL}./SF:
-  1: 어/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
-습니다/EF${DEL}./SF:
-  1: 어/EF${DEL}./SF
-  2: 어요/EF${DEL}./SF
-  3: 읍니다/EF${DEL}./SF
+  1: 어/EF${DEL}\1
+  2: 세요/EF${DEL}\1
+  3: 십/EP${DEL}시오/EF${DEL}\1
+너라/EF${DEL}(\./SF|!/SF):
+  1: 너라/EF${DEL}\1
+  2: 세요/EF${DEL}\1
+  3: 십/EP${DEL}시오/EF${DEL}\1
+거라/EF${DEL}(\./SF|!/SF):
+  1: 거라/EF${DEL}\1
+  2: 세요/EF${DEL}\1
+  3: 십/EP${DEL}시오/EF${DEL}\1
+네/EF${DEL}(\./SF|!/SF):
+  1: 네/EF${DEL}\1
+  2: 네요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+라/EF${DEL}(\./SF|!/SF):
+  1: 라/EF${DEL}\1
+  2: 세요/EF${DEL}\1
+  3: 읍시다/EF${DEL}\1
+ᆸ니다/EF${DEL}(\./SF|!/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
+습니다/EF${DEL}(\./SF|!/SF):
+  1: 어/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 읍니다/EF${DEL}\1
 저/NP:
   1: 나/NP
   2: 저/NP
