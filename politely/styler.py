@@ -80,8 +80,8 @@ class Styler:
             if "EF" not in self.out:
                 raise EFNotIncludedError(self.out)
             # assumption 3: all EF's should be supported by politely.
-            # TODO: does not really check if "all" EFs are supported by politely.
-            if not any([self.matches(pattern, self.out) for pattern in HONORIFICS]):
+            # TODO: does not really check if "all" EFs are supported by politely. This is fine for now, but should be fixed in the future.
+            if not any([self.matches(pattern, self.out) for pattern in HONORIFICS if "EF" in pattern]):
                 raise EFNotSupportedError(self.out)
         return self
 
