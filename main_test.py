@@ -97,6 +97,16 @@ def test_honorify_ends_with_special_char_2(styler):
     assert styler(sent, 3) == "그 일은 제 담당입니다!"
 
 
+def test_honorify_eora(styler):
+    """
+    종결어미 -어라
+    """
+    sent = "그대로 하지 마라."
+    assert styler(sent, 1) == "그대로 하지 마라."
+    assert styler(sent, 2) == "그대로 하지 마요."
+    assert styler(sent, 3) == "그대로 하지 마십시오."
+
+
 def test_honorify_ra(styler):
     """
     종결어미 -라

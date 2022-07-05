@@ -82,6 +82,10 @@
   1: 어/EF${DEL}\1
   2: 나요/EF${DEL}\1
   3: 읍니까/EF${DEL}\1
+어라/EF${DEL}(\./SF|!/SF):
+  1: 어라/EF${DEL}\1
+  2: 어요/EF${DEL}\1
+  3: 십시오/EF${DEL}\1
 ᆫ다/EF${DEL}(\./SF|!/SF):
   1: ᆫ다/EF${DEL}\1
   2: 어요/EF${DEL}\1
@@ -93,11 +97,11 @@
 마/EF${DEL}(\./SF|!/SF):
   1: 마/EF${DEL}\1
   2: 마요/EF${DEL}\1
-  3: 말/VX${DEL}시/EP${DEL}ᆸ시오/EF${DEL}\1
+  3: 말/VX${DEL}십시오/EF${DEL}\1
 마요/EF${DEL}(\./SF|!/SF):
   1: 마/EF${DEL}\1
   2: 마요/EF${DEL}\1
-  3: 말/VX${DEL}시/EP${DEL}ᆸ시오/EF${DEL}\1
+  3: 말/VX${DEL}십시오/EF${DEL}\1
 ᆫ대요/EF${DEL}(\./SF|!/SF):
   1: ᆫ대/EF${DEL}\1
   2: ᆫ대요/EF${DEL}\1
@@ -161,15 +165,15 @@
 세요/EF${DEL}/SF:
   1: 어/EF${DEL}\1
   2: 세요/EF${DEL}\1
-  3: 십/EP${DEL}시오/EF${DEL}\1
+  3: 십시오/EF${DEL}\1
 너라/EF${DEL}(\./SF|!/SF):
   1: 너라/EF${DEL}\1
   2: 세요/EF${DEL}\1
-  3: 십/EP${DEL}시오/EF${DEL}\1
+  3: 십시오/EF${DEL}\1
 거라/EF${DEL}(\./SF|!/SF):
   1: 거라/EF${DEL}\1
   2: 세요/EF${DEL}\1
-  3: 십/EP${DEL}시오/EF${DEL}\1
+  3: 십시오/EF${DEL}\1
 네/EF${DEL}(\./SF|!/SF):
   1: 네/EF${DEL}\1
   2: 네요/EF${DEL}\1
