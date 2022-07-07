@@ -118,8 +118,20 @@
   1: 아${SEP}EF${DEL}\1
   2: 아요${SEP}EF${DEL}\1
   3: 읍시다${SEP}EF${DEL}\1
+냐${SEP}EF${DEL}(\.${SEP}SF|!${SEP}SF):
+  1: 냐${SEP}EF${DEL}\1
+  2: 어요${SEP}EF${DEL}\1
+  3: 읍디다${SEP}EF${DEL}\1
 다${SEP}EF${DEL}(\.${SEP}SF|!${SEP}SF):
   1: 다${SEP}EF${DEL}\1
+  2: 어요${SEP}EF${DEL}\1
+  3: 읍니다${SEP}EF${DEL}\1
+란다${SEP}EF${DEL}(\.${SEP}SF|!${SEP}SF):
+  1: 란다${SEP}EF${DEL}\1
+  2: 래요${SEP}EF${DEL}\1
+  3: 랍니다${SEP}EF${DEL}\1
+단다${SEP}EF${DEL}(\.${SEP}SF|!${SEP}SF):
+  1: 단다${SEP}EF${DEL}\1
   2: 어요${SEP}EF${DEL}\1
   3: 읍니다${SEP}EF${DEL}\1
 지${SEP}EF${DEL}(\.${SEP}SF|!${SEP}SF):
@@ -221,7 +233,7 @@
 너${SEP}NP:
   1: 너${SEP}NP
   2: 당신${SEP}NP
-  3: 여러분${SEP}NP
+  3: 당신${SEP}NP
 저희${SEP}NP:
   1: 우리${SEP}NP
   2: 저희${SEP}NP

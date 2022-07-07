@@ -63,7 +63,7 @@ def explain(logs: dict, eng: str):
     # --- step 1 ---
     msg = "### 1️⃣ Translate the textence"
     before = eng
-    after = logs["__call__"]["in"]["text"]
+    after = " ".join(logs["__call__"]["in"]["sents"])
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
@@ -86,7 +86,7 @@ def explain(logs: dict, eng: str):
     st.markdown(msg)
     # --- step 3 ---
     msg = f"### 3️⃣ Analyze morphemes"
-    before = logs["__call__"]["in"]["text"]
+    before = after
     after = " ".join(logs["analyze"]["out"]).replace(DEL, " ")
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
@@ -103,7 +103,7 @@ def explain(logs: dict, eng: str):
     # # --- step 5 ---
     msg = "### 5️⃣ Conjugate morphemes"
     before = " ".join(logs["honorify"]["out"]).replace(DEL, " ")
-    after = logs["conjugate"]["out"]
+    after = " ".join(logs["conjugate"]["out"])
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
@@ -112,13 +112,14 @@ def explain(logs: dict, eng: str):
 def describe_case(styler: Styler, eng: str, kor: str, listener: str, environ: str):
     try:
         case = RULES[listener][environ]
-        tuned = styler(kor, case["politeness"])
+        sents = [sent.text for sent in styler.kiwi.split_into_sents(kor)]
+        tuned = styler(sents, case["politeness"])
     except SFNotIncludedError as e1:
         st.error("ERROR: " + str(e1))
     except EFNotSupportedError as e2:
         st.error("ERROR: " + str(e2))
     else:
-        st.write(tuned)
+        st.write(" ".join(tuned))
         with st.expander("Need an explanation?"):
             styler.logs.update({"listener": listener, "environ": environ, "case": case})
             explain(styler.logs, eng)
@@ -138,8 +139,8 @@ def main():
     )
     st.markdown(desc)
     eng = st.text_input(
-        "Type an English textence to translate with honorifics",
-        value="I run towards my goal",
+        "Type English sentences to translate with honorifics",
+        value="Bring your work to fruition. Done is better than perfect.",
     )
     styler = Styler(debug=True)
     if st.button(label="Translate"):

@@ -33,11 +33,11 @@ class Styler:
         self.logs = dict()
 
     @log
-    def __call__(self, text: str, politeness: int) -> str:
+    def __call__(self, sents: List[str], politeness: int) -> List[str]:
         """
         style a sentence with the given politeness (1, 2, 3)
         """
-        self.setup().preprocess(text).analyze().check().honorify(politeness).conjugate()
+        self.setup().preprocess(sents).analyze().check().honorify(politeness).conjugate()
         return self.out
 
     def setup(self):
@@ -49,15 +49,12 @@ class Styler:
         self.logs.update({"conjugations": set(), "honorifics": set()})
         return self
 
-    def preprocess(self, text: str):
+    def preprocess(self, sents: List[str]):
         """
         I know it is inefficient to tokenize twice (once here, and one more in analyze),
         But I have to leave this here and work on the speed later.
         """
-        # first, split into sentences
-        out = [sent.text.strip() for sent in self.kiwi.split_into_sents(text)]
-        # second, append a period if it does not have any valid SF
-        self.out = [re.sub(r"([^!?.]+)$", r"\1.", sent) for sent in out]
+        self.out = [re.sub(r"([^!?.]+)$", r"\1.", sent.strip()) for sent in sents]
         return self
 
     @log
@@ -128,13 +125,14 @@ class Styler:
         Progressively conjugate morphemes from left to right.
         """
         self.out: List[str]
-        morphs = [
-            (token.split(SEP)[0], token.split(SEP)[1])
+        self.out = [
+            [(token.split(SEP)[0], token.split(SEP)[1]) for token in joined.split(DEL) if SEP in token]
             for joined in self.out
-            for token in joined.split(DEL)
-            if SEP in token
         ]
-        self.out = self.kiwi.join(morphs)
+        self.out = [
+            self.kiwi.join(morphs)
+            for morphs in self.out
+        ]
         return self
 
     @staticmethod
