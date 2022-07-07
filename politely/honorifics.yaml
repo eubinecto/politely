@@ -234,6 +234,10 @@
   1: 너${SEP}NP
   2: 당신${SEP}NP
   3: 당신${SEP}NP
+당신${SEP}NP:
+  1: 너${SEP}NP
+  2: 당신${SEP}NP
+  3: 당신${SEP}NP
 저희${SEP}NP:
   1: 우리${SEP}NP
   2: 저희${SEP}NP
