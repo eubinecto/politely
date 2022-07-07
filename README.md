@@ -39,8 +39,8 @@ Instantiate a `styler` object, and style your sentences in a polite or formal ma
 from politely import Styler
 from pprint import pprint
 styler = Styler()
-pprint(" ".join(styler(sents, 2)))
-pprint(" ".join(styler(sents, 3)))
+pprint(" ".join(styler(sents, 2)))  # 2 = polite
+pprint(" ".join(styler(sents, 3)))  # 3 = formal
 ```
 ```text
 ('잔소리를 두루 늘어놓다가 남이 들을까 봐 손으로 입을 틀어막고는 그 속에서 깔깔대요. 별로 우스울 것도 없는데 날씨가 풀리더니 이 놈의 '
