@@ -90,6 +90,10 @@
   1: 어라${SEP}EF${DEL}\1
   2: 어요${SEP}EF${DEL}\1
   3: 십시오${SEP}EF${DEL}\1
+죠${SEP}EF${DEL}(\.${SEP}SF|!${SEP}SF):
+  1: ᆯ게${SEP}EF${DEL}\1
+  2: 죠${SEP}EF${DEL}\1
+  3: 읍니다${SEP}EF${DEL}\1
 ᆫ다${SEP}EF${DEL}(\.${SEP}SF|!${SEP}SF):
   1: ᆫ다${SEP}EF${DEL}\1
   2: 어요${SEP}EF${DEL}\1

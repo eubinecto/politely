@@ -7,11 +7,10 @@ import os
 import requests  # noqa
 import yaml  # noqa
 from politely import Styler, DEL
-from politely.errors import EFNotIncludedError, EFNotSupportedError
+from politely.errors import SFNotIncludedError, EFNotSupportedError
 
 
 # --- constants --- #
-
 RULES_YAML_STR = """friends and junior:
   comfortable & informal:
     politeness: 1
@@ -95,7 +94,7 @@ def explain(logs: dict, eng: str):
     # --- step 4 ---
     msg = f"### 4️⃣ Apply honorifics"
     before = DEL.join(logs["analyze"]["out"])
-    after = logs["honorify"]["out"]
+    after = DEL.join(logs["honorify"]["out"])
     df = pd.DataFrame(
         zip(before.split(DEL), after.split(DEL)), columns=["before", "after"]
     )
@@ -103,7 +102,7 @@ def explain(logs: dict, eng: str):
     st.markdown(df.to_markdown(index=False))
     # # --- step 5 ---
     msg = "### 5️⃣ Conjugate morphemes"
-    before = logs["honorify"]["out"].replace(DEL, " ")
+    before = " ".join(logs["honorify"]["out"]).replace(DEL, " ")
     after = logs["conjugate"]["out"]
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
@@ -114,7 +113,7 @@ def describe_case(styler: Styler, eng: str, kor: str, listener: str, environ: st
     try:
         case = RULES[listener][environ]
         tuned = styler(kor, case["politeness"])
-    except EFNotIncludedError as e1:
+    except SFNotIncludedError as e1:
         st.error("ERROR: " + str(e1))
     except EFNotSupportedError as e2:
         st.error("ERROR: " + str(e2))

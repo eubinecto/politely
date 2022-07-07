@@ -36,3 +36,7 @@ print(kiwi.join(kiwi.tokenize(sent)))
 # Another error?
 sent = "비하적 의미가 없었다는 것이 정설이다. 더 자세한 내용은 한글/역사 문서로."
 print(kiwi.join(kiwi.tokenize(sent)))
+
+# 시어?
+sent = "도와 주셔서 감사해요."
+print(kiwi.join(kiwi.tokenize(sent)))

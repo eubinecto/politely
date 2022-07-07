@@ -1,6 +1,6 @@
 from politely import Styler
 import pytest  # noqa
-from politely.errors import EFNotSupportedError
+from politely.errors import EFNotSupportedError, SFNotIncludedError
 
 
 @pytest.fixture(scope="session")
@@ -13,6 +13,9 @@ def styler():
 def setup(styler):
     # always make sure that styler is in debug mode
     styler.debug = True
+    yield
+    # always make sure that styler is reset after a test is cleared.
+    styler.setup()
 
 
 def test_preprocess_with_period(styler):
@@ -63,10 +66,18 @@ def test_preprocess_two_sentences_without_no_periods_at_all(styler):
     assert " ".join(styler.out) == "이것은 예시 문장이다. 그리고 이건 다음 문장이다."
 
 
+def test_check_raises_sf_not_included_error_on_debug_true(styler):
+    sent = "용서해주소서"
+    with pytest.raises(SFNotIncludedError):
+        styler.out = sent
+        # don't preprocess it
+        styler.analyze().check()
+
+
 def test_check_raises_ef_not_supported_error_on_debug_true(styler):
     sent = "용서해주소서"
     with pytest.raises(EFNotSupportedError):
-        styler.setup().preprocess(sent).analyze().check()
+        styler.preprocess(sent).analyze().check()
 
 
 def test_check_does_not_raise_ef_not_supported_error_on_debug_false(styler):
@@ -418,6 +429,16 @@ def test_honorify_bieup_nida(styler):
     assert styler(sent, 1) == "지금 가."
     assert styler(sent, 2) == "지금 가요."
     assert styler(sent, 3) == "지금 갑니다."
+
+
+def test_honorify_jo(styler):
+    """
+    -죠
+    """
+    sent = "그거는 제가 하죠."
+    assert styler(sent, 1) == "그거는 내가 할게."
+    assert styler(sent, 2) == "그거는 제가 하죠."
+    assert styler(sent, 3) == "그거는 제가 합니다."
 
 
 # --- tests by irregular conjugations --- #
