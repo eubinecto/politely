@@ -1,8 +1,10 @@
 import re
+from copy import copy
+
 import requests  # noqa
 import pandas as pd  # noqa
 from typing import Any, List
-from politely import HONORIFICS, DEL, SEP
+from politely import HONORIFICS, DLM, SEP
 from politely.errors import EFNotSupportedError, SFNotIncludedError
 from functools import wraps
 from politely.fetchers import fetch_kiwi
@@ -14,7 +16,7 @@ def log(f):
         out = f(*args, **kwargs)
         # get the function signature
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
-        args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": args[0].out}
+        args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": copy(args[0].out)}
         return out
 
     return wrapper
@@ -61,7 +63,7 @@ class Styler:
     def analyze(self):
         self.out: List[str]
         self.out = [
-            DEL.join(
+            DLM.join(
                 [f"{token.form}{SEP}{token.tag}" for token in self.kiwi.tokenize(sent)]
             )
             for sent in self.out
@@ -126,7 +128,7 @@ class Styler:
         """
         self.out: List[str]
         self.out = [
-            [(token.split(SEP)[0], token.split(SEP)[1]) for token in joined.split(DEL) if SEP in token]
+            [(token.split(SEP)[0], token.split(SEP)[1]) for token in joined.split(DLM) if SEP in token]
             for joined in self.out
         ]
         self.out = [
@@ -137,4 +139,4 @@ class Styler:
 
     @staticmethod
     def matches(pattern: str, string: str) -> bool:
-        return True if re.match(rf"(^|.*{DEL}){pattern}({DEL}.*|$)", string) else False
+        return True if re.match(rf"(^|.*{DLM}){pattern}({DLM}.*|$)", string) else False

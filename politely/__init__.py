@@ -1,9 +1,9 @@
 import os
 from politely.fetchers import fetch_honorifics
 
-DEL = "⊕"
-SEP = "⵰"
-os.environ["DEL"] = DEL
+DLM = "⊕"
+SEP = "⎸"
+os.environ["DLM"] = DLM
 os.environ["SEP"] = SEP
 HONORIFICS = fetch_honorifics()
 
