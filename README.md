@@ -17,9 +17,8 @@ Politely is an explainable politeness styler for the Korean language |
 pip3 install politely
 ```
 
-### 2️⃣ Speak `politely` with `Styler`
-
-First, split your text into sentences with whatever tools you prefer. Here, we use `kiwipiepy` for the sake of demonstration:
+### 2️⃣ Split your text into sentences
+Split your text into sentences with whatever tools you prefer. Here, we use `kiwipiepy` for the sake of demonstration:
 ```python3
 from kiwipiepy import Kiwi
 # an excerpt from 동백꽃 (김유정)
@@ -34,13 +33,15 @@ text = """잔소리를 두루 늘어놓다가 남이 들을까봐 손으로 입�
 kiwi = Kiwi()
 sents = [sent.text.strip() for sent in kiwi.split_into_sents(text)]
 ```
+
+### 3️⃣ Speak `politely` with `Styler` 
+
 Instantiate a `styler` object, and style your sentences in a polite or formal manner with `styler`:
 ```python3
 from politely import Styler
 from pprint import pprint
 styler = Styler()
 pprint(" ".join(styler(sents, 2)))  # 2 = polite
-pprint(" ".join(styler(sents, 3)))  # 3 = formal
 ```
 ```text
 ('잔소리를 두루 늘어놓다가 남이 들을까 봐 손으로 입을 틀어막고는 그 속에서 깔깔대요. 별로 우스울 것도 없는데 날씨가 풀리더니 이 놈의 '
@@ -52,6 +53,12 @@ pprint(" ".join(styler(sents, 3)))  # 3 = formal
  '싶어서 그 때에야 비로소 돌아다보니 저는 참으로 놀랐어요. 저희가 이 동네에 들어온 것은 근 삼 년째 돼 오지만 여태껏 가무잡잡한 점수는 '
  '이의 얼굴이 이렇게까지 홍당무처럼 새빨개진 법이 없었어요. 게다가 눈에 독을 올리고 한참 저를 요렇게 쏘아보더니 나중에는 눈물까지 어리는 '
  '게 아녀요. 그리고 바구니를 다시 집어 들더니 이를 꼭 악물고는 엎어질 듯 자빠질 듯 논둑으로 횡하게 달아나는 게에요.')
+ ```
+ 
+ ```python3
+ pprint(" ".join(styler(sents, 3)))  # 3 = formal
+```
+```text
 ('잔소리를 두루 늘어놓다가 남이 들을까 봐 손으로 입을 틀어막고는 그 속에서 깔깔댑니다. 별로 우스울 것도 없는데 날씨가 풀리더니 이 놈의 '
  '계집애가 미쳤나 하고 의심했습니다. 게다가 조금 뒤에는 제 집께를 할 금할 금 돌아보더니 행주치마의 속으로 꼈던 바른 손을 뽑아서 제 턱 '
  '밑으로 불쑥 내미는 겝니다. 언제 구웠는지 더운 김이 홱 끼치는 굵은 감자 세 개가 손에 뿌듯이 쥐였습니다. "느 집에는 이 거 '
