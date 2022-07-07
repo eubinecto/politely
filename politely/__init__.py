@@ -2,7 +2,9 @@ import os
 from politely.fetchers import fetch_honorifics
 
 DEL = "⊕"
+SEP = "⵰"
 os.environ["DEL"] = DEL
+os.environ["SEP"] = SEP
 HONORIFICS = fetch_honorifics()
 
 from politely.styler import Styler  # noqa

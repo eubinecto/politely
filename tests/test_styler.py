@@ -1,6 +1,6 @@
 from politely import Styler
 import pytest  # noqa
-from politely.errors import EFNotIncludedError, EFNotSupportedError
+from politely.errors import EFNotSupportedError
 
 
 @pytest.fixture(scope="session")
@@ -63,23 +63,6 @@ def test_preprocess_two_sentences_without_no_periods_at_all(styler):
     assert " ".join(styler.out) == "이것은 예시 문장이다. 그리고 이건 다음 문장이다."
 
 
-def test_check_raises_ef_not_included_error_on_debug_true(styler):
-    sent = "가나다라마바사"
-    with pytest.raises(EFNotIncludedError):
-        styler.setup().preprocess(sent).analyze().check()
-
-
-def test_check_does_not_raise_ef_not_included_error_on_debug_false(styler):
-    styler.debug = False
-    sent = "가나다라마바사"
-    try:
-        styler.setup().preprocess(sent).analyze().check()
-    except EFNotSupportedError:
-        pytest.fail("Exception raised")
-    except EFNotIncludedError:
-        pytest.fail("Exception raised")
-
-
 def test_check_raises_ef_not_supported_error_on_debug_true(styler):
     sent = "용서해주소서"
     with pytest.raises(EFNotSupportedError):
@@ -92,8 +75,6 @@ def test_check_does_not_raise_ef_not_supported_error_on_debug_false(styler):
     try:
         styler.setup().preprocess(sent).analyze().check()
     except EFNotSupportedError:
-        pytest.fail("Exception raised")
-    except EFNotIncludedError:
         pytest.fail("Exception raised")
 
 
@@ -127,6 +108,76 @@ def test_honorify_ends_with_special_char_2(styler):
     assert styler(sent, 3) == "그 일은 제 담당입니다!"
 
 
+def test_honorify_yi_da_1(styler):
+    """
+    이 + 다
+    """
+    sent = "한글은 한국의 글자이다."
+    assert styler(sent, 1) == "한글은 한국의 글자다."
+    assert styler(sent, 2) == "한글은 한국의 글자에요."
+    assert styler(sent, 3) == "한글은 한국의 글잡니다."
+
+
+def test_honorify_yi_da_2(styler):
+    """
+    이 + 다
+    """
+    sent = "당초에는 비하적 의미가 없었다는 게 정설이다. 더 자세한 내용은 한글/ 역사 문서로."
+    assert styler(sent, 1) == "당초에는 비하적 의미가 없었다는 게 정설이다. 더 자세한 내용은 한글/ 역사 문서로."
+    assert styler(sent, 2) == "당초에는 비하적 의미가 없었다는 게 정설예요. 더 자세한 내용은 한글/ 역사 문서로."
+    assert styler(sent, 3) == "당초에는 비하적 의미가 없었다는 게 정설입니다. 더 자세한 내용은 한글/ 역사 문서로."
+
+
+def test_honorify_nieun_da_1(styler):
+    """
+    ㄴ다
+    """
+    sent = "조선민주주의인민공화국에서는 조선 글이라 부른다."
+    assert styler(sent, 1) == "조선민주주의인민공화국에서는 조선 글이라 부른다."
+    assert styler(sent, 2) == "조선민주주의인민공화국에서는 조선 글이라 불러요."
+    assert styler(sent, 3) == "조선민주주의인민공화국에서는 조선 글이라 부릅니다."
+
+
+def test_honorify_nieun_da_2(styler):
+    """
+    ㄴ다 - followed by 다.
+    """
+    sent = "조선민주주의인민공화국에서는 조선 글이라 부른다. 다음 문장도 이렇다."
+    assert styler(sent, 1) == "조선민주주의인민공화국에서는 조선 글이라 부른다. 다음 문장도 이렇다."
+    assert styler(sent, 2) == "조선민주주의인민공화국에서는 조선 글이라 불러요. 다음 문장도 이래요."
+    assert styler(sent, 3) == "조선민주주의인민공화국에서는 조선 글이라 부릅니다. 다음 문장도 이렇습니다."
+
+
+def test_honorify_nieun_da_3(styler):
+    """
+    ㄴ다 - followed by 지.
+    """
+    sent = "조선민주주의인민공화국에서는 조선 글이라 부른다. 다음 문장은 이렇지."
+    assert styler(sent, 1) == "조선민주주의인민공화국에서는 조선 글이라 부른다. 다음 문장은 이렇지."
+    assert styler(sent, 2) == "조선민주주의인민공화국에서는 조선 글이라 불러요. 다음 문장은 이래요."
+    assert styler(sent, 3) == "조선민주주의인민공화국에서는 조선 글이라 부릅니다. 다음 문장은 이렇습니다."
+
+
+def test_honorify_ja_1(styler):
+    """
+    -자
+    """
+    sent = "이참에 돈을 걷어 가자."
+    assert styler(sent, 1) == "이참에 돈을 걷어 가자."
+    assert styler(sent, 2) == "이참에 돈을 걷어 가요."
+    assert styler(sent, 3) == "이참에 돈을 걷어 갑시다."
+
+
+def test_honorify_ja_2(styler):
+    """
+    종결어미 -자
+    """
+    sent = "자 이제 먹자."
+    assert styler(sent, 1) == "자 이제 먹자."
+    assert styler(sent, 2) == "자 이제 먹어요."
+    assert styler(sent, 3) == "자 이제 먹읍시다."
+
+
 def test_honorify_eora(styler):
     """
     종결어미 -어라
@@ -145,16 +196,6 @@ def test_honorify_ra(styler):
     assert styler(sent, 1) == "최선을 다하라."
     assert styler(sent, 2) == "최선을 다하세요."
     assert styler(sent, 3) == "최선을 다합시다."
-
-
-def test_honorify_ja(styler):
-    """
-    종결어미 -자
-    """
-    sent = "자 이제 먹자."
-    assert styler(sent, 1) == "자 이제 먹자."
-    assert styler(sent, 2) == "자 이제 먹어요."
-    assert styler(sent, 3) == "자 이제 먹읍시다."
 
 
 def test_honorify_nieun_dae(styler):
@@ -184,7 +225,7 @@ def test_honorify_gae(styler):
     assert styler(sent, 3) == "회의를 시작하겠습니다."
 
 
-def test_honorify_eo(styler):
+def test_honorify_eo_1(styler):
     """
     종결어미 -어
     """
@@ -192,6 +233,16 @@ def test_honorify_eo(styler):
     assert styler(sent, 1) == "그 일은 내가 처리했어."
     assert styler(sent, 2) == "그 일은 제가 처리했어요."
     assert styler(sent, 3) == "그 일은 제가 처리했습니다."
+
+
+def test_honorify_eo_2(styler):
+    """
+    -어
+    """
+    sent = "길 가다가 동전을 주웠어."
+    assert styler(sent, 1) == "길 가다가 동전을 주웠어."
+    assert styler(sent, 2) == "길 가다가 동전을 주웠어요."
+    assert styler(sent, 3) == "길 가다가 동전을 주웠습니다."
 
 
 def test_honorify_yo(styler):
@@ -228,7 +279,6 @@ def test_honorify_se_yo(styler):
     """
     세+요
     """
-    # 이미 규칙으로 존재하는 -세요 때문에 얘는 달라져야함
     sent = "최선을 다 하세요."
     assert styler(sent, 1) == "최선을 다 해."
     assert styler(sent, 2) == "최선을 다 하세요."
@@ -312,6 +362,13 @@ def test_honorify_eo_q(styler):
     assert styler(sent, 1) == "어제 공부는 마무리했어?"
     assert styler(sent, 2) == "어제 공부는 마무리했어요?"
     assert styler(sent, 3) == "어제 공부는 마무리했습니까?"
+
+
+def test_honorify_eo_yo(styler):
+    sent = "길 가다가 동전을 주웠어요."
+    assert styler(sent, 1) == "길 가다가 동전을 주웠어."
+    assert styler(sent, 2) == "길 가다가 동전을 주웠어요."
+    assert styler(sent, 3) == "길 가다가 동전을 주웠습니다."
 
 
 def test_honorify_eo_yo_q_1(styler):
@@ -594,10 +651,6 @@ def test_conjugate_neura(styler):
     assert styler(sent, 1) == "이리 오너라."
     assert styler(sent, 2) == "이리 오세요."
     assert styler(sent, 3) == "이리 오십시오."
-    sent = "이리 오세요."
-    assert styler(sent, 1) == "이리 와."
-    assert styler(sent, 2) == "이리 오세요."
-    assert styler(sent, 3) == "이리 오십시오."
 
 
 def test_conjugate_drop_hiut(styler):
@@ -647,42 +700,17 @@ def test_more_2():
 
 
 @pytest.mark.skip()
-def test_khaiii_error_1(styler):
+def test_kiwi_error_3(styler):
     """
-    이건 khaiii에서의 문제다.
-    "줍"만을 어간으로 추출해야하는데 알 수 없는 이유로 그렇게 되지 않는다.
-    결과적으로,
-    줍웠 + 어
-    만을 고려하게된다. 그래서 ㅂ 블규칙이 적용되지 않음.
+    이 + 다.
+    어간에 받침이 있는 경우, 이에요.
+    어간에 받침이 없는 경우, 예요.
+    그리고 에요는? - 생각해볼게 많다.
     """
-    sent = "길가다가 동전을 주웠어."
-    assert styler(sent, 1) == "길가다가 동전을 주웠어."
-    assert styler(sent, 2) == "길가다가 동전을 주웠어요."
-    assert styler(sent, 3) == "길가다가 동전을 주웠습니다."
-    sent = "길가다가 동전을 주웠어요."  # 아... 줍우... 줍이 아니라.. 줍우..
-    assert styler(sent, 1) == "길가다가 동전을 주웠어."
-    assert styler(sent, 2) == "길가다가 동전을 주웠어요."
-    assert styler(sent, 3) == "길가다가 동전을 주웠습니다."
-
-
-@pytest.mark.skip()
-def test_khaiii_error_2(styler):
-    """
-    이것도 khaiii에서의 문제다.
-    걷어를 맥락을 고려하지 않고 무조건적으로 걸어로 분석한다.
-    """
-    sent = "이참에 돈을 걷어가자."
-    assert styler(sent, 1) == "이참에 돈을 걷어가자."
-    assert styler(sent, 2) == "이참에 돈을 걷어가요."
-    assert styler(sent, 3) == "이참에 돈을 걷어갑시다."
-
-
-@pytest.mark.skip()
-def test_khaiii_error_3(styler):
-    sent = "가까우니까 걸어가요."
-    assert styler(sent, 1) == "가까우니까 걸어가자."
-    assert styler(sent, 2) == "가까우니까 걸어가요."
-    assert styler(sent, 3) == "가까우니까 걸어갑시다."
+    sent = "콩나물은 에어팟의 별칭이다."
+    assert styler(sent, 1) == "콩나물은 에어팟의 별칭이다."
+    assert styler(sent, 2) == "콩나물은 에어팟의 별칭이에요."
+    assert styler(sent, 3) == "콩나물은 에어팟의 별칭입니다."
 
 
 @pytest.mark.skip()
@@ -743,3 +771,11 @@ def test_contextual_4(styler):
     assert styler(sent, 1) == "자, 떠나자. 동해 바다로."
     assert styler(sent, 2) == "자, 떠나요. 동해 바다로."
     assert styler(sent, 3) == "자, 떠납시다. 동해 바다로."
+
+
+@pytest.mark.skip()
+def test_contextual_5(styler):
+    sent = "가까우니까 걸어가요."
+    assert styler(sent, 1) == "가까우니까 걸어가."
+    assert styler(sent, 2) == "가까우니까 걸어가요."
+    assert styler(sent, 3) == "가까우니까 걸어갑시다."
