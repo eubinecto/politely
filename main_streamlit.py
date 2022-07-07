@@ -61,7 +61,7 @@ def explain(logs: dict, eng: str):
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     # --- step 1 ---
-    msg = "### 1️⃣ Translate the textence"
+    msg = "### 1️⃣ Translate the sentence(s) to Korean"
     before = eng
     after = " ".join(logs["__call__"]["in"]["sents"])
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
