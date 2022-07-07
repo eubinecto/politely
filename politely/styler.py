@@ -2,8 +2,8 @@ import re
 import requests  # noqa
 import pandas as pd  # noqa
 from typing import Any, List
-from politely import HONORIFICS, DEL
-from politely.errors import EFNotIncludedError, EFNotSupportedError
+from politely import HONORIFICS, DEL, SEP
+from politely.errors import EFNotSupportedError, SFNotIncludedError
 from functools import wraps
 from politely.fetchers import fetch_kiwi
 
@@ -52,7 +52,7 @@ class Styler:
     def preprocess(self, text: str):
         """
         I know it is inefficient to tokenize twice (once here, and one more in analyze),
-        But I have to leave this here. Work on the speed later.
+        But I have to leave this here and work on the speed later.
         """
         # first, split into sentences
         out = [sent.text.strip() for sent in self.kiwi.split_into_sents(text)]
@@ -64,7 +64,9 @@ class Styler:
     def analyze(self):
         self.out: List[str]
         self.out = [
-            DEL.join([token.tagged_form for token in self.kiwi.tokenize(sent)])
+            DEL.join(
+                [f"{token.form}{SEP}{token.tag}" for token in self.kiwi.tokenize(sent)]
+            )
             for sent in self.out
         ]
         return self
@@ -76,25 +78,48 @@ class Styler:
         self.out: List[str]
         # raise exceptions only if you are in debug mode
         if self.debug:
-            # assumption 1: every sentence should end with SF. It should be one of: (., !, ?)
-            # TODO:
-            # assumption 2: every sentence must include more than 1 EF's
-            if not all(["EF" in joined for joined in self.out]):
-                raise EFNotIncludedError("|".join(self.out))
-            # assumption 3: all EF's should be supported by politely.
-            if not all([any([self.matches(pattern, joined) for pattern in HONORIFICS.keys() if "EF" in pattern]) for joined in self.out]):
-                raise EFNotSupportedError("|".join(self.out))
+            # assumption 1: every sentence should end with a valid SF. It should be one of: (., !, ?)
+            if not all(["SF" in joined for joined in self.out]):
+                raise SFNotIncludedError(
+                    "The following sentences do not include a SF:\n"
+                    + "\n".join([joined for joined in self.out if "SF" not in joined])
+                )
+            # assumption 2: all EF's should be supported by politely.
+            if not all(
+                [
+                    any(
+                        [self.matches(pattern, joined) for pattern in HONORIFICS.keys()]
+                    )
+                    for joined in self.out
+                    if "EF" in joined
+                ]
+            ):
+                raise EFNotSupportedError(
+                    "Styler does not support the ending(s):\n"
+                    + "\n".join(
+                        [
+                            joined
+                            for joined in self.out
+                            if not any(
+                                [
+                                    self.matches(pattern, joined)
+                                    for pattern in HONORIFICS.keys()
+                                ]
+                            )
+                        ]
+                    )
+                )
         return self
 
     @log
     def honorify(self, politeness: int):
         self.out: List[str]
-        self.out = DEL.join(self.out)
-        for pattern in HONORIFICS.keys():
-            if self.matches(pattern, self.out):
-                honorific = HONORIFICS[pattern][politeness]
-                self.out = re.sub(pattern, honorific, self.out)
-                self.logs["honorifics"].add((pattern, honorific))
+        for idx in range(len(self.out)):
+            for pattern in HONORIFICS.keys():
+                if self.matches(pattern, self.out[idx]):
+                    honorific = HONORIFICS[pattern][politeness]
+                    self.out[idx] = re.sub(pattern, honorific, self.out[idx])
+                    self.logs["honorifics"].add((pattern, honorific))
         return self
 
     @log
@@ -102,15 +127,16 @@ class Styler:
         """
         Progressively conjugate morphemes from left to right.
         """
-        self.out: str
+        self.out: List[str]
         morphs = [
-            (token.split("/")[0], token.split("/")[1]) for token in self.out.split(DEL)
+            (token.split(SEP)[0], token.split(SEP)[1])
+            for joined in self.out
+            for token in joined.split(DEL)
+            if SEP in token
         ]
         self.out = self.kiwi.join(morphs)
         return self
 
     @staticmethod
     def matches(pattern: str, string: str) -> bool:
-        return (
-            True if re.findall(rf"(^|.*{DEL}){pattern}({DEL}.*|$)", string) else False
-        )
+        return True if re.match(rf"(^|.*{DEL}){pattern}({DEL}.*|$)", string) else False
