@@ -41,7 +41,7 @@ path = "politely/__init__.py"
 ignore-vcs = true
 include = [
   "politely/*.py",
-  "politely/resources/*.yaml"
+  "politely/honorifics.yaml"
 ]
 
 [tool.hatch.build.targets.sdist]
