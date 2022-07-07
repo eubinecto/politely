@@ -83,7 +83,7 @@ streamlit run main_deploy.py
 
 Or just visit [the demo we are hosting](https://eubinecto-politely-main-streamlit-4vmces.streamlitapp.com) for you | 
 --- |
-<img width="749" alt="image" src="https://user-images.githubusercontent.com/56193069/168508652-687acb98-0bf6-4834-b56c-74d236bee031.png"> | 
+<img width="743" alt="image" src="https://user-images.githubusercontent.com/56193069/177812857-afa40454-1afd-4b09-873f-aa9db3495d9e.png"> | 
 
 
 ## What Politely can't 🙅
