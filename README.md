@@ -1,7 +1,6 @@
 # Politely
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely-main-streamlit-4vmces.streamlitapp.com)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1W79NzS7xU4VS2HxAKjDB_QwsZp6e2jKu?usp=sharing)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Feubinecto%2Fpolitely&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![PyPI version](https://badge.fury.io/py/politely.svg)](https://badge.fury.io/py/politely)
 
@@ -18,7 +17,7 @@ pip3 install politely
 ```
 
 ### 2️⃣ Split your text into sentences
-Split your text into sentences with whatever tools you prefer. Here, we use `kiwipiepy` for the sake of demonstration:
+Split your text into sentences with whatever tools you prefer. Here, we use [`kiwipiepy`](https://github.com/bab2min/kiwipiepy) for the sake of demonstration:
 ```python3
 from kiwipiepy import Kiwi
 # an excerpt from 동백꽃 (김유정)
