@@ -1,13 +1,10 @@
-from copy import copy
-from pprint import pprint
 import re
-from typing import List, Tuple
-
+from typing import Tuple
 import yaml
 from kiwipiepy import Kiwi
 
 HONORIFICS_YAML = """
-# 1st-order rules (1-morpheme-pattern)
+# --- 1st-order rules (1-morpheme-pattern) --- #
 \+(?P<tgt>[^\s+]+/EF):
   - [어/EF, 다/EF, 자/EF]
   - [어요/EF, 죠/EF, 래요/EF, 네요/EF]
@@ -36,7 +33,8 @@ HONORIFICS_YAML = """
   - [나/NP]
   - [저/NP]
   - [저/NP]
-# 2nd-order rules (2-morpheme-pattern)  
+  
+# --- 2nd-order rules (2-morpheme-pattern) --- #  
 \+(?P<tgt>[^\s+]+/EF)\+\?/SF:   # use match & extract
   - \+(?P<tgt>[^\s+]+/EF)  # you can use other keys to use the same pattern
   - \+(?P<tgt>[^\s+]+/EF)
@@ -46,7 +44,7 @@ HONORIFICS_YAML = """
   - \+(?P<tgt>[^\s+]+/EF)
   - [ᆸ니다/EF, ᆸ시다/EF]  # . 로 끝나는 경우, 평서형만 가능
 # if you are not using any wildcards, be specific with your candidates
-\+이/VCP\+(?P<tgt>(어|다)/EF):
+\+이/VCP\+(?P<tgt>(어|다|에요|죠|ᆸ니다)/EF):
   - [어/EF, 다/EF]
   - [에요/EF, 죠/EF]
   - [ᆸ니다/EF]  #   "입시다" 따윈 없으므로 , 오직 ㅂ니다만 가능.
@@ -96,18 +94,19 @@ def honorify(sent: str, politeness: int) -> Tuple[str, list]:
     if formality == politeness:
         # just return it as-is.
         return sent, morphemes
-    possible = {}
+    possibilities = {}
     joined = "+".join(morphemes)
     for pattern in HONORIFICS.keys():
         regex = re.compile(pattern)
         if regex.search(joined):
             key = regex.search(joined).group('tgt')
             honorifics = set(HONORIFICS[pattern][politeness])
-            possible[key] = possible.get(key, honorifics) & honorifics
-    # should think of the combinations of multiple possible, though. (e.g. 나 -> 저 && 종결어미)
+            possibilities[key] = possibilities.get(key, honorifics) & honorifics
+            print(possibilities)
+    # should think of the combinations of multiple possibilities, though. (e.g. 나 -> 저 && 종결어미)
     # what you need is ... applying different keys at the same time -> but how? how do we do this?
     candidates = [
-        possible.get(morpheme, morpheme)
+        possibilities.get(morpheme, morpheme)
         for morpheme in morphemes
     ]
     out = kiwi.join(
