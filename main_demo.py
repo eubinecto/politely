@@ -15,8 +15,8 @@ kiwi = Kiwi()
 sents = [sent.text.strip() for sent in kiwi.split_into_sents(text)]
 # instantiate a Styler object.
 styler = Styler()
-pprint(" ".join(sents))
 # to polite style
-pprint(" ".join(styler(sents, 2)))
+pprint(styler(sents, 2))
 # to formal style
-pprint(" ".join(styler(sents, 3)))
+print("---")
+pprint(styler(sents, 3))

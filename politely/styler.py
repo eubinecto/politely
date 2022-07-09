@@ -1,6 +1,5 @@
 import re
 from copy import copy
-
 import requests  # noqa
 import pandas as pd  # noqa
 from typing import Any, List
@@ -53,8 +52,7 @@ class Styler:
 
     def preprocess(self, sents: List[str]):
         """
-        I know it is inefficient to tokenize twice (once here, and one more in analyze),
-        But I have to leave this here and work on the speed later.
+        Make sure each sentence ends with a period.
         """
         self.out = [re.sub(r"([^!?.]+)$", r"\1.", sent.strip()) for sent in sents]
         return self

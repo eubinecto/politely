@@ -21,25 +21,25 @@ def setup(styler):
 def test_preprocess_with_period(styler):
     sents = ["이것은 예시 문장이다."]
     styler.preprocess(sents)
-    assert " ".join(styler.out) == "이것은 예시 문장이다."
+    assert styler.out[0] == "이것은 예시 문장이다."
 
 
 def test_preprocess_with_period_with_trailing_spaces(styler):
     sents = ["이것은 예시 문장이다. "]
     styler.preprocess(sents)
-    assert " ".join(styler.out) == "이것은 예시 문장이다."
+    assert styler.out[0] == "이것은 예시 문장이다."
 
 
 def test_preprocess_no_period(styler):
     sents = ["이것은 예시 문장이다"]
     styler.preprocess(sents)
-    assert " ".join(styler.out) == "이것은 예시 문장이다."
+    assert styler.out[0] == "이것은 예시 문장이다."
 
 
 def test_preprocess_no_period_with_trailing_spaces(styler):
     sents = ["이것은 예시 문장이다  "]
     styler.preprocess(sents)
-    assert " ".join(styler.out) == "이것은 예시 문장이다."
+    assert styler.out[0] == "이것은 예시 문장이다."
 
 
 def test_check_raises_sf_not_included_error_on_debug_true(styler):
@@ -445,6 +445,16 @@ def test_honorify_jo(styler):
     assert styler(sents, 1)[0] == "그거는 내가 할게."
     assert styler(sents, 2)[0] == "그거는 제가 하죠."
     assert styler(sents, 3)[0] == "그거는 제가 합니다."
+
+
+def test_honorify_nan(styler):
+    """
+    난
+    """
+    sents = ["난 감자 안 먹는다."]
+    assert styler(sents, 1)[0] == "나는 감자 안 먹는다."
+    assert styler(sents, 2)[0] == "저는 감자 안 먹어요."
+    assert styler(sents, 3)[0] == "저는 감자 안 먹습니다."
 
 
 # --- tests by irregular conjugations --- #
