@@ -38,7 +38,7 @@ class Styler:
         """
         style a sentence with the given politeness (1, 2, 3)
         """
-        self.setup().preprocess(sents).analyze().check().honorify(politeness).conjugate()
+        self.setup().preprocess(sents).analyze().check().style(politeness).conjugate()
         return self.out
 
     def setup(self):
