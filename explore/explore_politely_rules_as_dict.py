@@ -25,7 +25,7 @@ RULES.update(
              f"마{TAG}EF", f"ᆯ게{TAG}EF", f"ᆫ대{TAG}EF", f"야{TAG}EF", f"군{TAG}EF", f"네{TAG}EF"},
             {f"어요{TAG}EF", f"에요{TAG}EF", f"죠{TAG}EF", f"래요{TAG}EF", f"네요{TAG}EF",
              f"ᆯ게요{TAG}EF", f"ᆫ대요{TAG}EF", f"ᆫ가요{TAG}EF", f"나요{TAG}EF"},
-            {f"ᆸ니다{TAG}EF", f"ᆸ시다{TAG}EF", f"읍시다{TAG}EF", f"습니까{TAG}EF", f"ᆸ니까{TAG}EF", f"십시오{TAG}EF", f"ᆸ시오{TAG}EF"}
+            {f"ᆸ니다{TAG}EF", f"ᆸ시다{TAG}EF", f"습니까{TAG}EF", f"ᆸ니까{TAG}EF", f"십시오{TAG}EF", f"ᆸ시오{TAG}EF"}
         )
     }
 )
@@ -93,7 +93,7 @@ RULES.update(
             RULES[EFS_AS_MASK][0],
             RULES[EFS_AS_MASK][1] - {f"에요{TAG}EF", f"네요{TAG}EF"},
             # ㅅ is redundant
-            RULES[EFS_AS_MASK][2] - {f"습니까{TAG}EF", f"십시오{TAG}EF", f"ᆸ시다{TAG}EF", f"읍시다{TAG}EF"}
+            RULES[EFS_AS_MASK][2] - {f"습니까{TAG}EF", f"십시오{TAG}EF", f"ᆸ시다{TAG}EF", }
         )
     }
 )
@@ -179,15 +179,15 @@ RULES.update(
 
 # TODO - right, now that should be alright. We need language models
 #  (e.g. SkipGram - work on this AFTER you finish your dissertation)
-# TODO - 받침이 있는지 확인?
-
+# TODO - 받침이 있는지 확인? 이걸 정규표현식으로 하는게 가능? - 모든 받침을 하나의 리스트로 정의해두면 가능할 것.
+# TODO - allow more than 1 masks? -> should be able to keep the patterns more densed. (RULES will be nested once more).
 
 # for validation
 BANS, JONS, FORMALS = RULES[EFS_AS_MASK][0], RULES[EFS_AS_MASK][1], RULES[EFS_AS_MASK][2]
 
 
 def style(sent: str, politeness: int) -> Tuple[str, list]:
-    morphemes = [token.tagged_form.replace("/", TAG) for token in kiwi.tokenize(sent)]
+    morphemes = [f"{token.form}{TAG}{token.tag}" for token in kiwi.tokenize(sent)]
     # check the formality of the sentence
     ef = [morph for morph in morphemes if morph.endswith("EF")][0]
     if ef in BANS:
