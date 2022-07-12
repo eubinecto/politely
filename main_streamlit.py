@@ -89,8 +89,8 @@ def explain(logs: dict, eng: str):
     st.markdown(msg)
     # --- step 3 ---
     msg = f"### 3️⃣ Analyze morphemes"
-    pprint(logs['__call__']['in'])
-    pprint(logs['analyze']['in']['self'].out)
+    pprint(logs["__call__"]["in"])
+    pprint(logs["analyze"]["in"]["self"].out)
 
     before = after
     after = " ".join(logs["analyze"]["out"]).replace(DLM, " ")
@@ -104,9 +104,7 @@ def explain(logs: dict, eng: str):
     # for pattern, honorific in logs['honorifics']:
     #     before = re.sub(pattern, r'`\g<0>`', before)
     #     after = re.sub(pattern, honorific, before)
-    df = pd.DataFrame(
-        [(before, after)], columns=["before", "after"]
-    )
+    df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
     # # --- step 5 ---

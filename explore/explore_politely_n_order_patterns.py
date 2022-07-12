@@ -105,20 +105,18 @@ def style(sent: str, politeness: int) -> Tuple[str, list]:
     for pattern in RULES.keys():
         regex = re.compile(pattern)
         if regex.search(joined):
-            key = regex.search(joined).group('mask')
+            key = regex.search(joined).group("mask")
             honorifics = set(RULES[pattern][politeness])
             possibilities[key] = possibilities.get(key, honorifics) & honorifics
             # print(pattern, "->", possibilities)
     # should think of the combinations of multiple possibilities, though. (e.g. 나 -> 저 && 종결어미)
     # what you need is ... applying different keys at the same time -> but how? how do we do this?
-    candidates = [
-        possibilities.get(morpheme, morpheme)
-        for morpheme in morphemes
-    ]
+    candidates = [possibilities.get(morpheme, morpheme) for morpheme in morphemes]
     out = kiwi.join(
         [
             # for now, we use random pop.
-            tuple(list(candidate)[0].split("/")) if isinstance(candidate, set)
+            tuple(list(candidate)[0].split("/"))
+            if isinstance(candidate, set)
             else tuple(candidate.split("/"))
             for candidate in candidates
             if candidate

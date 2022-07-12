@@ -15,7 +15,10 @@ def log(f):
         out = f(*args, **kwargs)
         # get the function signature
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
-        args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": copy(args[0].out)}
+        args[0].logs[f.__name__] = {
+            "in": dict(zip(names, args)),
+            "out": copy(args[0].out),
+        }
         return out
 
     return wrapper
@@ -126,13 +129,14 @@ class Styler:
         """
         self.out: List[str]
         self.out = [
-            [(token.split(SEP)[0], token.split(SEP)[1]) for token in joined.split(DLM) if SEP in token]
+            [
+                (token.split(SEP)[0], token.split(SEP)[1])
+                for token in joined.split(DLM)
+                if SEP in token
+            ]
             for joined in self.out
         ]
-        self.out = [
-            self.kiwi.join(morphs)
-            for morphs in self.out
-        ]
+        self.out = [self.kiwi.join(morphs) for morphs in self.out]
         return self
 
     @staticmethod

@@ -1,4 +1,3 @@
-
 # The symbol to use for separating tags from texts
 from typing import Dict, Tuple
 import re
@@ -13,15 +12,42 @@ ALL = rf"{SEP}([^\s{SEP}]+{TAG}EF)"
 ALL_NO_CAPTURE = rf"{SEP}(?:[^\s{SEP}]+{TAG}EF)"
 kiwi = Kiwi()
 
-# --- all candidates for banmal, jondaemal and formal
-BAN = {f"어{TAG}EF", f"다{TAG}EF", f"자{TAG}EF", f"ᆫ다{TAG}EF", f"는다{TAG}EF",
-       f"마{TAG}EF", f"ᆯ게{TAG}EF", f"ᆫ대{TAG}EF", f"야{TAG}EF", f"군{TAG}EF", f"네{TAG}EF"}
-JON = {f"어요{TAG}EF", f"에요{TAG}EF", f"죠{TAG}EF", f"래요{TAG}EF", f"네요{TAG}EF",
-        f"ᆯ게요{TAG}EF", f"ᆫ대요{TAG}EF", f"ᆫ가요{TAG}EF", f"나요{TAG}EF"}
-FORMAL = {f"ᆸ니다{TAG}EF", f"ᆸ시다{TAG}EF", f"습니까{TAG}EF", f"ᆸ니까{TAG}EF", f"십시오{TAG}EF", f"ᆸ시오{TAG}EF"}
+# --- all candidates for different styles of politeness --- #
+CASUAL = {
+    f"어{TAG}EF",
+    f"다{TAG}EF",
+    f"자{TAG}EF",
+    f"ᆫ다{TAG}EF",
+    f"는다{TAG}EF",
+    f"마{TAG}EF",
+    f"ᆯ게{TAG}EF",
+    f"ᆫ대{TAG}EF",
+    f"야{TAG}EF",
+    f"군{TAG}EF",
+    f"네{TAG}EF",
+}
+POLITE = {
+    f"어요{TAG}EF",
+    f"에요{TAG}EF",
+    f"죠{TAG}EF",
+    f"래요{TAG}EF",
+    f"네요{TAG}EF",
+    f"ᆯ게요{TAG}EF",
+    f"ᆫ대요{TAG}EF",
+    f"ᆫ가요{TAG}EF",
+    f"나요{TAG}EF",
+}
+FORMAL = {
+    f"ᆸ니다{TAG}EF",
+    f"ᆸ시다{TAG}EF",
+    f"습니까{TAG}EF",
+    f"ᆸ니까{TAG}EF",
+    f"십시오{TAG}EF",
+    f"ᆸ시오{TAG}EF",
+}
 
 # --- any EF's --- #
-RULES: Dict[str, Tuple[set, set, set]] = {ALL: (BAN, JON, FORMAL)}
+RULES: Dict[str, Tuple[set, set, set]] = {ALL: (CASUAL, POLITE, FORMAL)}
 
 # --- 자/EF --- #
 RULES.update(
@@ -29,7 +55,7 @@ RULES.update(
         rf"{SEP}(자{TAG}EF)": (
             {f"자{TAG}EF"},
             {f"어요{TAG}EF", f"죠{TAG}EF"},
-            RULES[ALL][2] - {f"ᆸ니다{TAG}EF", f"습니까{TAG}EF"}
+            RULES[ALL][2] - {f"ᆸ니다{TAG}EF", f"습니까{TAG}EF"},
         )
     }
 )
@@ -40,7 +66,7 @@ RULES.update(
         rf"{SEP}(군{TAG}EF)": (
             {f"군{TAG}EF"},
             {f"어요{TAG}EF", f"네요{TAG}EF"},
-            {f"ᆸ니다{TAG}EF"}
+            {f"ᆸ니다{TAG}EF"},
         )
     }
 )
@@ -73,7 +99,7 @@ RULES.update(
         rf"{SEP}(?:너|당신){TAG}NP{SEP}(ᆯ{TAG}JKO)": (
             {f"ᆯ{TAG}JKO"},
             {f"을{TAG}JKO"},
-            {f"을{TAG}JKO"}
+            {f"을{TAG}JKO"},
         )
     }
 )
@@ -86,7 +112,12 @@ RULES.update(
             RULES[ALL][0],
             RULES[ALL][1] - {f"에요{TAG}EF", f"네요{TAG}EF"},
             # ㅅ is redundant
-            RULES[ALL][2] - {f"습니까{TAG}EF", f"십시오{TAG}EF", f"ᆸ시다{TAG}EF", }
+            RULES[ALL][2]
+            - {
+                f"습니까{TAG}EF",
+                f"십시오{TAG}EF",
+                f"ᆸ시다{TAG}EF",
+            },
         )
     }
 )
@@ -97,7 +128,7 @@ RULES.update(
         rf"{SEP}(시{TAG}EP){ALL_NO_CAPTURE}": (
             set(),  # don't use 시/EP if politeness = 0. NOTE -you can delete a token this way, but you can't add one.
             {f"시{TAG}EP"},
-            {f"시{TAG}EP"}
+            {f"시{TAG}EP"},
         )
     }
 )
@@ -108,7 +139,7 @@ RULES.update(
         rf"{ALL}{SEP}\?{TAG}SF": (
             RULES[ALL][0],
             RULES[ALL][1] - {f"네요{TAG}EF", f"ᆯ게요{TAG}EF"},
-            {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"}  # nothing but 습니까 is allowed
+            {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"},  # nothing but 습니까 is allowed
         )
     }
 )
@@ -119,7 +150,8 @@ RULES.update(
         rf"{ALL}{SEP}[.!]{TAG}SF": (
             RULES[ALL][0],
             RULES[ALL][1],
-            RULES[ALL][2] - {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"}  # anything but 습니까 is allowed
+            RULES[ALL][2]
+            - {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"},  # anything but 습니까 is allowed
         )
     }
 )
@@ -127,11 +159,11 @@ RULES.update(
 # ---- 이/VCP + EFs --- #
 RULES.update(
     {
-       rf"{SEP}이{TAG}VCP{ALL}": (
-           {f"어{TAG}EF", f"다{TAG}EF", f"야{TAG}EF", f"군{TAG}EF"},
-           {f"에요{TAG}EF", f"죠{TAG}EF"},
-           {f"ᆸ니다{TAG}EF"}
-       )
+        rf"{SEP}이{TAG}VCP{ALL}": (
+            {f"어{TAG}EF", f"다{TAG}EF", f"야{TAG}EF", f"군{TAG}EF"},
+            {f"에요{TAG}EF", f"죠{TAG}EF"},
+            {f"ᆸ니다{TAG}EF"},
+        )
     }
 )
 
@@ -141,30 +173,24 @@ RULES.update(
         rf"(?:^|.*{SEP})((?:밥|진지){TAG}NNG)(?:{SEP}.*|$)": (
             {f"밥{TAG}NP"},
             {f"진지{TAG}NP"},
-            {f"진지{TAG}NP"}
+            {f"진지{TAG}NP"},
         )
     }
 )
 
 # ---- 먹/VV + EFs --- #
 RULES.update(
-    {
-       rf"{SEP}((?:먹|잡수){TAG}VV){SEP}": (
-           {f"먹{TAG}VV"},
-           {f"잡수{TAG}VV"},
-           {f"잡수{TAG}VV"}
-       )
-    }
+    {rf"{SEP}((?:먹|잡수){TAG}VV){SEP}": ({f"먹{TAG}VV"}, {f"잡수{TAG}VV"}, {f"잡수{TAG}VV"})}
 )
 
 # ---- 들/VV + 시/EP  --- #
 RULES.update(
     {
-       rf"{SEP}(들{TAG}VV){SEP}시{TAG}EP{SEP}": (
-           {f"먹{TAG}VV"},
-           {f"들{TAG}VV"},
-           {f"들{TAG}VV"}
-       )
+        rf"{SEP}(들{TAG}VV){SEP}시{TAG}EP{SEP}": (
+            {f"먹{TAG}VV"},
+            {f"들{TAG}VV"},
+            {f"들{TAG}VV"},
+        )
     }
 )
 
@@ -180,9 +206,9 @@ def style(sent: str, politeness: int) -> Tuple[str, list]:
     morphemes = [f"{token.form}{TAG}{token.tag}" for token in kiwi.tokenize(sent)]
     # check the formality of the sentence
     ef = [morph for morph in morphemes if morph.endswith("EF")][0]
-    if ef in BAN:
+    if ef in CASUAL:
         formality = 0
-    elif ef in JON:
+    elif ef in POLITE:
         formality = 1
     elif ef in FORMAL:
         formality = 2
@@ -203,14 +229,12 @@ def style(sent: str, politeness: int) -> Tuple[str, list]:
             # print(regex, "->", possibilities)
     # should think of the combinations of multiple possibilities, though. (e.g. 나 -> 저 && 종결어미)
     # what you need is ... applying different keys at the same time -> but how? how do we do this?
-    candidates = [
-        possibilities.get(morpheme, morpheme)
-        for morpheme in morphemes
-    ]
+    candidates = [possibilities.get(morpheme, morpheme) for morpheme in morphemes]
     out = kiwi.join(
         [
             # for now, we use random pop.
-            tuple(list(candidate)[0].split(TAG)) if isinstance(candidate, set)
+            tuple(list(candidate)[0].split(TAG))
+            if isinstance(candidate, set)
             else tuple(candidate.split(TAG))
             for candidate in candidates
             if candidate
@@ -281,7 +305,6 @@ def main():
     print(style(sent, 1))
     print(style(sent, 2))
 
-
     sent = "넌 날 사랑해?"  # removal of 시/EF is also possible
     print(f"honorifying: {sent}")
     print(style(sent, 0))
@@ -308,5 +331,5 @@ def main():
     print(style(sent, 2))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
