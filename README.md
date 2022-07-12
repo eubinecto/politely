@@ -5,7 +5,8 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1tpx_wrMmzD_pWeEibeenlU4q8TuKK1j7?usp=sharing)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Feubinecto%2Fpolitely&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
-
+[![Downloads](https://pepy.tech/badge/politely)](https://pepy.tech/project/politely)
+[![Downloads](https://pepy.tech/badge/politely/week)](https://pepy.tech/project/politely)
 
 Politely is a rule-based politeness styler for the Korean language | 
 --- | 
