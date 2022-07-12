@@ -8,7 +8,7 @@
 [![Downloads](https://pepy.tech/badge/politely)](https://pepy.tech/project/politely)
 [![Downloads](https://pepy.tech/badge/politely/week)](https://pepy.tech/project/politely)
 
-Politely is a rule-based politeness styler for the Korean language | 
+`Politely` is a rule-based politeness styler for the Korean language | 
 --- | 
 <img width="1010" alt="image" src="https://user-images.githubusercontent.com/56193069/168471756-084409db-5d72-48b7-820f-05e1de6b1f5a.png"> | 
 
@@ -39,7 +39,7 @@ sents = [sent.text.strip() for sent in kiwi.split_into_sents(text)]
 
 ### 3️⃣ Speak `politely` with `Styler` 
 
-Instantiate a `styler` object, and style your sentences in a polite or formal manner with `styler`:
+Instantiate an object of `Styler`, and style your sentences in a polite or formal manner with `styler`:
 ```python3
 from politely import Styler
 from pprint import pprint
