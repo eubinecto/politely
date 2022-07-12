@@ -1,3 +1,10 @@
+"""
+Some philosophies to follow:
+1. Rules account for 70% of the solution. Strive to hard-code the rules with intuitions and sweat. Keep the rules as general as possible.
+2. The remaining 30% is based on the context. Don't use rules for that. It may be effective but it's inefficient (you won't get much from specific rules).
+ Disambiguate contexts with masked language models (e.g. Word2Vec, BERT, etc).
+3. Every new feature must be tested. If writing Unit tests are not viable, then try to write a small demo.
+"""
 # The symbol to use for separating tags from texts
 from typing import Dict, Tuple
 import re
@@ -12,7 +19,7 @@ ALL = rf"{SEP}([^\s{SEP}]+{TAG}EF)"
 ALL_NO_CAPTURE = rf"{SEP}(?:[^\s{SEP}]+{TAG}EF)"
 kiwi = Kiwi()
 
-# --- all candidates for different styles of politeness --- #
+# --- all EF's for different styles of politeness --- #
 CASUAL = {
     f"어{TAG}EF",
     f"다{TAG}EF",
