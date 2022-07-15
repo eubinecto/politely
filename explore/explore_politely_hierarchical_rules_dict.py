@@ -4,6 +4,16 @@ Some philosophies to follow:
 2. The remaining 30% is based on the context. Don't use rules for that. It may be effective but it's inefficient (you won't get much from specific rules).
  Disambiguate contexts with masked language models (e.g. Word2Vec, BERT, etc).
 3. Every new feature must be tested. If writing Unit tests are not viable, then try to write a small demo.
+
+---
+Research Proposal:
+RegexBERT - Fine-tuning BERT with Regex-guided Masked Language Modelingd
+---
+너무나도 obvious한건 정규표현식으로 처리.
+나머지 애매모호한 규칙은 BERT에게 맡긴다.
+---
+20번까지는 공식대로 푼다.
+21번과 31번은 머리를 써서 푼다.
 """
 # The symbol to use for separating tags from texts
 from typing import Dict, Tuple
