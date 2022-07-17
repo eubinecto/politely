@@ -7,7 +7,9 @@ Some philosophies to follow:
 
 ---
 Research Proposal:
-RegexBERT - Fine-tuning BERT with Regex-guided Masked Language Modelingd
+RegexBERT - Fine-tuning BERT with Regex-guided Masked Language Modeling
+or....
+It might be better to generalize this approach over auto-regressive inference.
 ---
 너무나도 obvious한건 정규표현식으로 처리.
 나머지 애매모호한 규칙은 BERT에게 맡긴다.
@@ -24,47 +26,70 @@ TAG = "⌇"
 # The symbol to use for separating taggd tokens from another tagged tokens
 SEP = "⊕"
 # The wild cards
-ALL = rf"([^\s{SEP}]+{TAG}EF)"
 # https://www.pythontutorial.net/python-regex/python-regex-non-capturing-group/
-ALL_NO_CAPTURE = rf"(?:[^\s{SEP}]+{TAG}EF)"
+EFS_NO_CAP = rf"(?:[^\s{SEP}]+?{TAG}EF)"
+EFS_WITH_CAP = rf"([^\s{SEP}]+?{TAG}EF)"
+# all characters with or without jong sung
+ALL_NO_JS = rf"[{''.join([chr(44032 + 28 * i) for i in range(399)])}]"
+ALL_WITH_JS = rf"[{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
+
 kiwi = Kiwi()
 
 # --- all EF's for different styles of politeness --- #
+# style - transfer
 CASUAL = {
     f"어{TAG}EF",
     f"다{TAG}EF",
     f"자{TAG}EF",
-    f"ᆫ다{TAG}EF",
     f"는다{TAG}EF",
     f"마{TAG}EF",
-    f"ᆯ게{TAG}EF",
-    f"ᆫ대{TAG}EF",
     f"야{TAG}EF",
     f"군{TAG}EF",
     f"네{TAG}EF",
+    f"ᆫ다{TAG}EF",
+    f"ᆯ게{TAG}EF",
+    f"ᆫ대{TAG}EF",
 }
+
+# 음.. 그냥... 시를 더해버리는 방법도 있다.
+# 이건.. 나중에 고민하자.
 POLITE = {
     f"어요{TAG}EF",
     f"에요{TAG}EF",
     f"죠{TAG}EF",
     f"래요{TAG}EF",
     f"네요{TAG}EF",
+    f"나요{TAG}EF",
     f"ᆯ게요{TAG}EF",
     f"ᆫ대요{TAG}EF",
     f"ᆫ가요{TAG}EF",
-    f"나요{TAG}EF",
 }
 FORMAL = {
-    f"ᆸ니다{TAG}EF",
-    f"ᆸ시다{TAG}EF",
+    f"습니다{TAG}EF",
     f"습니까{TAG}EF",
     f"ᆸ니까{TAG}EF",
-    f"십시오{TAG}EF",
     f"ᆸ시오{TAG}EF",
+    f"ᆸ니다{TAG}EF",
+    f"ᆸ시다{TAG}EF",
 }
 
+
 # --- any EF's --- #
-RULES: Dict[str, Tuple[List[set], List[set], List[set]]] = {ALL: ([CASUAL], [POLITE], [FORMAL])}
+RULES: Dict[str, Tuple[List[set], List[set], List[set]]] = {
+    EFS_WITH_CAP: ([CASUAL], [POLITE], [FORMAL])
+}
+
+# --- 종성이 있는 경우 + any EF's -> 받침으로 시작하는 EF는 해당 X --- #
+RULES.update(
+    {
+        rf"{ALL_WITH_JS}{TAG}[A-Z\-]+?{SEP}{EFS_WITH_CAP}": (
+            [CASUAL - {f"ᆫ다{TAG}EF", f"ᆯ게{TAG}EF", f"ᆫ대{TAG}EF"}],
+            [POLITE - {f"ᆯ게요{TAG}EF", f"ᆫ대요{TAG}EF", f"ᆫ가요{TAG}EF"}],
+            [FORMAL - {f"ᆸ니까{TAG}EF", f"ᆸ시오{TAG}EF", f"ᆸ니다{TAG}EF", f"ᆸ시다{TAG}EF"}],
+        )
+    }
+)
+
 
 # --- 자/EF --- #
 RULES.update(
@@ -72,7 +97,7 @@ RULES.update(
         rf"(자{TAG}EF)": (
             [{f"자{TAG}EF"}],
             [{f"어요{TAG}EF", f"죠{TAG}EF"}],
-            [RULES[ALL][2][0] - {f"ᆸ니다{TAG}EF", f"습니까{TAG}EF"}],
+            [FORMAL - {f"ᆸ니다{TAG}EF", f"습니까{TAG}EF"}],
         )
     }
 )
@@ -83,7 +108,7 @@ RULES.update(
         rf"(군{TAG}EF)": (
             [{f"군{TAG}EF"}],
             [{f"어요{TAG}EF", f"네요{TAG}EF"}],
-            [{f"ᆸ니다{TAG}EF"}],
+            [{f"ᆸ니다{TAG}EF", f"습니다{TAG}EF"}],
         )
     }
 )
@@ -124,27 +149,11 @@ RULES.update(
 # --- 시/EP + all/EF --- #
 RULES.update(
     {
-        rf"시{TAG}EP{SEP}{ALL}": (
-            RULES[ALL][0],
-            [RULES[ALL][1][0] - {f"에요{TAG}EF", f"네요{TAG}EF"}],
+        rf"(시{TAG}EP){SEP}{EFS_WITH_CAP}": (
+            [set(), CASUAL],
+            [{f"시{TAG}EP"}, POLITE - {f"에요{TAG}EF", f"네요{TAG}EF"}],
             # ㅅ is redundant
-            [RULES[ALL][2][0]
-             - {
-                 f"습니까{TAG}EF",
-                 f"십시오{TAG}EF",
-                 f"ᆸ시다{TAG}EF",
-             }],
-        )
-    }
-)
-
-# --- 시/EP --- #
-RULES.update(
-    {
-        rf"(시{TAG}EP){SEP}{ALL_NO_CAPTURE}": (
-            [set()],  # don't use 시/EP if politeness = 0. NOTE -you can delete a token this way, but you can't add one.
-            [{f"시{TAG}EP"}],
-            [{f"시{TAG}EP"}],
+            [{f"시{TAG}EP"}, FORMAL - {f"습니까{TAG}EF", f"ᆸ시다{TAG}EF"}],
         )
     }
 )
@@ -152,9 +161,9 @@ RULES.update(
 # --- ends with ?/SF --- #
 RULES.update(
     {
-        rf"{ALL}{SEP}\?{TAG}SF": (
-            RULES[ALL][0],
-            [RULES[ALL][1][0] - {f"네요{TAG}EF", f"ᆯ게요{TAG}EF"}],
+        rf"{EFS_WITH_CAP}{SEP}\?{TAG}SF": (
+            [CASUAL],
+            [POLITE - {f"네요{TAG}EF", f"ᆯ게요{TAG}EF"}],
             [{f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"}],  # nothing but 습니까 is allowed
         )
     }
@@ -163,11 +172,10 @@ RULES.update(
 # --- ends with ./SF, !/SF --- #
 RULES.update(
     {
-        rf"{ALL}{SEP}[.!]{TAG}SF": (
-            RULES[ALL][0],
-            RULES[ALL][1],
-            [RULES[ALL][2][0]
-             - {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"}],  # anything but 습니까 is allowed
+        rf"{EFS_WITH_CAP}{SEP}[.!]{TAG}SF": (
+            [CASUAL],
+            [POLITE],
+            [FORMAL - {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"}],  # anything but 습니까 is allowed
         )
     }
 )
@@ -175,36 +183,48 @@ RULES.update(
 # ---- 이/VCP + EFs --- #
 RULES.update(
     {
-        rf"이{TAG}VCP{SEP}{ALL}": (
+        rf"이{TAG}VCP{SEP}{EFS_WITH_CAP}": (
             [{f"어{TAG}EF", f"다{TAG}EF", f"야{TAG}EF", f"군{TAG}EF"}],
             [{f"에요{TAG}EF", f"죠{TAG}EF"}],
-            [{f"ᆸ니다{TAG}EF"}],
+            [{f"ᆸ니다{TAG}EF", f"습니다{TAG}EF"}],
         )
     }
 )
 
-# --- you can, define more than one group, if you wish  --- #
+# --- 밥 or 진지 --- #
 RULES.update(
     {
-        rf"((?:밥|진지){TAG}NNG){SEP}((?:먹|들|잡수){TAG}VV)": (
-            [{f"밥{TAG}NNG"}, {f"먹{TAG}VV"}],  # casual
-            [{f"밥{TAG}NNG", f"진지{TAG}NNG"}, {f"먹{TAG}VV", f"들{TAG}VV", f"잡수{TAG}VV"}],  # polite
-            [{f"진지{TAG}NNG"}, {f"들{TAG}VV", f"잡수{TAG}VV"}],  # formal
+        rf"((?:밥|진지){TAG}NNG)": (
+            [{f"밥{TAG}NNG"}],  # casual
+            [{f"밥{TAG}NNG", f"진지{TAG}NNG"}],  # polite
+            [{f"진지{TAG}NNG"}]  # formal
         )
     }
 )
 
 
-# TODO - right, now that should be alright. We need language models (e.g. maybe start with word2vec?)
-# what pre-trained Korean word2vec do we have? -> You probably have to train one yourself.
-# TODO - prioritize the tokens that are defined first in the rules.
-# TODO - 받침이 있는지 확인? 이걸 정규표현식으로 하는게 가능? - 모든 받침을 하나의 리스트로 정의해두면 가능할 것.
+# --- 먹/들/잡수 (위와 합치면 안된다. e.g. "맛있게 드세요") --- #
+RULES.update(
+    {
+        rf"((?:먹|들|잡수){TAG}VV)": (
+            [{f"먹{TAG}VV"}],  # casual
+            [{f"먹{TAG}VV", f"들{TAG}VV", f"잡수{TAG}VV"}],  # polite
+            [{f"들{TAG}VV", f"잡수{TAG}VV"}]  # formal
+        )
+    }
+)
 
+
+# what pre-trained Korean word2vec do we have? -> You probably have to train one yourself.
+# TODO - prioritize the tokens that are defined first in the rules. (how do you preserve the order?)
+# TODO - we need scores as well. for the time being, prioritize  어, 어요, 습니다, 습니까. (You won't need this once you apply
+# TODO -  language models. This is just to replicate the previous behaviour).
+# TODO - multi-token candidates? How should we deal with this?  (e.g. 하+라 -> 하+어요 도 가능하지만, 하+시+어요도 가능하다.).
 
 # for validation
 def style(sent: str, politeness: int) -> Tuple[str, list]:
     morphemes = [f"{token.form}{TAG}{token.tag}" for token in kiwi.tokenize(sent)]
-    # check the formality of the sentence
+    # --- if the formality doesn't need to change, we return the sentence as-is to avoid unnecessary distortion --- #
     ef = [morph for morph in morphemes if morph.endswith("EF")][0]  # noqa
     if ef in CASUAL:
         formality = 0
@@ -215,19 +235,26 @@ def style(sent: str, politeness: int) -> Tuple[str, list]:
     else:
         raise ValueError(f"Unknown formality: {ef}")
     if formality == politeness:
-        # just return it as-is.
         return sent, morphemes
+    # --- otherwise, if you need to change the formality, we use the regex to do that --- #
     possibilities = {}
     joined = SEP.join(morphemes)
     for regex in RULES:
         match = re.search(regex, joined)
         if match:
-            for key, honorifics in zip(match.groups(), RULES[regex][politeness]):  # we will have more than one groups
-                honorifics = set(honorifics)
+            for key, honorifics in zip(
+                match.groups(), RULES[regex][politeness]
+            ):  # we will have more than one groups
                 possibilities[key] = possibilities.get(key, honorifics) & honorifics
-    candidates = [possibilities.get(morpheme, morpheme) for morpheme in morphemes]
+    candidates = [
+        possibilities.get(morpheme, morpheme)
+        for morpheme in morphemes
+        # make sure to filter out empty sets.
+        if possibilities.get(morpheme, morpheme) != set()
+    ]
     out = kiwi.join(
         [
+            # if it is a set, get the first one (at least for the time being)
             tuple(list(candidate)[0].split(TAG))
             if isinstance(candidate, set)
             else tuple(candidate.split(TAG))

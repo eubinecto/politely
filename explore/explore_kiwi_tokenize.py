@@ -23,3 +23,6 @@ print(kiwi.tokenize("나는 쓰레기를 주워."))
 print(kiwi.tokenize("배고파요."))
 print(kiwi.tokenize("잘했죠."))
 print(kiwi.tokenize("진지 잡수세요."))
+print(kiwi.tokenize("언제 가?"))
+print(kiwi.tokenize("언제 가시나요?"))  # 시/EP는 언제든지 끼워 쓰시나요?
+
