@@ -18,16 +18,17 @@ It might be better to generalize this approach over auto-regressive inference.
 21번과 31번은 머리를 써서 푼다.
 """
 # The symbol to use for separating tags from texts
+import random
 from typing import Dict, Tuple, List
 import re
 from kiwipiepy import Kiwi
-
+NULL = ""
 TAG = "⌇"
 # The symbol to use for separating taggd tokens from another tagged tokens
 SEP = "⊕"
 # The wild cards
 # https://www.pythontutorial.net/python-regex/python-regex-non-capturing-group/
-EFS_NO_CAP = rf"(?:[^\s{SEP}]+?{TAG}EF)"
+EFS_NO_CAP = rf"(?:[^\s{SEP}]+?{TAG}EF)"  # 여기에 시/EP 를 추가할수가 없다.
 EFS_WITH_CAP = rf"([^\s{SEP}]+?{TAG}EF)"
 # all characters with or without jong sung
 ALL_NO_JS = rf"[{''.join([chr(44032 + 28 * i) for i in range(399)])}]"
@@ -62,7 +63,7 @@ POLITE = {
     f"나요{TAG}EF",
     f"ᆯ게요{TAG}EF",
     f"ᆫ대요{TAG}EF",
-    f"ᆫ가요{TAG}EF",
+    f"ᆫ가요{TAG}EF"
 }
 FORMAL = {
     f"습니다{TAG}EF",
@@ -70,11 +71,11 @@ FORMAL = {
     f"ᆸ니까{TAG}EF",
     f"ᆸ시오{TAG}EF",
     f"ᆸ니다{TAG}EF",
-    f"ᆸ시다{TAG}EF",
+    f"ᆸ시다{TAG}EF"
 }
 
 
-# --- any EF's --- #
+# --- The big rule; applied to every cases --- #
 RULES: Dict[str, Tuple[List[set], List[set], List[set]]] = {
     EFS_WITH_CAP: ([CASUAL], [POLITE], [FORMAL])
 }
@@ -113,6 +114,7 @@ RULES.update(
     }
 )
 
+
 # --- 나 or 저 --- #
 RULES.update(
     {
@@ -135,6 +137,45 @@ RULES.update(
     }
 )
 
+
+# --- 엄마/어머니 --- #
+RULES.update(  # noqa
+    {
+        rf"((?:엄마|어머니){TAG}NNG)": (
+            [{f"엄마{TAG}NNG"}],
+            [{f"어머니{TAG}NNG"}],
+            [{f"어머니{TAG}NNG"}],
+        )
+    }
+)
+
+
+# --- 아빠/아버지 --- #
+RULES.update(
+    {
+        rf"((?:아빠|아버지){TAG}NNG)": (
+            [{f"아빠{TAG}NNG"}],
+            [{f"아빠{TAG}NNG"}],
+            [{f"아빠{TAG}NNG"}],
+        )
+    }
+)
+
+# --- 가/께서 --- #
+RULES.update(
+    {
+        # 맥락이 필요한 경우... ㅎ 하지만 규칙을 때려박으면 해결은 가능함.
+        # 정규표현식 짱짱맨.
+        rf"((?:가|께서){TAG}JKS)": (
+            [{f"가{TAG}JKS"}],
+            #  이..는 왜? -> e.g. 전 당신이 좋아요.
+            [{f"께서{TAG}JKS", f"이{TAG}JKS"}],
+            [{f"께서{TAG}JKS", f"이{TAG}JKS"}]
+        )
+    }
+)
+
+
 # --- 너 or 당신 + ㄹ --- #
 RULES.update(
     {
@@ -146,11 +187,23 @@ RULES.update(
     }
 )
 
+# --- 시/EP --- #
+RULES.update(
+    {
+        rf"(시{TAG}EP)": (
+            [{NULL}],
+            [{f"시{TAG}EP"}],
+            [{f"시{TAG}EP"}],
+        )
+    }
+)
+
+
 # --- 시/EP + all/EF --- #
 RULES.update(
     {
         rf"(시{TAG}EP){SEP}{EFS_WITH_CAP}": (
-            [set(), CASUAL],
+            [{NULL}, CASUAL],
             [{f"시{TAG}EP"}, POLITE - {f"에요{TAG}EF", f"네요{TAG}EF"}],
             # ㅅ is redundant
             [{f"시{TAG}EP"}, FORMAL - {f"습니까{TAG}EF", f"ᆸ시다{TAG}EF"}],
@@ -220,6 +273,11 @@ RULES.update(
 # TODO - we need scores as well. for the time being, prioritize  어, 어요, 습니다, 습니까. (You won't need this once you apply
 # TODO -  language models. This is just to replicate the previous behaviour).
 # TODO - multi-token candidates? How should we deal with this?  (e.g. 하+라 -> 하+어요 도 가능하지만, 하+시+어요도 가능하다.).
+# TODO - formality check 대신, 그냥 입력으로 들어온 EF는 가산점을 주는 편으로 변경하는게 낫다.
+# TODO - 언어모델을 적용할 때 - 모든 permutation의 점수를 계산하고, 가장 점수가 높은 것을 선택하는 것이 낫다. (음... 그런데.. 만약에 sentence 임베딩을 구해야하는 것이라면...?)
+# 일단.. . 현재까지는 그렇게 적용한다.
+
+# 골치 아플듯 ㅠ
 # 어쩔 수 없다. 규칙은 규칙이다. 하나의 토큰만을 혀용할 수 밖에 없다.
 # 그렇다면... 십시오, 십니다, 시네요, 시나요, 등..을, 그냥 추가해버리고, 토큰나이저도 그렇게 토크나이즈 하도록 하는 편이. 나을수도 있다.
 # 여러개의 토큰을 허용하는 순간, generation에 더 적합해진다.
@@ -229,45 +287,31 @@ RULES.update(
 # for validation
 def style(sent: str, politeness: int) -> Tuple[str, list]:
     morphemes = [f"{token.form}{TAG}{token.tag}" for token in kiwi.tokenize(sent)]
-    # --- if the formality doesn't need to change, we return the sentence as-is to avoid unnecessary distortion --- #
-    ef = [morph for morph in morphemes if morph.endswith("EF")][0]  # noqa
-    if ef in CASUAL:
-        formality = 0
-    elif ef in POLITE:
-        formality = 1
-    elif ef in FORMAL:
-        formality = 2
-    else:
-        raise ValueError(f"Unknown formality: {ef}")
-    if formality == politeness:
-        return sent, morphemes
-    # --- otherwise, if you need to change the formality, we use the regex to do that --- #
-    possibilities = {}
+    # --- get possible honorifics for each morpheme --- #
+    morph2honorifics = {}
     joined = SEP.join(morphemes)
     for regex in RULES:
         match = re.search(regex, joined)
         if match:
-            for key, honorifics in zip(
-                match.groups(), RULES[regex][politeness]
-            ):  # we will have more than one groups
-                possibilities[key] = possibilities.get(key, honorifics) & honorifics
-    candidates = [
-        possibilities.get(morpheme, morpheme)
+            for key, honorifics in zip(match.groups(), RULES[regex][politeness]):
+                morph2honorifics[key] = morph2honorifics.get(key, honorifics) & honorifics
+    # --- update morphemes with candidate honorifics --- #
+    morphemes = [
+        morph2honorifics.get(morpheme, morpheme)
         for morpheme in morphemes
-        # make sure to filter out empty sets.
-        if possibilities.get(morpheme, morpheme) != set()
     ]
-    out = kiwi.join(
-        [
-            # if it is a set, get the first one (at least for the time being)
-            tuple(list(candidate)[0].split(TAG))
-            if isinstance(candidate, set)
-            else tuple(candidate.split(TAG))
-            for candidate in candidates
-            if candidate
-        ]
-    )
-    return out, candidates
+    # --- construct the besties --- #
+    besties = list()
+    for morpheme in morphemes:
+        if isinstance(morpheme, set):
+            best = random.choice(list(morpheme))
+            if best != NULL:
+                besties.append(tuple(best.split(TAG)))
+        else:
+            besties.append(tuple(morpheme.split(TAG)))
+    # --- join the besties with kiwi's conjugation algorithm --- #
+    styled = kiwi.join(besties)
+    return styled, morphemes
 
 
 def main():
@@ -357,6 +401,12 @@ def main():
     print(style(sent, 2))
 
     sent = "밥 먹어."  # removal of 시/EF is also possible
+    print(f"honorifying: {sent}")
+    print(style(sent, 0))
+    print(style(sent, 1))
+    print(style(sent, 2))
+
+    sent = "어머니께서 진지를 잡수시기로 하셨다."  # removal of 시/EF is also possible
     print(f"honorifying: {sent}")
     print(style(sent, 0))
     print(style(sent, 1))
