@@ -1,4 +1,5 @@
 # Politely
+
 [![PyPI version](https://badge.fury.io/py/politely.svg)](https://badge.fury.io/py/politely)
 ![Workflow status](https://github.com/eubinecto/politely/actions/workflows/tests.yml/badge.svg)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://eubinecto-politely-main-streamlit-4vmces.streamlitapp.com)
@@ -8,9 +9,10 @@
 [![Downloads](https://pepy.tech/badge/politely)](https://pepy.tech/project/politely)
 [![Downloads](https://pepy.tech/badge/politely/week)](https://pepy.tech/project/politely)
 
-`Politely` is a rule-based politeness styler for the Korean language | 
+A rule-based politeness styler for the Korean language | 
 --- | 
-<img width="1010" alt="image" src="https://user-images.githubusercontent.com/56193069/168471756-084409db-5d72-48b7-820f-05e1de6b1f5a.png"> | 
+<img width="1010" alt="image" src="https://user-images.githubusercontent.com/56193069/168471756-084409db-5d72-48b7-820f-05e1de6b1f5a.png">  | 
+
 
 
 ## Quick Start 🚀
@@ -39,7 +41,8 @@ sents = [sent.text.strip() for sent in kiwi.split_into_sents(text)]
 
 ### 3️⃣ Speak `politely` with `Styler` 
 
-Instantiate an object of `Styler`, and style your sentences in a polite or formal manner with `styler`:
+Instantiate an object of `Styler`, and style your sentences in a polite or formal manner with it:
+
 ```python3
 from politely import Styler
 from pprint import pprint
@@ -89,7 +92,7 @@ Or just visit [the demo we are hosting](https://eubinecto-politely-main-streamli
 <img width="743" alt="image" src="https://user-images.githubusercontent.com/56193069/177812857-afa40454-1afd-4b09-873f-aa9db3495d9e.png"> | 
 
 
-## What Politely can't 🙅
+## What `politely` can't 🙅
 
 `politely`'s `Styler` cannnot take contexts into account because its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's. As a consequence of this, `Styler` can't disambiguate context-dependent conjugations, like so:  
 
