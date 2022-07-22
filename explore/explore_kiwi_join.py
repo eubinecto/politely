@@ -40,3 +40,8 @@ print(kiwi.join(kiwi.tokenize(sent)))
 # 시어?
 sent = "도와 주셔서 감사해요."
 print(kiwi.join(kiwi.tokenize(sent)))
+
+
+# 시어?
+sent = "저는 당신을 사랑해요." # 당연히 필요하지...!
+print(kiwi.join(kiwi.tokenize(sent)))
