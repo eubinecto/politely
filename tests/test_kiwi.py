@@ -8,6 +8,7 @@ def kiwi() -> Kiwi:
     return fetch_kiwi()
 
 
+# --- testing the `add_..` functions --- #
 def test_add_user_word_urimal_as_a_noun(kiwi):
     """
     우리말 -> 우리 말 (x) 우리말 (o)
@@ -19,6 +20,25 @@ def test_add_user_word_urimal_as_a_noun(kiwi):
 def test_add_pre_analyzed_word_but_seo_period(kiwi):
     sent = "한국의 목욕탕에서는 옷을 벗어."
     assert "어/EF" in [token.tagged_form for token in kiwi.tokenize(sent)]
+
+
+# --- testing the `join` function --- #
+def test_join_double_syllables_1(kiwi):
+    """
+    동모음 탈락
+    가어요 (x)
+    가요 (o)
+    """
+    assert "가요" == kiwi.join([("가", "VV"), ("어요", "EF")])
+
+
+def test_join_double_syllables_2(kiwi):
+    """
+    동모음 탈락
+    떠나어요 (x)
+    떠나요 (o)
+    """
+    assert "떠나요" == kiwi.join([("떠나", "VV"), ("어요", "EF")])
 
 
 # --- these don't work for now --- #
