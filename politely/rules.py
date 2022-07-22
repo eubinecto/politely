@@ -1,14 +1,16 @@
+from typing import Set, Tuple, Dict
 
+# --- symbols --- #
 NULL = ""
 TAG = "🔗"
 SEP = "⊕"
+
+# --- re-usable regex --- #
 ALL = rf"[^\s{SEP}{TAG}{NULL}]"
 EFS = rf"(?P<mask>{ALL}+?{TAG}EF)"
 WITH_JS = rf"[{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
 
-
-# --- all EF's for different styles of politeness --- #
-# style - transfer
+# --- all EF's of different styles --- #
 CASUAL = {
     f"어{TAG}EF",
     f"다{TAG}EF",
@@ -19,6 +21,7 @@ CASUAL = {
     f"야{TAG}EF",
     f"군{TAG}EF",
     f"네{TAG}EF",
+    f"냐{TAG}EF",
     f"ᆫ다{TAG}EF",
     f"ᆯ게{TAG}EF",
     f"ᆫ대{TAG}EF"
@@ -36,6 +39,7 @@ POLITE = {
     f"ᆫ대요{TAG}EF",
     f"ᆫ가요{TAG}EF"
 }
+
 FORMAL = {
     f"습니다{TAG}EF",
     f"습니까{TAG}EF",
@@ -46,15 +50,18 @@ FORMAL = {
 }
 
 
+# --- programmatically populated RULES --- #
+RULES: Dict[str, Tuple[Set[str], Set[str], Set[str]]] = dict()
+
 # --- the overarching rule --- #
-RULES = {
+RULES.update({
     EFS: (
         # remember, these are a set of things.
         CASUAL,
         POLITE,
         FORMAL
     )
-}
+})
 
 # --- 시/EP (1): 시/으시로 끝나지 않는 VV의 경우, 뒤에 시/EP를 떼거나 붙인다 --- #
 RULES.update({

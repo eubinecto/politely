@@ -134,7 +134,7 @@ class Styler:
             guess = list()
             for candidate in candidates:
                 if isinstance(candidate, set):
-                    # can we do better than random choice?
+                    # can we do better than rule-based scoring? -> use lm-based scorer later!
                     best = sorted(list(candidate), key=lambda x: self.scorer(x), reverse=True)[0]
                     if best != NULL:
                         for morph2pos in best.split(SEP):
