@@ -27,12 +27,13 @@ TAG = "⌇"
 # The symbol to use for separating taggd tokens from another tagged tokens
 SEP = "⊕"
 # The wild cards
+ALL = rf"[^\s{SEP}]"
 # https://www.pythontutorial.net/python-regex/python-regex-non-capturing-group/
-EFS_NO_CAP = rf"(?:[^\s{SEP}]+?{TAG}EF)"  # 여기에 시/EP 를 추가할수가 없다.
-EFS_WITH_CAP = rf"([^\s{SEP}]+?{TAG}EF)"
+EFS_NO_CAP = rf"(?:{ALL}+?{TAG}EF)"  # 여기에 시/EP 를 추가할수가 없다.
+EFS_WITH_CAP = rf"({ALL}+?{TAG}EF)"
 # all characters with or without jong sung
-ALL_NO_JS = rf"[{''.join([chr(44032 + 28 * i) for i in range(399)])}]"
-ALL_WITH_JS = rf"[{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
+NO_JS = rf"[{''.join([chr(44032 + 28 * i) for i in range(399)])}]"
+WITH_JS = rf"[{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
 
 kiwi = Kiwi()
 
@@ -83,7 +84,7 @@ RULES: Dict[str, Tuple[List[set], List[set], List[set]]] = {
 # --- 종성이 있는 경우 + any EF's -> 받침으로 시작하는 EF는 해당 X --- #
 RULES.update(
     {
-        rf"{ALL_WITH_JS}{TAG}[A-Z\-]+?{SEP}{EFS_WITH_CAP}": (
+        rf"{WITH_JS}{TAG}[A-Z\-]+?{SEP}{EFS_WITH_CAP}": (
             [CASUAL - {f"ᆫ다{TAG}EF", f"ᆯ게{TAG}EF", f"ᆫ대{TAG}EF"}],
             [POLITE - {f"ᆯ게요{TAG}EF", f"ᆫ대요{TAG}EF", f"ᆫ가요{TAG}EF"}],
             [FORMAL - {f"ᆸ니까{TAG}EF", f"ᆸ시오{TAG}EF", f"ᆸ니다{TAG}EF", f"ᆸ시다{TAG}EF"}],
@@ -125,6 +126,7 @@ RULES.update(
         )
     }
 )
+
 
 # --- 너 or 당신 --- #
 RULES.update(
@@ -267,12 +269,27 @@ RULES.update(
     }
 )
 
+# --- VV 뒤에 선어말 어미 "시" 추가 --- # 문제는.... 빈칸이다.
+
+RULES.update(
+    {
+        rf"({ALL}+?{TAG}VV){SEP}[^시]+?{TAG}": (
+            # 시? 아... 여기서 ALL을 해버리면... 알 길이 없는데?
+
+            [{f"시{TAG}JKS"}],
+            [{f"시{TAG}JKS"}],
+            [{f"시{TAG}JKS"}],
+        )
+    }
+)
+
 
 # what pre-trained Korean word2vec do we have? -> You probably have to train one yourself.
 # TODO - prioritize the tokens that are defined first in the rules. (how do you preserve the order?)
 # TODO - we need scores as well. for the time being, prioritize  어, 어요, 습니다, 습니까. (You won't need this once you apply
 # TODO -  language models. This is just to replicate the previous behaviour).
 # TODO - multi-token candidates? How should we deal with this?  (e.g. 하+라 -> 하+어요 도 가능하지만, 하+시+어요도 가능하다.).
+# TODO - VV뒤에 선어말어미 -시를 추가하는 규칙도 만들기. -> 이건 어떻게 하지?
 # TODO - formality check 대신, 그냥 입력으로 들어온 EF는 가산점을 주는 편으로 변경하는게 낫다.
 # TODO - 언어모델을 적용할 때 - 모든 permutation의 점수를 계산하고, 가장 점수가 높은 것을 선택하는 것이 낫다. (음... 그런데.. 만약에 sentence 임베딩을 구해야하는 것이라면...?)
 # 일단.. . 현재까지는 그렇게 적용한다.
