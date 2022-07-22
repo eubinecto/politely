@@ -3,11 +3,14 @@ from pathlib import Path
 from kiwipiepy import Kiwi
 import oyaml
 
+from politely.scorer import Scorer
 
-def fetch_honorifics() -> dict:
-    with open(Path(__file__).resolve().parent / "honorifics.yaml", "r") as f:
-        honorifics = oyaml.safe_load(os.path.expandvars(f.read()))
-    return honorifics
+
+def fetch_scorer() -> Scorer:
+    # as of right now, Scorer is not really "fetched".
+    # we define this function nevertheless, as  we will need this by the time
+    # we use n-grams for the scorer.
+    return Scorer()
 
 
 def fetch_kiwi() -> Kiwi:
