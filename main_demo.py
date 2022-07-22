@@ -1,40 +1,22 @@
-from pprint import pprint
-
 from politely import Styler
-
-SENTS = [
-    # ㅂ 불규칙
-    "영희가 철수를 도왔어",
-    "저 집은 매일 고기를 구워",
-    "미희는 옷을 잘 기워",
-    "밥 먹고 누우면 안 된대",
-    "오다 주웠어",
-    "고운 손이 다 망가졌네",
-    "오늘이 어제보다 더워",
-    "이 라면은 너무 매워",
-    "이 라면은 너무 맵다",
-    "올해는 유난히 추워",
-    "오늘은 꿈자리가 사나웠어",
-    "난 뱀이 무서워",
-    "겨울산은 아름다워",
-    "키가 큰 사람은 부러워",
-    # ㄷ 불규칙
-    "가까우니까 걸어가자",
-    "난 걸어 갈게",
-    "그걸 이제야 깨달았어",
-    "나는 그 문을 닫았어",
-    "선생님 밥 먹어",
-    "자 떠나자. 동해 바다로",
-    "그는 전설이다",
-    "그는 전설이에요",
-    "나는 내 꿈을 향해 달려",
-]
-
+from kiwipiepy import Kiwi
+from pprint import pprint
+# an excerpt from 동백꽃 (김유정)
+text = """잔소리를 두루 늘어놓다가 남이 들을까봐 손으로 입을 틀어막고는 그 속에서 깔깔댄다. 별로 우스울 것도 없는데 날씨가 풀리더니 이 놈의 계집애가 미쳤나 하고 의심하였다.
+게다가 조금 뒤에는 제 집께를 할금할금 돌아보더니 행주치마의 속으로 꼈던 바른손을 뽑아서 나의 턱밑으로 불쑥 내미는 것이다. 
+언제 구웠는지 더운 김이 홱 끼치는 굵은 감자 세 개가 손에 뿌듯이 쥐였다. "느 집엔 이거 없지?" 하고 생색있는 큰소리를 하고는 제가 준 것을 남이 알면은 큰일날테니 여기서 얼른 먹어 버리란다.
+그리고 또 하는 소리가, "너 봄감자가 맛있단다." "난 감자 안 먹는다. 너나 먹어라." 나는 고개도 돌리지 않고 일하던 손으로 그 감자를 도로 어깨 너머로 쑥 밀어 버렸다.
+그랬더니 그래도 가는 기색이 없고, 뿐만 아니라 쌔근쌔근하고 심상치 않게 숨소리가 점점 거칠어진다. 이건 또 뭐야 싶어서 그때에야 비로소 돌아다보니 나는 참으로 놀랐다.
+우리가 이 동네에 들어온 것은 근 삼년째 되어오지만 여태껏 가무잡잡한 점순이의 얼굴이 이렇게까지 홍당무처럼 새빨개진 법이 없었다.
+게다가 눈에 독을 올리고 한참 나를 요렇게 쏘아보더니 나중에는 눈물까지 어리는 것이 아니냐.
+그리고 바구니를 다시 집어들더니 이를 꼭 악물고는 엎어질 듯 자빠질 듯 논둑으로 횡하게 달아나는 것이다."""
+# split the text into sentences using whatever tools you prefer.
+kiwi = Kiwi()
+sents = [sent.text.strip() for sent in kiwi.split_into_sents(text)]
+# instantiate a Styler object.
 styler = Styler()
-
-
-for sent in SENTS:
-    ban = styler(sent, 1)
-    jon = styler(sent, 2)
-    formal = styler(sent, 3)
-    print(sent, "->", ban, "|", jon, "|", formal)
+# to polite style
+pprint(styler(sents, 2))
+# to formal style
+print("---")
+pprint(styler(sents, 3))

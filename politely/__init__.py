@@ -1,13 +1,12 @@
-from politely.fetchers import fetch_rules, fetch_honorifics, fetch_listeners, fetch_environs
+import os
+from politely.fetchers import fetch_honorifics
 
-# initialise the constants globally here
-RULES = fetch_rules()
+DLM = "⊕"
+SEP = "⎸"
+os.environ["DLM"] = DLM
+os.environ["SEP"] = SEP
 HONORIFICS = fetch_honorifics()
-LISTENERS = fetch_listeners()
-ENVIRONS = fetch_environs()
 
-# quick access
-from politely.styler import Styler
+from politely.styler import Styler  # noqa
 
-
-__version__ = "v2.7.0.dev0"
+__version__ = "v3.1.1"

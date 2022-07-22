@@ -1,0 +1,244 @@
+이${SEP}VCP${DLM}다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 이${SEP}VCP${DLM}다${SEP}EF${DLM}\1
+  2: 이${SEP}VCP${DLM}에요${SEP}EF${DLM}\1
+  3: 이${SEP}VCP${DLM}습니다${SEP}EF${DLM}\1
+말${SEP}VX${DLM}어${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 말${SEP}VX${DLM}어${SEP}EF${DLM}\1
+  2: 말${SEP}VX${DLM}어요${SEP}EF${DLM}\1
+  3: 마${SEP}VX${DLM}십시오${SEP}EF${DLM}\1
+말${SEP}VX${DLM}어요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 말${SEP}VX${DLM}어${SEP}EF${DLM}\1
+  2: 말${SEP}VX${DLM}어요${SEP}EF${DLM}\1
+  3: 마${SEP}VX${DLM}십시오${SEP}EF${DLM}\1
+보${SEP}VX${DLM}어${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 보${SEP}VX${DLM}어${SEP}EF${DLM}\1
+  2: 보${SEP}VX${DLM}어요${SEP}EF${DLM}\1
+  3: 보${SEP}VX${DLM}읍시다${SEP}EF${DLM}\1
+보${SEP}VX${DLM}어요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 보${SEP}VX${DLM}어${SEP}EF${DLM}\1
+  2: 보${SEP}VX${DLM}어요${SEP}EF${DLM}\1
+  3: 보${SEP}VX${DLM}읍시다${SEP}EF${DLM}\1
+시${SEP}EP${DLM}어요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 시${SEP}EP${DLM}어요${SEP}EF${DLM}\1
+  3: 십${SEP}EP${DLM}시오${SEP}EF${DLM}\1
+시${SEP}EP${DLM}어요${SEP}EF${DLM}(\?${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 시${SEP}EP${DLM}어요${SEP}EF${DLM}\1
+  3: 시${SEP}EP${DLM}읍니까${SEP}EF${DLM}\1
+니${SEP}EF${DLM}(\?${SEP}SF):
+  1: 니${SEP}EF${DLM}\1
+  2: 나요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+대${SEP}EF${DLM}(\?${SEP}SF):
+  1: 대${SEP}EF${DLM}\1
+  2: 대요${SEP}EF${DLM}\1
+  3: 답니까${SEP}EF${DLM}\1
+대요${SEP}EF${DLM}(\?${SEP}SF):
+  1: 대${SEP}EF${DLM}\1
+  2: 대요${SEP}EF${DLM}\1
+  3: 답니까${SEP}EF${DLM}\1
+어${SEP}EF${DLM}(\?${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+어요${SEP}EF${DLM}(\?${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+죠${SEP}EF${DLM}(\?${SEP}SF):
+  1: 지${SEP}EF${DLM}\1
+  2: 죠${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+야${SEP}EF${DLM}(\?${SEP}SF):
+  1: 야${SEP}EF${DLM}\1
+  2: 죠${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+습니까${SEP}EF${DLM}(\?${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니까${SEP}EF${DLM}\1
+ㅂ니까${SEP}EF${DLM}(\?${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+ㄹ까요${SEP}EF${DLM}(\?${SEP}SF):
+  1: ㄹ까${SEP}EF${DLM}\1
+  2: ㄹ까요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+지${SEP}EF${DLM}(\?${SEP}SF):
+  1: 지${SEP}EF${DLM}\1
+  2: 죠${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+을까${SEP}EF${DLM}(\?${SEP}SF):
+  1: 을까${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+을까요${SEP}EF${DLM}(\?${SEP}SF):
+  1: 을까${SEP}EF${DLM}\1
+  2: 을까요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+나요${SEP}EF${DLM}(\?${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 나요${SEP}EF${DLM}\1
+  3: 읍니까${SEP}EF${DLM}\1
+어라${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 어라${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 십시오${SEP}EF${DLM}\1
+죠${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: ᆯ게${SEP}EF${DLM}\1
+  2: 죠${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+ᆫ다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: ᆫ다${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+는다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 는다${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+마${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 마${SEP}EF${DLM}\1
+  2: 마요${SEP}EF${DLM}\1
+  3: 말${SEP}VX${DLM}십시오${SEP}EF${DLM}\1
+마요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 마${SEP}EF${DLM}\1
+  2: 마요${SEP}EF${DLM}\1
+  3: 말${SEP}VX${DLM}십시오${SEP}EF${DLM}\1
+ᆫ대요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: ᆫ대${SEP}EF${DLM}\1
+  2: ᆫ대요${SEP}EF${DLM}\1
+  3: ᆫ답니다${SEP}EF${DLM}\1
+아${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 아${SEP}EF${DLM}\1
+  2: 아요${SEP}EF${DLM}\1
+  3: 읍시다${SEP}EF${DLM}\1
+냐${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 냐${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 읍디다${SEP}EF${DLM}\1
+다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 다${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+란다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 란다${SEP}EF${DLM}\1
+  2: 래요${SEP}EF${DLM}\1
+  3: 랍니다${SEP}EF${DLM}\1
+단다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 단다${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+지${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 지${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+자${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 자${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 읍시다${SEP}EF${DLM}\1
+ᆯ게${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: ᆯ게${SEP}EF${DLM}\1
+  2: ᆯ게요${SEP}EF${DLM}\1
+  3: 겠${SEP}EP${DLM}습니다${SEP}EF${DLM}\1
+ᆯ게요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: ᆯ게${SEP}EF${DLM}\1
+  2: ᆯ게요${SEP}EF${DLM}\1
+  3: 겠${SEP}EP${DLM}습니다${SEP}EF${DLM}\1
+어${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+야${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 야${SEP}EF${DLM}\1
+  2: 에요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+어요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+아요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+ 1: 아${SEP}EF${DLM}\1
+ 2: 아요${SEP}EF${DLM}\1
+ 3: 읍시다${SEP}EF${DLM}\1
+네요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 네${SEP}EF${DLM}\1
+  2: 네요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+군요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 군${SEP}EF${DLM}\1
+  2: 군요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+에요${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 야${SEP}EF${DLM}\1
+  2: 에요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+ᆫ대${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: ᆫ대${SEP}EF${DLM}\1
+  2: ᆫ대요${SEP}EF${DLM}\1
+  3: ᆫ답니다${SEP}EF${DLM}\1
+세요${SEP}EF${DLM}${SEP}SF:
+  1: 어${SEP}EF${DLM}\1
+  2: 세요${SEP}EF${DLM}\1
+  3: 십시오${SEP}EF${DLM}\1
+너라${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 너라${SEP}EF${DLM}\1
+  2: 세요${SEP}EF${DLM}\1
+  3: 십시오${SEP}EF${DLM}\1
+거라${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 거라${SEP}EF${DLM}\1
+  2: 세요${SEP}EF${DLM}\1
+  3: 십시오${SEP}EF${DLM}\1
+네${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 네${SEP}EF${DLM}\1
+  2: 네요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+라${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 라${SEP}EF${DLM}\1
+  2: 세요${SEP}EF${DLM}\1
+  3: 읍시다${SEP}EF${DLM}\1
+ᆸ니다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+습니다${SEP}EF${DLM}(\.${SEP}SF|!${SEP}SF):
+  1: 어${SEP}EF${DLM}\1
+  2: 어요${SEP}EF${DLM}\1
+  3: 습니다${SEP}EF${DLM}\1
+저${SEP}NP:
+  1: 나${SEP}NP
+  2: 저${SEP}NP
+  3: 저${SEP}NP
+나${SEP}NP:
+  1: 나${SEP}NP
+  2: 저${SEP}NP
+  3: 저${SEP}NP
+내${SEP}NP:
+  1: 내${SEP}NP
+  2: 제${SEP}NP
+  3: 제${SEP}NP
+제${SEP}NP:
+  1: 내${SEP}NP
+  2: 제${SEP}NP
+  3: 제${SEP}NP
+너${SEP}NP:
+  1: 너${SEP}NP
+  2: 당신${SEP}NP
+  3: 당신${SEP}NP
+당신${SEP}NP:
+  1: 너${SEP}NP
+  2: 당신${SEP}NP
+  3: 당신${SEP}NP
+저희${SEP}NP:
+  1: 우리${SEP}NP
+  2: 저희${SEP}NP
+  3: 저희${SEP}NP
+우리${SEP}NP:
+  1: 우리${SEP}NP
+  2: 저희${SEP}NP
+  3: 저희${SEP}NP

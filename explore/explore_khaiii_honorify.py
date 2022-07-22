@@ -50,7 +50,9 @@ def main():
             for pattern in HONORIFICS.keys():
                 if pattern in tuned:
                     honorific = HONORIFICS[pattern][politeness]
-                    if honorific not in tuned:  # this is the if statement to use for logging the history.
+                    if (
+                        honorific not in tuned
+                    ):  # this is the if statement to use for logging the history.
                         tuned = tuned.replace(pattern, honorific)
                         history.append((pattern, honorific))
             # if something has changed, then go for it, but otherwise just use the lex.

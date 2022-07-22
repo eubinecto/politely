@@ -1,12 +1,12 @@
 import re
+from copy import copy
 import requests  # noqa
 import pandas as pd  # noqa
-from _kiwipiepy import Token
-from kiwipiepy import Kiwi
 from typing import Any, List
-from politely import HONORIFICS
-from politely.errors import EFNotIncludedError, EFNotSupportedError
+from politely import HONORIFICS, DLM, SEP
+from politely.errors import EFNotSupportedError, SFNotIncludedError
 from functools import wraps
+from politely.fetchers import fetch_kiwi
 
 
 def log(f):
@@ -15,14 +15,10 @@ def log(f):
         out = f(*args, **kwargs)
         # get the function signature
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
-        args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": args[0].out}
+        args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": copy(args[0].out)}
         return out
 
     return wrapper
-
-
-def matches(pattern: str, string: str) -> bool:
-    return True if re.match(f"(^|.*\\+){re.escape(pattern)}(\\+.*|$)", string) else False
 
 
 class Styler:
@@ -30,18 +26,19 @@ class Styler:
     A rule-based Korean Politeness Styler
     """
 
-    def __init__(self):
+    def __init__(self, debug: bool = False):
         # object-owned attributes
-        self.kiwi = Kiwi()
+        self.kiwi = fetch_kiwi()
+        self.debug = debug
         self.out: Any = None
         self.logs = dict()
 
     @log
-    def __call__(self, sent: str, politeness: int) -> str:
+    def __call__(self, sents: List[str], politeness: int) -> List[str]:
         """
         style a sentence with the given politeness (1, 2, 3)
         """
-        self.setup().preprocess(sent).analyze().check().honorify(politeness).conjugate()
+        self.setup().preprocess(sents).analyze().check().honorify(politeness).conjugate()
         return self.out
 
     def setup(self):
@@ -53,40 +50,73 @@ class Styler:
         self.logs.update({"conjugations": set(), "honorifics": set()})
         return self
 
-    def preprocess(self, sent: str):
-        self.out = sent.strip()  # khaiii model is sensitive to empty spaces, so we should get rid of it.
-        if not self.out.endswith("?") and not self.out.endswith("!"):
-            self.out = self.out + "." if not self.out.endswith(".") else self.out  # for accurate pos-tagging
+    def preprocess(self, sents: List[str]):
+        """
+        Make sure each sentence ends with a period.
+        """
+        self.out = [re.sub(r"([^!?.]+)$", r"\1.", sent.strip()) for sent in sents]
         return self
 
     @log
     def analyze(self):
-        tokens = self.kiwi.tokenize(self.out)
-        self.out = tokens
+        self.out: List[str]
+        self.out = [
+            DLM.join(
+                [f"{token.form}{SEP}{token.tag}" for token in self.kiwi.tokenize(sent)]
+            )
+            for sent in self.out
+        ]
         return self
 
     def check(self):
         """
         Check if your assumption holds. Raises a custom error if any of them does not hold.
         """
-        self.out: List[Token]
-        self.out = "+".join([token.tagged_form for token in self.out])
-        # assumption 1: the sentence must include more than 1 EF's
-        if "EF" not in self.out:
-            raise EFNotIncludedError(self.out)
-        # assumption 2: all EF's should be supported by politely.
-        if not any([matches(pattern, self.out) for pattern in HONORIFICS]):
-            raise EFNotSupportedError(self.out)
+        self.out: List[str]
+        # raise exceptions only if you are in debug mode
+        if self.debug:
+            # assumption 1: every sentence should end with a valid SF. It should be one of: (., !, ?)
+            if not all(["SF" in joined for joined in self.out]):
+                raise SFNotIncludedError(
+                    "The following sentences do not include a SF:\n"
+                    + "\n".join([joined for joined in self.out if "SF" not in joined])
+                )
+            # assumption 2: all EF's should be supported by politely.
+            if not all(
+                [
+                    any(
+                        [self.matches(pattern, joined) for pattern in HONORIFICS.keys()]
+                    )
+                    for joined in self.out
+                    if "EF" in joined
+                ]
+            ):
+                raise EFNotSupportedError(
+                    "Styler does not support the ending(s):\n"
+                    + "\n".join(
+                        [
+                            joined
+                            for joined in self.out
+                            if not any(
+                                [
+                                    self.matches(pattern, joined)
+                                    for pattern in HONORIFICS.keys()
+                                ]
+                            )
+                        ]
+                    )
+                )
         return self
 
     @log
     def honorify(self, politeness: int):
-        self.out: str
-        for pattern in HONORIFICS.keys():
-            if matches(pattern, self.out):
-                honorific = HONORIFICS[pattern][politeness]
-                self.out = self.out.replace(pattern, honorific)
-                self.logs["honorifics"].add((pattern, honorific))
+        self.out: List[str]
+        for idx in range(len(self.out)):
+            for pattern in HONORIFICS.keys():
+                if self.matches(pattern, self.out[idx]):
+                    honorific = HONORIFICS[pattern][politeness]
+                    self.out[idx] = re.sub(pattern, honorific, self.out[idx])
+                    self.logs["honorifics"].add((pattern, honorific))
         return self
 
     @log
@@ -94,8 +124,17 @@ class Styler:
         """
         Progressively conjugate morphemes from left to right.
         """
-        self.out: str
-        morphs = [(token.split("/")[0], token.split("/")[1]) for token in self.out.split("+")]
-        self.out = self.kiwi.join(morphs)
-        # TODO: how do I log all the rules that have been applied?
+        self.out: List[str]
+        self.out = [
+            [(token.split(SEP)[0], token.split(SEP)[1]) for token in joined.split(DLM) if SEP in token]
+            for joined in self.out
+        ]
+        self.out = [
+            self.kiwi.join(morphs)
+            for morphs in self.out
+        ]
         return self
+
+    @staticmethod
+    def matches(pattern: str, string: str) -> bool:
+        return True if re.match(rf"(^|.*{DLM}){pattern}({DLM}.*|$)", string) else False

@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "politely"
-description = 'An explainable politeness styler for the Korean Language'
+description = 'A rule-based politeness styler for the Korean Language'
 readme = "README.md"
-requires-python = ">=3.8.9"
+requires-python = ">=3.7"
 license = "MIT"
 keywords = []
 authors = [
@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
   "pytest==7.0.1",
   "oyaml==1.0",
-  "kiwipiepy==0.13.0"
+  "kiwipiepy==0.13.1"
 ]
 dynamic = ["version"]
 
@@ -41,7 +41,7 @@ path = "politely/__init__.py"
 ignore-vcs = true
 include = [
   "politely/*.py",
-  "politely/resources/*.yaml"
+  "politely/honorifics.yaml"
 ]
 
 [tool.hatch.build.targets.sdist]
