@@ -1,6 +1,6 @@
 # this is here, only to be used with
 pytest==7.0.1
-oyaml==1.0
+gensim==4.2.0
 kiwipiepy==0.13.1
 streamlit==1.5.1
 tabulate==0.8.9

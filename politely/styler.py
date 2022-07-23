@@ -1,8 +1,9 @@
+import itertools
 import re
 from copy import copy
 import requests  # noqa
 import pandas as pd  # noqa
-from typing import Any, List, Union, Tuple
+from typing import Any, List
 from functools import wraps
 from politely.errors import EFNotSupportedError, SFNotIncludedError
 from politely.fetchers import fetch_kiwi, fetch_scorer
@@ -24,7 +25,6 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-
     def __init__(self, debug: bool = False):
         # object-owned attributes
         self.kiwi = fetch_kiwi()
@@ -43,13 +43,13 @@ class Styler:
             .analyze() \
             .check() \
             .honorify(politeness) \
-            .guess() \
+            .elect() \
             .conjugate()
         return self.out
 
     def setup(self):
         """
-        reset the out and clear all the logs,
+        Reset the out and clear all the logs,
         """
         self.out = None
         self.logs.clear()
@@ -100,49 +100,50 @@ class Styler:
     @log
     def honorify(self, politeness: int):
         """
-        Using the chained conjunction algorithm, determine the candidates that would
-        properly honorify the sentence.
+        Determines all the candidates that would properly honorify the sentence.
+        Do this by chain-conjugating sets.
         """
         self.out: List[str]
         out = list()
-        for joined in self.out:
+        for morphs in self.out:
             morph2honorifics = {}
             for regex in RULES:
-                match = re.search(regex, joined)
+                match = re.search(regex, morphs)
                 if match:
                     key = match.group("mask")
                     honorifics = {honorific.replace(r"\g<mask>", key)
                                   for honorific in RULES[regex][politeness]}
                     morph2honorifics[key] = morph2honorifics.get(key, honorifics) & honorifics
+            # product it
+            candidates = itertools.product(*[
+                morph2honorifics.get(morph, {morph, })
+                for morph in morphs.split(SEP)
+            ])
+            # preprocess it
             candidates = [
-                morph2honorifics.get(morph, morph)
-                for morph in joined.split(SEP)
+                [morph.split(SEP) for morph in candidate if morph != NULL]
+                for candidate in candidates
+            ]
+            # flatten it
+            candidates = [
+                list(itertools.chain(*candidate))
+                for candidate in candidates
             ]
             out.append(candidates)
+        # a list of candidates
         self.out = out
         return self
 
     @log
-    def guess(self):
+    def elect(self):
         """
-        Now that we have the candidates, we should guess which one
-        is the correct one.
+        Elect one candidate with the best score.
         """
-        self.out: List[List[Union[str, set]]]
-        out = list()
-        for candidates in self.out:
-            guess = list()
-            for candidate in candidates:
-                if isinstance(candidate, set):
-                    # can we do better than rule-based scoring? -> use lm-based scorer later!
-                    best = sorted(list(candidate), key=lambda x: self.scorer(x), reverse=True)[0]
-                    if best != NULL:
-                        for morph2pos in best.split(SEP):
-                            guess.append(tuple(morph2pos.split(TAG)))
-                else:
-                    guess.append(tuple(candidate.split(TAG)))
-            out.append(guess)
-        self.out = out
+        self.out: List[List[List[str]]]
+        self.out = [
+            sorted(candidates, key=lambda x: self.scorer(x), reverse=True)[0]
+            for candidates in self.out
+        ]
         return self
 
     @log
@@ -150,9 +151,9 @@ class Styler:
         """
         Conjugate the guesses to get the final result.
         """
-        self.out: List[List[Tuple[str, str]]]
+        self.out: List[List[str]]
         self.out = [
-            self.kiwi.join(morphs)  # noqa
+            self.kiwi.join([tuple(morph.split(TAG)) for morph in morphs])  # noqa
             for morphs in self.out
         ]
         return self
