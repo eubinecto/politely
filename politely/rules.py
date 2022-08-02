@@ -4,10 +4,12 @@ from typing import Set, Tuple, Dict
 NULL = ""
 TAG = "🔗"
 SEP = "⊕"
+MASK = "mask"
+SELF = rf"\g<{MASK}>"
 
-# --- re-usable regex --- #
+# --- regex --- #
 ALL = rf"[^\s{SEP}{TAG}{NULL}]"
-EFS = rf"(?P<mask>{ALL}+?{TAG}EF)"
+EFS = rf"(?P<{MASK}>{ALL}+?{TAG}EF)"
 WITH_JS = rf"[{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
 
 # --- all EF's of different styles --- #
@@ -56,29 +58,28 @@ RULES: Dict[str, Tuple[Set[str], Set[str], Set[str]]] = dict()
 # --- the overarching rule --- #
 RULES.update({
     EFS: (
-        # remember, these are a set of things.
         CASUAL,
         POLITE,
         FORMAL
     )
 })
 
-# --- 시/EP (1): 시/으시로 끝나지 않는 VV의 경우, 뒤에 시/EP를 떼거나 붙인다 --- #
+# --- 시/EP (1): 시/으시로 끝나지 않는 VV의 경우, 뒤에 시 or 으시가 필요할 수도 있다 --- #
 RULES.update({
-    rf"(?P<mask>{ALL}+?{TAG}VV){SEP}(?!(시|으시){TAG}EP)": (
-        {r"\g<mask>"},
-        {rf"\g<mask>{SEP}시{TAG}EP", rf"\g<mask>{SEP}으시{TAG}EP"},  # we should be able to do back-referencing
-        {rf"\g<mask>{SEP}시{TAG}EP", rf"\g<mask>{SEP}으시{TAG}EP"}
+    rf"(?P<{MASK}>{ALL}+?{TAG}VV){SEP}(?!(시|으시){TAG}EP)": (
+        {SELF},
+        {SELF, rf"{SELF}{SEP}시{TAG}EP", rf"{SELF}{SEP}으시{TAG}EP"},  # we should be able to do back-referencing
+        {SELF, rf"{SELF}{SEP}시{TAG}EP", rf"{SELF}{SEP}으시{TAG}EP"}
     )
 })
 
 # --- 시/EP (2): 이미 시/EP가 존재하는 경우, 반말을 쓸 때 제거한다 --- #
 RULES.update(
     {
-        rf"(?P<mask>(시|으시){TAG}EP)": (
+        rf"(?P<{MASK}>(시|으시){TAG}EP)": (
             {NULL},  # you don't use them
-            {r"\g<mask>"},  # just repeat yourself
-            {r"\g<mask>"},  # just repeat yourself
+            {SELF},  # just repeat yourself
+            {SELF},  # just repeat yourself
         )
     }
 )
@@ -96,10 +97,21 @@ RULES.update(
 )
 
 
+# --- 의문형인 경우, formal은 -니까만 가능 --- #
+RULES.update(
+    {
+        rf"{EFS}{SEP}\?{TAG}SF": (
+            CASUAL,
+            POLITE,
+            {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"}
+        )
+    }
+)
+
 # --- 나/저 --- #
 RULES.update(
     {
-        rf"(?P<mask>(?:나|저){TAG}NP)": (
+        rf"(?P<{MASK}>(나|저){TAG}NP)": (
             {f"나{TAG}NP"},
             {f"저{TAG}NP"},
             {f"저{TAG}NP"}
@@ -111,7 +123,7 @@ RULES.update(
 # --- 너/당신 --- #
 RULES.update(
     {
-        rf"(?P<mask>(?:너|당신){TAG}NP)": (
+        rf"(?P<{MASK}>(너|당신){TAG}NP)": (
             {f"너{TAG}NP"},
             {f"당신{TAG}NP"},
             {f"당신{TAG}NP"}
@@ -123,7 +135,7 @@ RULES.update(
 # --- 엄마/어머니 --- #
 RULES.update(  # noqa
     {
-        rf"(?P<mask>(?:엄마|어머니){TAG}NNG)": (
+        rf"(?P<{MASK}>(엄마|어머니){TAG}NNG)": (
             {f"엄마{TAG}NNG"},
             {f"어머니{TAG}NNG"},
             {f"어머니{TAG}NNG"}
@@ -135,7 +147,7 @@ RULES.update(  # noqa
 # --- 아빠/아버지 --- #
 RULES.update(
     {
-        rf"(?P<mask>(?:아빠|아버지){TAG}NNG)": (
+        rf"(?P<{MASK}>(아빠|아버지){TAG}NNG)": (
             {f"아빠{TAG}NNG"},
             {f"아빠{TAG}NNG"},
             {f"아빠{TAG}NNG"}
@@ -143,13 +155,13 @@ RULES.update(
     }
 )
 
-# --- 가/께서 --- #
+# --- 께서 --- #
 RULES.update(
     {
-        rf"(?P<mask>(?:가|께서){TAG}JKS)": (
-            {f"가{TAG}JKS"},
-            {f"께서{TAG}JKS", f"이{TAG}JKS"},
-            {f"께서{TAG}JKS", f"이{TAG}JKS"}
+        rf"(엄마|어머니|아빠|아버지|선생님|할머니|할아버지){TAG}NNG{SEP}(?P<{MASK}>{ALL}{TAG}JKS)": (
+            {SELF},
+            {f"께서{TAG}JKS"},
+            {f"께서{TAG}JKS"}
         )
     }
 )

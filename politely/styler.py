@@ -7,7 +7,7 @@ from typing import Any, List
 from functools import wraps
 from politely.errors import EFNotSupportedError, SFNotIncludedError
 from politely.fetchers import fetch_kiwi, fetch_scorer
-from politely import RULES, SEP, TAG, NULL
+from politely import RULES, SEP, TAG, MASK, NULL, SELF
 
 
 def log(f):
@@ -43,7 +43,7 @@ class Styler:
             .analyze() \
             .check() \
             .honorify(politeness) \
-            .elect() \
+            .guess() \
             .conjugate()
         return self.out
 
@@ -110,9 +110,10 @@ class Styler:
             for regex in RULES:
                 match = re.search(regex, morphs)
                 if match:
-                    key = match.group("mask")
-                    honorifics = {honorific.replace(r"\g<mask>", key)
+                    key = match.group(MASK)
+                    honorifics = {honorific.replace(SELF, key)
                                   for honorific in RULES[regex][politeness]}
+                    # chain-conjugate the honorifics
                     morph2honorifics[key] = morph2honorifics.get(key, honorifics) & honorifics
             # product it
             candidates = itertools.product(*[
@@ -135,9 +136,9 @@ class Styler:
         return self
 
     @log
-    def elect(self):
+    def guess(self):
         """
-        Elect one candidate with the best score.
+        Guess the best candidates using the `scorer`.
         """
         self.out: List[List[List[str]]]
         self.out = [
