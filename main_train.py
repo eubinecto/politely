@@ -45,6 +45,5 @@ corpus = [
 ]
 
 # --- start training --- #
-# yeah, we could log this with wandb, most certainly.
-w2v = Word2Vec(corpus, callbacks=[LossCallback()], workers=os.cpu_count(), **config)
-w2v.save("stylekqc.w2v")
+for sent in corpus:
+    print(sent)

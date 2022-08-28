@@ -12,12 +12,6 @@ print(first_sentence[:10])
 phrase_model = Phrases(sentences, min_count=1, threshold=1)
 
 # Apply the trained phrases model to a new, unseen sentence.
-new_sentence = ['trees', 'graph', 'minors']
-print(phrase_model[new_sentence])
-# The toy model considered "trees graph" a single phrase => joined the two
-# tokens into a single "phrase" token, using our selected `_` delimiter.
-
-# Update the model with two new sentences on the fly.
-phrase_model.add_vocab([["hello", "world"], ["meow"]])
-for entry in phrase_model.analyze_sentence(["hello", "how", "are", "you", "?"]):
-    print(entry)
+new_sentence = "how are you".split()
+for elem in phrase_model.analyze_sentence(new_sentence):
+    print(elem)
