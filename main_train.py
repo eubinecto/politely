@@ -9,7 +9,8 @@ from gensim.models import Word2Vec
 from tqdm import tqdm
 from politely.fetchers import fetch_kiwi
 import logging
-logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
+
+logging.basicConfig(format="%(asctime)s - %(levelname)s - %(name)s -  %(message)s", level=logging.INFO)
 
 
 class LossCallback(CallbackAny2Vec):

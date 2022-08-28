@@ -66,6 +66,9 @@ def test_check_does_not_raise_ef_not_supported_error_on_debug_false(styler):
 
 
 def test_honorify_ends_with_special_char_1(styler):
+    """
+    this test is for the case where the last character is a special character
+    """
     sents = ["최선을 다 했어."]
     assert styler(sents, 0)[0] == "최선을 다 했어."
     assert styler(sents, 1)[0] == "최선을 다 했어요."

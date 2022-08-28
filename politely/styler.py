@@ -67,7 +67,7 @@ class Styler:
     @log
     def analyze(self):
         """
-        Use Kiwi to analyze the morphemes of the sentence.
+        Analyze the sentence and generate the output.
         """
         self.out: List[str]
         self.out = [

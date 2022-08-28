@@ -8,9 +8,8 @@ class Scorer:
 
     def __init__(self):
         # I just want to experiment with this.
-        # self.w2v = Word2Vec.load(str(Path(__file__).resolve().parent.parent / "stylekqc.w2v"))
+        self.w2v = Word2Vec.load(str(Path(__file__).resolve().parent.parent / "stylekqc.w2v"))
         # TODO: experiment with word2vec, or a language model.
-        pass
 
     def __call__(self, tokens: List[str]) -> float:
         """
