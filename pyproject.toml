@@ -24,7 +24,6 @@ classifiers = [
 ]
 
 dependencies = [
-  "gensim==4.2.0",
   "kiwipiepy==0.13.1"
 ]
 

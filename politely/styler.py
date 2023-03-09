@@ -1,8 +1,6 @@
 import itertools
 import re
 from copy import copy
-import requests  # noqa
-import pandas as pd  # noqa
 from typing import Any, List, Tuple
 from functools import wraps
 from politely.errors import EFNotSupportedError, SFNotIncludedError
