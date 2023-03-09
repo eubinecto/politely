@@ -24,6 +24,7 @@ classifiers = [
 ]
 
 dependencies = [
+  "cmake==3.25.2",
   "kiwipiepy==0.13.1"
 ]
 
