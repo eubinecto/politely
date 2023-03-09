@@ -3,11 +3,11 @@ import re
 from copy import copy
 import requests  # noqa
 import pandas as pd  # noqa
-from typing import Any, List
+from typing import Any, List, Tuple
 from functools import wraps
 from politely.errors import EFNotSupportedError, SFNotIncludedError
 from politely.fetchers import fetch_kiwi, fetch_scorer
-from politely import RULES, SEP, TAG, MASK, NULL, SELF
+from politely import RULES, SEP, TAG, MASK, NULL, SELF, CASUAL, POLITE, FORMAL
 
 
 def log(f):
@@ -25,21 +25,21 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-    def __init__(self, debug: bool = False):
+    def __init__(self, strict: bool = False):
         # object-owned attributes
         self.kiwi = fetch_kiwi()
         self.scorer = fetch_scorer()
-        self.debug = debug
+        self.strict = strict
         self.out: Any = None
         self.logs = dict()
 
     @log
-    def __call__(self, sents: List[str], politeness: int) -> List[str]:
+    def __call__(self, sent: str, politeness: int) -> str:
         """
         Style a sentence with the given politeness (0, 1, 2)
         """
         self.setup() \
-            .preprocess(sents) \
+            .preprocess(sent) \
             .analyze() \
             .check() \
             .honorify(politeness) \
@@ -56,12 +56,12 @@ class Styler:
         self.logs.update({"conjugations": set(), "honorifics": set()})
         return self
 
-    def preprocess(self, sents: List[str]):
+    def preprocess(self, sent: str):
         """
         Make sure each sentence ends with a period, if it does not end with any SF.
         We do this to increase the accuracy of `kiwi.join`.
         """
-        self.out = [re.sub(r"([^!?.]+)$", r"\1.", sent.strip()) for sent in sents]
+        self.out = re.sub(r"([^!?.]+)$", r"\1.", sent.strip())
         return self
 
     @log
@@ -69,30 +69,26 @@ class Styler:
         """
         Analyze the sentence and generate the output.
         """
-        self.out: List[str]
-        self.out = [
-            SEP.join(
-                [f"{token.form}{TAG}{token.tag}" for token in self.kiwi.tokenize(sent)]
-            )
-            for sent in self.out
-        ]
+        self.out: str
+        self.out = [f"{token.form}{TAG}{token.tag}" for token in self.kiwi.tokenize(self.out)]
+        self.out = SEP.join(self.out)  # to match with the format of the rules
         return self
 
     def check(self):
         """
         Check if your assumption holds. Raises a custom error if any of them does not hold.
         """
-        self.out: List[str]
+        self.out: str
         # raise exceptions only if you are in debug mode
-        if self.debug:
+        if self.strict:
             # assumption 1: every sentence should end with a valid SF. It should be one of: (., !, ?)
-            if not all(["SF" in morphs for morphs in self.out]):
+            if "SF" not in self.out:
                 raise SFNotIncludedError(self.out)
             # assumption 2: all EF's should be supported by politely.
             if not all([
-                any([re.search(regex, morphs) for regex in RULES])
-                for morphs in self.out
-                if "EF" in morphs
+                any([re.search(pattern, pair) for pattern in RULES.keys()])
+                for pair in self.out.split(SEP)
+                if "EF" in pair
             ]):
                 raise EFNotSupportedError(self.out)
         return self
@@ -103,48 +99,52 @@ class Styler:
         Determines all the candidates that would properly honorify the sentence.
         Do this by chain-conjugating sets.
         """
-        self.out: List[str]
-        out = list()
-        for morphs in self.out:
-            morph2honorifics = {}
-            for regex in RULES:
-                match = re.search(regex, morphs)
-                if match:
-                    key = match.group(MASK)
-                    honorifics = {honorific.replace(SELF, key)
-                                  for honorific in RULES[regex][politeness]}
-                    # chain-conjugate the honorifics
-                    morph2honorifics[key] = morph2honorifics.get(key, honorifics) & honorifics
-            # product it
-            candidates = itertools.product(*[
-                morph2honorifics.get(morph, {morph, })
-                for morph in morphs.split(SEP)
-            ])
-            # preprocess it
-            candidates = [
-                [morph.split(SEP) for morph in candidate if morph != NULL]
-                for candidate in candidates
-            ]
-            # flatten it
-            candidates = [
-                list(itertools.chain(*candidate))
-                for candidate in candidates
-            ]
-            out.append(candidates)
+        self.out: str
+        pair2honorifics = {}
+        for pattern in RULES.keys():
+            match = re.search(pattern, self.out)
+            if match:
+                matched_pair = match.group(MASK)
+                honorifics = {honorific.replace(SELF, matched_pair) for honorific in RULES[pattern][politeness]}
+                # progressively narrow down honorifics
+                pair2honorifics[matched_pair] = pair2honorifics.get(matched_pair, honorifics) & honorifics
+        # get all possible candidates
+        candidates = itertools.product(*[
+            pair2honorifics.get(pair, {pair, })
+            for pair in self.out.split(SEP)
+        ])
+        # remove empty candidates
+        candidates = [
+            [pair.split(SEP) for pair in candidate if pair != NULL]
+            for candidate in candidates
+        ]
+        # flatten pairs
+        candidates = [
+            list(itertools.chain(*candidate))
+            for candidate in candidates
+        ]
         # a list of candidates
-        self.out = out
+        self.out = candidates
         return self
 
     @log
     def guess(self):
         """
-        Guess the best candidates using the `scorer`.
+        Guess the scores.
         """
-        self.out: List[List[List[str]]]
-        self.out = [
-            sorted(candidates, key=lambda x: self.scorer(x), reverse=True)[0]
-            for candidates in self.out
-        ]
+        self.out: List[List[str]]
+        politeness = self.logs['honorify']['in']['politeness']
+        original_pairs = self.logs['analyze']['out'].split(SEP)
+        if politeness == 0:
+            boost_pairs = CASUAL & set(original_pairs)
+        elif politeness == 1:
+            boost_pairs = POLITE & set(original_pairs)
+        elif politeness == 2:
+            boost_pairs = FORMAL & set(original_pairs)
+        else:
+            raise ValueError(f"politeness should be one of (0, 1, 2), but got {politeness}")
+        scores = [self.scorer(set(candidate), boost_pairs) for candidate in self.out]
+        self.out = [(candidate, score) for candidate, score in zip(self.out, scores)]
         return self
 
     @log
@@ -152,9 +152,7 @@ class Styler:
         """
         Conjugate the guesses to get the final result.
         """
-        self.out: List[List[str]]
-        self.out = [
-            self.kiwi.join([tuple(morph.split(TAG)) for morph in morphs])  # noqa
-            for morphs in self.out
-        ]
+        self.out: List[Tuple[List[str], float]]
+        best = max(self.out, key=lambda x: x[1])[0]
+        self.out = self.kiwi.join([(pair.split(TAG)[0], pair.split(TAG)[1]) for pair in best])
         return self

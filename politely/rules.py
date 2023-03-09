@@ -1,15 +1,15 @@
 from typing import Set, Tuple, Dict
 
 # --- symbols --- #
-NULL = ""
-TAG = "🔗"
-SEP = "⊕"
-MASK = "mask"
-SELF = rf"\g<{MASK}>"
+NULL = "❌"
+TAG = "🏷"
+SEP = "🔗"
+MASK = "MASK"
 
 # --- regex --- #
-ALL = rf"[^\s{SEP}{TAG}{NULL}]"
+ALL = rf"[^\s{SEP}{TAG}]"  # all characters except whitespace, sep and tag
 EFS = rf"(?P<{MASK}>{ALL}+?{TAG}EF)"
+SELF = rf"\g<{MASK}>"
 WITH_JS = rf"[{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
 
 # --- all EF's of different styles --- #
@@ -158,10 +158,18 @@ RULES.update(
 # --- 께서 --- #
 RULES.update(
     {
-        rf"(엄마|어머니|아빠|아버지|선생님|할머니|할아버지){TAG}NNG{SEP}(?P<{MASK}>{ALL}{TAG}JKS)": (
+        rf"(엄마|어머니|아빠|아버지|선생님|할머니|할아버지){TAG}NNG{SEP}(?P<{MASK}>{SEP}{ALL}{TAG}JKS)": (
             {SELF},
             {f"께서{TAG}JKS"},
             {f"께서{TAG}JKS"}
         )
     }
 )
+
+
+# ---- to be used for scoring -- #
+PREFERENCES = {f"어{TAG}EF",
+               f"어요{TAG}EF",
+               f"어요{TAG}EF",
+               f"습니다{TAG}EF",
+               f"ᆸ니다{TAG}EF"}

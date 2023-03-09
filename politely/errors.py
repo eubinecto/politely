@@ -8,31 +8,16 @@ class SFNotIncludedError(Exception):
     Exception raised when a sentence fragment is not included in the SF list.
     """
 
-    def __init__(self, out: List[str]):
+    def __init__(self, out: str):
         self.out = out
 
     def __str__(self) -> str:
-        msg = "The following sentences do not include a SF:\n" \
-              + "\n".join([joined for joined in self.out if "SF" not in joined])
-        return msg
+        return "Sentence does not include a SF:\n" + "\n".join(self.out)
 
 
 class EFNotSupportedError(Exception):
-    def __init__(self, out: List[str]):
+    def __init__(self, out: str):
         self.out = out
 
     def __str__(self) -> str:
-        msg = "Styler does not support the ending(s):\n" \
-              + "\n".join(
-            [
-                morphs
-                for morphs in self.out
-                if not any(
-                [
-                    re.match(regex, morphs)
-                    for regex in RULES
-                ]
-            )
-            ]
-        )
-        return msg
+        return "EF is not supported:\n" + "\n".join(self.out)
