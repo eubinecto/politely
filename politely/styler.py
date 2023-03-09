@@ -1,12 +1,13 @@
+import itertools
 import re
 from copy import copy
 import requests  # noqa
 import pandas as pd  # noqa
-from typing import Any, List
-from politely import HONORIFICS, DLM, SEP
-from politely.errors import EFNotSupportedError, SFNotIncludedError
+from typing import Any, List, Tuple
 from functools import wraps
-from politely.fetchers import fetch_kiwi
+from politely.errors import EFNotSupportedError, SFNotIncludedError
+from politely.fetchers import fetch_kiwi, fetch_scorer
+from politely import RULES, SEP, TAG, MASK, NULL, SELF, CASUAL, POLITE, FORMAL
 
 
 def log(f):
@@ -17,7 +18,6 @@ def log(f):
         names = f.__code__.co_varnames[: f.__code__.co_argcount]
         args[0].logs[f.__name__] = {"in": dict(zip(names, args)), "out": copy(args[0].out)}
         return out
-
     return wrapper
 
 
@@ -25,116 +25,134 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-
-    def __init__(self, debug: bool = False):
+    def __init__(self, strict: bool = False):
         # object-owned attributes
         self.kiwi = fetch_kiwi()
-        self.debug = debug
+        self.scorer = fetch_scorer()
+        self.strict = strict
         self.out: Any = None
         self.logs = dict()
 
     @log
-    def __call__(self, sents: List[str], politeness: int) -> List[str]:
+    def __call__(self, sent: str, politeness: int) -> str:
         """
-        style a sentence with the given politeness (1, 2, 3)
+        Style a sentence with the given politeness (0, 1, 2)
         """
-        self.setup().preprocess(sents).analyze().check().honorify(politeness).conjugate()
+        self.setup() \
+            .preprocess(sent) \
+            .analyze() \
+            .check() \
+            .honorify(politeness) \
+            .guess() \
+            .conjugate()
         return self.out
 
     def setup(self):
         """
-        reset the out and clear all the logs,
+        Reset the out and clear all the logs,
         """
         self.out = None
         self.logs.clear()
         self.logs.update({"conjugations": set(), "honorifics": set()})
         return self
 
-    def preprocess(self, sents: List[str]):
+    def preprocess(self, sent: str):
         """
-        Make sure each sentence ends with a period.
+        Make sure each sentence ends with a period, if it does not end with any SF.
+        We do this to increase the accuracy of `kiwi.join`.
         """
-        self.out = [re.sub(r"([^!?.]+)$", r"\1.", sent.strip()) for sent in sents]
+        self.out = re.sub(r"([^!?.]+)$", r"\1.", sent.strip())
         return self
 
     @log
     def analyze(self):
-        self.out: List[str]
-        self.out = [
-            DLM.join(
-                [f"{token.form}{SEP}{token.tag}" for token in self.kiwi.tokenize(sent)]
-            )
-            for sent in self.out
-        ]
+        """
+        Analyze the sentence and generate the output.
+        """
+        self.out: str
+        self.out = [f"{token.form}{TAG}{token.tag}" for token in self.kiwi.tokenize(self.out)]
+        self.out = SEP.join(self.out)  # to match with the format of the rules
         return self
 
     def check(self):
         """
         Check if your assumption holds. Raises a custom error if any of them does not hold.
         """
-        self.out: List[str]
+        self.out: str
         # raise exceptions only if you are in debug mode
-        if self.debug:
+        if self.strict:
             # assumption 1: every sentence should end with a valid SF. It should be one of: (., !, ?)
-            if not all(["SF" in joined for joined in self.out]):
-                raise SFNotIncludedError(
-                    "The following sentences do not include a SF:\n"
-                    + "\n".join([joined for joined in self.out if "SF" not in joined])
-                )
+            if "SF" not in self.out:
+                raise SFNotIncludedError(self.out)
             # assumption 2: all EF's should be supported by politely.
-            if not all(
-                [
-                    any(
-                        [self.matches(pattern, joined) for pattern in HONORIFICS.keys()]
-                    )
-                    for joined in self.out
-                    if "EF" in joined
-                ]
-            ):
-                raise EFNotSupportedError(
-                    "Styler does not support the ending(s):\n"
-                    + "\n".join(
-                        [
-                            joined
-                            for joined in self.out
-                            if not any(
-                                [
-                                    self.matches(pattern, joined)
-                                    for pattern in HONORIFICS.keys()
-                                ]
-                            )
-                        ]
-                    )
-                )
+            if not all([
+                any([re.search(pattern, pair) for pattern in RULES.keys()])
+                for pair in self.out.split(SEP)
+                if "EF" in pair
+            ]):
+                raise EFNotSupportedError(self.out)
         return self
 
     @log
     def honorify(self, politeness: int):
-        self.out: List[str]
-        for idx in range(len(self.out)):
-            for pattern in HONORIFICS.keys():
-                if self.matches(pattern, self.out[idx]):
-                    honorific = HONORIFICS[pattern][politeness]
-                    self.out[idx] = re.sub(pattern, honorific, self.out[idx])
-                    self.logs["honorifics"].add((pattern, honorific))
+        """
+        Determines all the candidates that would properly honorify the sentence.
+        Do this by chain-conjugating sets.
+        """
+        self.out: str
+        pair2honorifics = {}
+        for pattern in RULES.keys():
+            match = re.search(pattern, self.out)
+            if match:
+                matched_pair = match.group(MASK)
+                honorifics = {honorific.replace(SELF, matched_pair) for honorific in RULES[pattern][politeness]}
+                # progressively narrow down honorifics
+                pair2honorifics[matched_pair] = pair2honorifics.get(matched_pair, honorifics) & honorifics
+        # get all possible candidates
+        candidates = itertools.product(*[
+            pair2honorifics.get(pair, {pair, })
+            for pair in self.out.split(SEP)
+        ])
+        # remove empty candidates
+        candidates = [
+            [pair.split(SEP) for pair in candidate if pair != NULL]
+            for candidate in candidates
+        ]
+        # flatten pairs
+        candidates = [
+            list(itertools.chain(*candidate))
+            for candidate in candidates
+        ]
+        # a list of candidates
+        self.out = candidates
+        return self
+
+    @log
+    def guess(self):
+        """
+        Guess the scores.
+        """
+        self.out: List[List[str]]
+        politeness = self.logs['honorify']['in']['politeness']
+        original_pairs = self.logs['analyze']['out'].split(SEP)
+        if politeness == 0:
+            boost_pairs = CASUAL & set(original_pairs)
+        elif politeness == 1:
+            boost_pairs = POLITE & set(original_pairs)
+        elif politeness == 2:
+            boost_pairs = FORMAL & set(original_pairs)
+        else:
+            raise ValueError(f"politeness should be one of (0, 1, 2), but got {politeness}")
+        scores = [self.scorer(set(candidate), boost_pairs) for candidate in self.out]
+        self.out = [(candidate, score) for candidate, score in zip(self.out, scores)]
         return self
 
     @log
     def conjugate(self):
         """
-        Progressively conjugate morphemes from left to right.
+        Conjugate the guesses to get the final result.
         """
-        self.out: List[str]
-        self.out = [
-            [(token.split(SEP)[0], token.split(SEP)[1]) for token in joined.split(DLM) if SEP in token]
-            for joined in self.out
-        ]
-        self.out = [
-            self.kiwi.join(morphs)
-            for morphs in self.out
-        ]
+        self.out: List[Tuple[List[str], float]]
+        best = max(self.out, key=lambda x: x[1])[0]
+        self.out = self.kiwi.join([(pair.split(TAG)[0], pair.split(TAG)[1]) for pair in best])
         return self
-
-    @staticmethod
-    def matches(pattern: str, string: str) -> bool:
-        return True if re.match(rf"(^|.*{DLM}){pattern}({DLM}.*|$)", string) else False

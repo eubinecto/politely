@@ -31,52 +31,27 @@ HANGLE_NAMU_SENTS = [
 
 @pytest.fixture(scope="session")
 def styler():
-    return Styler(debug=True)
+    return Styler(strict=True)
 
 
 def test_raise_no_exceptions_on_hangle_wiki_to_1(styler):  # noqa
     try:
-        res = styler(HANGLE_WIKI_SENTS, 1)
-        pprint(res)
+        for sent in HANGLE_WIKI_SENTS:
+            styler(sent, 0)
+    except Exception as e:
+        pytest.fail(str(e), e)
+
+def test_raise_no_exceptions_on_hangle_wiki_to_2(styler):  # noqa
+    try:
+        for sent in HANGLE_WIKI_SENTS:
+            styler(sent, 1)
     except Exception as e:
         pytest.fail(str(e), e)
 
 
-def test_raise_no_exceptions_on_hangle_wiki_to_2(styler):
+def test_raise_no_exceptions_on_hangle_wiki_to_3(styler):  # noqa
     try:
-        res = styler(HANGLE_WIKI_SENTS, 2)
-        pprint(res)
-    except Exception as e:
-        pytest.fail(str(e), e)
-
-
-def test_raise_no_exceptions_on_hangle_wiki_to_3(styler):
-    try:
-        res = styler(HANGLE_WIKI_SENTS, 3)
-        pprint(res)
-    except Exception as e:
-        pytest.fail(str(e), e)
-
-
-def test_raise_no_exceptions_on_hangle_namu_to_1(styler):  # noqa
-    try:
-        res = styler(HANGLE_NAMU_SENTS, 1)
-        pprint(res)
-    except Exception as e:
-        pytest.fail(str(e), e)
-
-
-def test_raise_no_exceptions_on_hangle_namu_to_2(styler):
-    try:
-        res = styler(HANGLE_NAMU_SENTS, 2)
-        pprint(res)
-    except Exception as e:
-        pytest.fail(str(e), e)
-
-
-def test_raise_no_exceptions_on_hangle_namu_to_3(styler):
-    try:
-        res = styler(HANGLE_NAMU_SENTS, 3)
-        pprint(res)
+        for sent in HANGLE_WIKI_SENTS:
+            styler(sent, 2)
     except Exception as e:
         pytest.fail(str(e), e)

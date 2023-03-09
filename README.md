@@ -47,7 +47,7 @@ Instantiate an object of `Styler`, and style your sentences in a polite or forma
 from politely import Styler
 from pprint import pprint
 styler = Styler()
-pprint(" ".join(styler(sents, 2)))  # 2 = polite
+pprint(" ".join([styler(sent, 1) for sent in sents]))  # 1 = polite
 ```
 ```text
 ('잔소리를 두루 늘어놓다가 남이 들을까 봐 손으로 입을 틀어막고는 그 속에서 깔깔대요. 별로 우스울 것도 없는데 날씨가 풀리더니 이 놈의 '
@@ -62,7 +62,7 @@ pprint(" ".join(styler(sents, 2)))  # 2 = polite
  ```
  
  ```python3
- pprint(" ".join(styler(sents, 3)))  # 3 = formal
+pprint(" ".join([styler(sent, 2) for sent in sents]))  # 2 = formal
 ```
 ```text
 ('잔소리를 두루 늘어놓다가 남이 들을까 봐 손으로 입을 틀어막고는 그 속에서 깔깔댑니다. 별로 우스울 것도 없는데 날씨가 풀리더니 이 놈의 '
@@ -98,21 +98,21 @@ Or just visit [the demo we are hosting](https://eubinecto-politely-main-streamli
 
 ```python3
 # 권유 / 청유의 차이는 맥락에 의존
-print(styler(["저는 쓰레기를 주워요."], 3))
-print(styler(["자, 같이 쓰레기를 주워요."], 3))
+print(styler("저는 쓰레기를 주워요.", 2))
+print(styler("자, 같이 쓰레기를 주워요.", 2))
 ```
 ```
-[저는 쓰레기를 줍습니다.]
-[자, 같이 쓰레기를 줍습니다.] (should be "자, 같이 쓰레기를 주웁시다")
+저는 쓰레기를 줍습니다.
+자, 같이 쓰레기를 줍습니다. (should be "자, 같이 쓰레기를 주웁시다")
 ```
 ```python3
 # 이르 + 어 -> 이르러/일러 또한 맥락에 의존
-print(styler(["하지 말라고 일렀다."], 3))
-print(styler(["정상에 이르렀다."], 3))
+print(styler("하지 말라고 일렀다.", 2))
+print(styler("정상에 이르렀다.", 2))
 ```
 ```
-[하지 말라고 일렀습니다.]
-[정상에 일렀습니다.] (should be "정상에 이르렀습니다")
+하지 말라고 일렀습니다.
+정상에 일렀습니다. (should be "정상에 이르렀습니다")
 ```
 
 

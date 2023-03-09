@@ -1,12 +1,4 @@
-import os
-from politely.fetchers import fetch_honorifics
-
-DLM = "⊕"
-SEP = "⎸"
-os.environ["DLM"] = DLM
-os.environ["SEP"] = SEP
-HONORIFICS = fetch_honorifics()
-
+from politely.rules import SEP, TAG, NULL, MASK, SELF, RULES, PREFERENCES, CASUAL, POLITE, FORMAL  # noqa
 from politely.styler import Styler  # noqa
 
 __version__ = "v3.1.1"

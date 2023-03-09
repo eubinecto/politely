@@ -9,7 +9,7 @@ import pandas as pd  # noqa
 import os
 import requests  # noqa
 import yaml  # noqa
-from politely import Styler, DLM
+from politely import Styler, SEP
 from politely.errors import SFNotIncludedError, EFNotSupportedError
 
 
@@ -93,14 +93,14 @@ def explain(logs: dict, eng: str):
     pprint(logs['analyze']['in']['self'].out)
 
     before = after
-    after = " ".join(logs["analyze"]["out"]).replace(DLM, " ")
+    after = " ".join(logs["analyze"]["out"]).replace(SEP, " ")
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
     st.markdown(df.to_markdown(index=False))
     # --- step 4 ---
     msg = f"### 4️⃣ Apply honorifics"
-    before = DLM.join(logs["analyze"]["out"])
-    after = DLM.join(logs["honorify"]["out"])
+    before = SEP.join(logs["analyze"]["out"])
+    after = SEP.join(logs["honorify"]["out"])
     # for pattern, honorific in logs['honorifics']:
     #     before = re.sub(pattern, r'`\g<0>`', before)
     #     after = re.sub(pattern, honorific, before)
@@ -111,7 +111,7 @@ def explain(logs: dict, eng: str):
     st.markdown(df.to_markdown(index=False))
     # # --- step 5 ---
     msg = "### 5️⃣ Conjugate morphemes"
-    before = " ".join(logs["honorify"]["out"]).replace(DLM, " ")
+    before = " ".join(logs["honorify"]["out"]).replace(SEP, " ")
     after = " ".join(logs["conjugate"]["out"])
     df = pd.DataFrame([(before, after)], columns=["before", "after"])
     st.markdown(msg)
@@ -151,7 +151,7 @@ def main():
         "Type English sentences to translate with honorifics",
         value="Bring your work to fruition. Done is better than perfect.",
     )
-    styler = Styler(debug=True)
+    styler = Styler(strict=True)
     if st.button(label="Translate"):
         with st.spinner("Please wait..."):
             kor = translate(eng)
