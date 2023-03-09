@@ -1,8 +1,9 @@
-# this is here, only to be used with
+# this is here, only to be used with streamlit run
 pytest==7.0.1
-gensim==4.2.0
-kiwipiepy==0.13.1
+oyaml==1.0
+kiwipiepy==0.14.0
 streamlit==1.5.1
 tabulate==0.8.9
 click==8.0.4
-datasets==2.3.2
+protobuf==3.20.1
+
