@@ -1,5 +1,5 @@
 import pytest
-from politely import Styler, SELF
+from politely import Styler, SELF, NULL
 from politely.errors import SFNotIncludedError
 
 
@@ -24,13 +24,19 @@ def test_add_rules_1(styler):
     styler.rules.clear()  # just for demonstration
     assert styler(sent, 1) == "한글은 한국의 글자다."  # this is wrong
     styler.add_rules(
-        {"이🏷VCP🔗(?P<MASK>다🏷EF)": (
-            {"다🏷EF"},
-            {"에요🏷EF"},  # 에요.
-            {"습니다🏷EF"},
-        )
+        {
+            "이🏷VCP🔗(?P<MASK>다🏷EF)": (
+             {SELF},
+             {"예요🏷EF"},   # 에요 (X) 예요 (O)
+             {"입니다🏷EF"},
+            ),
+            "(?P<MASK>이🏷VCP)🔗다🏷EF": (
+             {SELF},
+             {NULL},  # 지우기
+             {NULL}   # 지우기
+            )
         })
-    assert styler(sent, 1) == "한글은 한국의 글자에요."  # should be this
+    assert styler(sent, 1) == "한글은 한국의 글자예요."  # should be this
 
 
 def test_add_rules_2(styler):

@@ -79,22 +79,29 @@ pprint(" ".join([styler(sent, 2) for sent in sents]))  # 2 = formal
 
 ### 4️⃣ `add_rules` of your own
 
-you can add your own rules with `add_rules` method:
+you can add your own rules with `add_rules` method. Use `politely.SELF` to refer to the original word. Use `politely.NULL` to delete the word.
 ```python3
+from politely import SELF, NULL
 styler.add_rules(
-    {"이🏷VCP🔗(?P<MASK>다🏷EF)": (
-        {"다🏷EF"},
-        {"에요🏷EF"},  # 에요.
-        {"습니다🏷EF"},
-    )
-    })
+        {
+            "이🏷VCP🔗(?P<MASK>다🏷EF)": (
+             {SELF},
+             {"예요🏷EF"},   # 에요 (X) 예요 (O)
+             {"입니다🏷EF"},
+            ),
+            "(?P<MASK>이🏷VCP)🔗다🏷EF": (
+             {SELF},
+             {NULL},  # 지우기
+             {NULL}   # 지우기
+            )
+        })
 sent = "한글은 한국의 글자이다."
 print(styler(sent, 1))
 ```
 ```text 
-한글은 한국의 글자에요.
+한글은 한국의 글자예요.
 ```
-You can add multiple rules altogether too. Use `politely.SELF` to refer to the original word.
+You can add multiple rules altogether too. 
 ```python3
 from politely import SELF
 styler.add_rules(
