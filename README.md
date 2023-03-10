@@ -101,7 +101,7 @@ print(styler(sent, 1))
 ```text 
 한글은 한국의 글자예요.
 ```
-Here is another example of adding rules.`styler.logs['guess']['out'] keeps track of all the candidates with scores.
+Here is another example of adding rules.`styler.logs['guess']['out']` keeps track of all the candidates with scores.
 ```python3
 from politely import SELF
 styler.add_rules(
