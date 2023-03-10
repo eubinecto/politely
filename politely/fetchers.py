@@ -1,15 +1,4 @@
 from kiwipiepy import Kiwi
-from politely.scorer import Scorer
-
-
-def fetch_scorer() -> Scorer:
-    """
-    use fetch_scorer to
-    """
-    # as of right now, Scorer is not really "fetched".
-    # we define this function nevertheless, as  we will need this by the time
-    # we use n-grams for the scorer.
-    return Scorer()
 
 
 def fetch_kiwi() -> Kiwi:

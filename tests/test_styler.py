@@ -1,9 +1,10 @@
 import pytest
-from politely import Styler
+from politely import Styler, SELF
 from politely.errors import SFNotIncludedError
 
 
-@pytest.fixture(scope="session")
+# narrow down the scope to each function
+@pytest.fixture(scope="function")
 def styler():
     return Styler(strict=True)
 
@@ -16,6 +17,46 @@ def setup(styler):
     yield
     # always make sure that styler is reset after a test is cleared.
     styler.setup()
+
+
+def test_add_rules_1(styler):
+    sent = "한글은 한국의 글자이다."
+    styler.rules.clear()  # just for demonstration
+    assert styler(sent, 1) == "한글은 한국의 글자다."  # this is wrong
+    styler.add_rules(
+        {"이🏷VCP🔗(?P<MASK>다🏷EF)": (
+            {"다🏷EF"},
+            {"에요🏷EF"},  # 에요.
+            {"습니다🏷EF"},
+        )
+        })
+    assert styler(sent, 1) == "한글은 한국의 글자에요."  # should be this
+
+
+def test_add_rules_2(styler):
+    sent = "아빠가 정실에 들어간다."
+    styler.rules.clear()  # just for demonstration
+    assert styler(sent, 1) == "아빠가 정실에 들어간다."  # this is wrong
+    styler.add_rules(
+        {
+            r"(?P<MASK>(아빠|아버지|아버님)🏷NNG)": (
+                {f"아빠🏷NNG"},
+                {f"아버지🏷NNG", f"아버님🏷NNG"},
+                {f"아버지🏷NNG", f"아버님🏷NNG"}
+            ),
+            r"(아빠|아버지|아버님)🏷NNG🔗(?P<MASK>\S+?🏷JKS)": (
+                {SELF},
+                {f"께서🏷JKS"},
+                {f"께서🏷JKS"}
+            ),
+            r"(?P<MASK>ᆫ다🏷EF)": (
+                {SELF},
+                {"시🏷EP🔗어요🏷EF"},
+                {"시🏷EP🔗습니다🏷EF"},
+            )
+        }
+    )
+    assert styler(sent, 1) in ("아버지께서 정실에 들어가셔요.", "아버님께서 정실에 들어가셔요.")
 
 
 def test_preprocess_with_period(styler):
@@ -329,6 +370,7 @@ def test_honorify_bo_ayo(styler):
     assert styler(sent, 0) == "좀만 더 버텨 봐."
     assert styler(sent, 1) == "좀만 더 버텨 봐요."
     assert styler(sent, 2) == "좀만 더 버텨 봅시다."
+
 
 @pytest.mark.skip()
 def test_honorify_ma(styler):
