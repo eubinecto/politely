@@ -79,7 +79,7 @@ pprint(" ".join([styler(sent, 2) for sent in sents]))  # 2 = formal
 
 ### 4️⃣ `add_rules` of your own
 
-you can add your own rules with `add_rules` method. Use `politely.SELF` to refer to the original word. Use `politely.NULL` to delete the word.
+you can add your own rules with `add_rules` method. Use `politely.SELF` to keep `MASK` as-is. Use `politely.NULL` to remove `MASK`.
 ```python3
 from politely import SELF, NULL
 styler.add_rules(
@@ -101,7 +101,7 @@ print(styler(sent, 1))
 ```text 
 한글은 한국의 글자예요.
 ```
-You can add multiple rules altogether too. 
+Here is another example of adding rules.`styler.logs['guess']['out'] keeps track of all the candidates with scores.
 ```python3
 from politely import SELF
 styler.add_rules(
@@ -126,7 +126,7 @@ styler.add_rules(
 sent = "아빠가 정실에 들어간다."
 print(styler(sent, 1))
 from pprint import pprint
-pprint(styler.logs['guess']['out'])  # you can look up the candidates from here
+pprint(styler.logs['guess']['out'])
 ```
 ```text
 아버지께서 정실에 들어가셔요.
