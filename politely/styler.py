@@ -1,11 +1,13 @@
 import itertools
 import re
-from copy import copy
-from typing import Any, List, Tuple
+from copy import copy, deepcopy
+from typing import Any, List, Tuple, Dict, Set
 from functools import wraps
-from politely.errors import EFNotSupportedError, SFNotIncludedError
-from politely.fetchers import fetch_kiwi, fetch_scorer
-from politely import RULES, SEP, TAG, MASK, NULL, SELF, CASUAL, POLITE, FORMAL
+from politely.errors import EFNotSupportedError, SFNotIncludedError, EFNotIncludedError
+from politely.fetchers import fetch_kiwi
+from politely import RULES, SEP, TAG, NULL, SELF, CASUAL, POLITE, FORMAL
+from politely.rules import EFS
+from politely.scorer import Scorer
 
 
 def log(f):
@@ -23,12 +25,13 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-    def __init__(self, strict: bool = False):
+    def __init__(self, strict: bool = False, scorer: Scorer = Scorer()):
         # object-owned attributes
-        self.kiwi = fetch_kiwi()
-        self.scorer = fetch_scorer()
+        self.scorer = scorer
         self.strict = strict
         self.out: Any = None
+        self.kiwi = fetch_kiwi()
+        self.rules = deepcopy(RULES)
         self.logs = dict()
 
     @log
@@ -82,12 +85,11 @@ class Styler:
             # assumption 1: every sentence should end with a valid SF. It should be one of: (., !, ?)
             if "SF" not in self.out:
                 raise SFNotIncludedError(self.out)
-            # assumption 2: all EF's should be supported by politely.
-            if not all([
-                any([re.search(pattern, pair) for pattern in RULES.keys()])
-                for pair in self.out.split(SEP)
-                if "EF" in pair
-            ]):
+            # assumption 2: every sentence should include a valid EF. It should match the EFS pattern.
+            if "EF" not in self.out:
+                raise EFNotIncludedError(self.out)
+            # assumption 3: all EF's should be supported by politely.
+            if not all([re.match(EFS, pair) for pair in self.out.split(SEP) if "EF" in pair]):
                 raise EFNotSupportedError(self.out)
         return self
 
@@ -99,11 +101,11 @@ class Styler:
         """
         self.out: str
         pair2honorifics = {}
-        for pattern in RULES.keys():
+        for pattern in self.rules.keys():
             match = re.search(pattern, self.out)
             if match:
-                matched_pair = match.group(MASK)
-                honorifics = {honorific.replace(SELF, matched_pair) for honorific in RULES[pattern][politeness]}
+                matched_pair = match.group("MASK")
+                honorifics = {honorific.replace(SELF, matched_pair) for honorific in self.rules[pattern][politeness]}
                 # progressively narrow down honorifics
                 pair2honorifics[matched_pair] = pair2honorifics.get(matched_pair, honorifics) & honorifics
         # get all possible candidates
@@ -145,12 +147,27 @@ class Styler:
         self.out = [(candidate, score) for candidate, score in zip(self.out, scores)]
         return self
 
-    @log
     def conjugate(self):
         """
-        Conjugate the guesses to get the final result.
+        Elect the best candidate and conjugate its pairs.
         """
         self.out: List[Tuple[List[str], float]]
         best = max(self.out, key=lambda x: x[1])[0]
         self.out = self.kiwi.join([(pair.split(TAG)[0], pair.split(TAG)[1]) for pair in best])
         return self
+
+    def add_rules(self, rules: Dict[str, Tuple[Set,
+                                               Set,
+                                               Set]]):
+        """
+        Add rules to the existing rules.
+        """
+        # check if the rules are in proper format
+        for key, (val_c, val_p, val_f) in rules.items():
+            # first, check if the key includes a group with the key; (?<MASK>...)
+            # e.g. (?P<MASK>(아빠|아버지){TAG}NNG)
+            if not re.search(re.escape(r"(?P<MASK>") + r".*" + re.escape(")"), key):
+                raise ValueError(f"key should include a group with the key; (?P<MASK>...), but got {key}")
+        self.rules.update(rules)
+        return self
+        

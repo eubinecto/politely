@@ -77,6 +77,60 @@ pprint(" ".join([styler(sent, 2) for sent in sents]))  # 2 = formal
  '횡하게 달아나는 겝니다.')
 ```
 
+### 4️⃣ `add_rules` of your own
+
+you can add your own rules with `add_rules` method:
+```python3
+styler.add_rules(
+    {"이🏷VCP🔗(?P<MASK>다🏷EF)": (
+        {"다🏷EF"},
+        {"에요🏷EF"},  # 에요.
+        {"습니다🏷EF"},
+    )
+    })
+sent = "한글은 한국의 글자이다."
+print(styler(sent, 1))
+```
+```text 
+한글은 한국의 글자에요.
+```
+You can add multiple rules altogether too. Use `politely.SELF` to refer to the original word.
+```python3
+from politely import SELF
+styler.add_rules(
+    {
+        r"(?P<MASK>(아빠|아버지|아버님)🏷NNG)": (
+            {f"아빠🏷NNG"},
+            {f"아버지🏷NNG", f"아버님🏷NNG"},
+            {f"아버지🏷NNG", f"아버님🏷NNG"}
+        ),
+        r"(아빠|아버지|아버님)🏷NNG🔗(?P<MASK>\S+?🏷JKS)": (
+            {SELF},  #  no change, replace with the original
+            {f"께서🏷JKS"},
+            {f"께서🏷JKS"}
+        ),
+        r"(?P<MASK>ᆫ다🏷EF)": (
+            {SELF},  # no change, replace with the original
+            {"시🏷EP🔗어요🏷EF"},
+            {"시🏷EP🔗습니다🏷EF"},
+        )
+    }
+)
+sent = "아빠가 정실에 들어간다."
+print(styler(sent, 1))
+from pprint import pprint
+pprint(styler.logs['guess']['out'])  # you can look up the candidates from here
+```
+```text
+아버지께서 정실에 들어가셔요.
+[(['아버지🏷NNG', '께서🏷JKS', '정실🏷NNG', '에🏷JKB', '들어가🏷VV', '시🏷EP', '어요🏷EF', '.🏷SF'],
+  0.0125),
+ (['아버님🏷NNG', '께서🏷JKS', '정실🏷NNG', '에🏷JKB', '들어가🏷VV', '시🏷EP', '어요🏷EF', '.🏷SF'],
+  0.0125)]
+```
+
+
+
 ## Hosting the interactive demo 
 
 You can either host the interactive demo locally ([you first have to sign up for papago API to get your secrets](https://developers.naver.com/docs/papago/README.md))
