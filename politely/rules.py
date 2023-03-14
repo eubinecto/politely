@@ -10,6 +10,8 @@ SEP = "🔗"
 CASUAL = {
     f"어{TAG}EF",
     f"다{TAG}EF",
+    f"라{TAG}EF",
+    f"어라{TAG}EF",
     f"자{TAG}EF",
     f"대{TAG}EF",
     f"는다{TAG}EF",
@@ -19,14 +21,19 @@ CASUAL = {
     f"네{TAG}EF",
     f"냐{TAG}EF",
     f"ᆫ다{TAG}EF",
+    f"란다{TAG}EF",
     f"ᆯ게{TAG}EF",
-    f"ᆫ대{TAG}EF"
+    f"ᆫ대{TAG}EF",
+    f"ᆫ가{TAG}EF",
+    f"지{TAG}EF"
 }
 
 POLITE = {
     f"어요{TAG}EF",
     f"시{TAG}EP{SEP}어요{TAG}EF",
     f"에요{TAG}EF",
+    f"지요{TAG}EF",
+    f"래요{TAG}EF",
     f"죠{TAG}EF",
     f"래요{TAG}EF",
     f"네요{TAG}EF",
@@ -41,6 +48,7 @@ FORMAL = {
     f"습니다{TAG}EF",
     f"시{TAG}EP{SEP}습니다{TAG}EF",
     f"습니까{TAG}EF",
+    f"랍니다{TAG}EF",
     f"ᆸ니까{TAG}EF",
     f"ᆸ시오{TAG}EF",
     f"ᆸ니다{TAG}EF",
@@ -155,6 +163,30 @@ RULES.update(
             {SELF},
             {f"께서{TAG}JKS"},
             {f"께서{TAG}JKS"}
+        )
+    }
+)
+
+# --- 란다 -> 래요 / 랍니다 --- #
+RULES.update(
+    {
+        rf"(?P<MASK>(란다|래요|랍니다){TAG}EF)": (
+            {f"란다{TAG}EF"},
+            {f"래요{TAG}EF"},
+            {f"랍니다{TAG}EF"}
+        )
+    }
+)
+
+
+# --- 지 -> 지요 --- #
+RULES.update(
+    {
+        rf"(?P<MASK>(지|지요|ᆸ니다){TAG}EF)": (
+            {f"지{TAG}EF"},
+            {f"지요{TAG}EF"},
+            #  전부 가능함
+            FORMAL
         )
     }
 )

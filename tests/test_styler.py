@@ -117,6 +117,30 @@ def test_honorify_ends_with_special_char_1(styler):
     assert styler(sent, 2) == "최선을 다 했습니다!"
 
 
+def test_randa(styler):
+    # 0 -> 1, 2
+    sent = "여기서 얼른 먹어 버리란다"
+    assert styler(sent, 1) == "여기서 얼른 먹어 버리래요."
+    assert styler(sent, 2) == "여기서 얼른 먹어 버리랍니다."
+    # 1 -> 0, 2
+    sent = "여기서 얼른 먹어 버리래요"
+    assert styler(sent, 0) == "여기서 얼른 먹어 버리란다."
+    assert styler(sent, 2) == "여기서 얼른 먹어 버리랍니다."
+    # 2 -> 0, 1
+    sent = "여기서 얼른 먹어 버리랍니다"
+    assert styler(sent, 0) == "여기서 얼른 먹어 버리란다."
+    assert styler(sent, 1) == "여기서 얼른 먹어 버리래요."
+
+
+def test_ra(styler):
+    # 0 -> 1
+    sent = "이거 먹어라."
+    assert styler(sent, 1) == "이거 먹어요."
+    # 1 -> 0
+    sent = "이거 먹어요."
+    assert styler(sent, 0) in ("이거 먹어라.", "이거 먹어.")
+
+
 @pytest.mark.skip()
 def test_honorify_ends_with_special_char_2(styler):
     sent = "그 일은 내 담당이야."
