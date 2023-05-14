@@ -1,13 +1,18 @@
 import itertools
+import os
 import re
 from copy import copy, deepcopy
+import random
 from typing import Any, List, Tuple, Dict, Set
 from functools import wraps
+import numpy as np
+import torch
 from politely.errors import EFNotSupportedError, SFNotIncludedError, EFNotIncludedError
 from politely.fetchers import fetch_kiwi
-from politely import RULES, SEP, TAG, NULL, SELF, CASUAL, POLITE, FORMAL
+from politely import RULES, SEP, TAG, NULL, SELF
+from politely.modeling_gpt_scorer import GPT2Scorer
 from politely.rules import EFS
-from politely.scorer import Scorer
+from politely.modeling_heuristic_scorer import HeuristicScorer
 
 
 def log(f):
@@ -25,8 +30,14 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-    def __init__(self, strict: bool = False, scorer: Scorer = Scorer()):
-        # object-owned attributes
+    def __init__(self, strict: bool = False, lm_search: bool = True):
+        # --- choose the scorer to use --- #
+        if lm_search:
+            # as of right now, we use GPT2
+            scorer = GPT2Scorer()
+        else:
+            scorer = HeuristicScorer()
+        #  --- object-owned attributes --- #
         self.scorer = scorer
         self.strict = strict
         self.out: Any = None
@@ -55,6 +66,15 @@ class Styler:
         self.out = None
         self.logs.clear()
         self.logs.update({"conjugations": set(), "honorifics": set()})
+        # --- seed everything --- #
+        seed = 318
+        random.seed(seed)
+        os.environ['PYTHONHASHSEED'] = str(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = True
         return self
 
     def preprocess(self, sent: str):
@@ -104,14 +124,15 @@ class Styler:
         for pattern in self.rules.keys():
             match = re.search(pattern, self.out)
             if match:
-                matched_pair = match.group("MASK")
-                honorifics = {honorific.replace(SELF, matched_pair) for honorific in self.rules[pattern][politeness]}
+                # should be only one pair
+                pair = match.group("MASK")
+                honorifics = {honorific.replace(SELF, pair) for honorific in self.rules[pattern][politeness]}
                 # progressively narrow down honorifics
-                pair2honorifics[matched_pair] = pair2honorifics.get(matched_pair, honorifics) & honorifics
+                pair2honorifics[pair] = pair2honorifics.get(pair, honorifics) & honorifics
         # get all possible candidates
         candidates = itertools.product(*[
             pair2honorifics.get(pair, {pair, })
-            for pair in self.out.split(SEP)
+            for pair in self.out.split(SEP)  # SEP
         ])
         # remove empty candidates
         candidates = [
@@ -133,17 +154,8 @@ class Styler:
         Guess the scores.
         """
         self.out: List[List[str]]
-        politeness = self.logs['honorify']['in']['politeness']
-        original_pairs = self.logs['analyze']['out'].split(SEP)
-        if politeness == 0:
-            boost_pairs = CASUAL & set(original_pairs)
-        elif politeness == 1:
-            boost_pairs = POLITE & set(original_pairs)
-        elif politeness == 2:
-            boost_pairs = FORMAL & set(original_pairs)
-        else:
-            raise ValueError(f"politeness should be one of (0, 1, 2), but got {politeness}")
-        scores = [self.scorer(set(candidate), boost_pairs) for candidate in self.out]
+        # score each candidate
+        scores = self.scorer(self.out, self.logs, self.kiwi)
         self.out = [(candidate, score) for candidate, score in zip(self.out, scores)]
         return self
 
@@ -163,7 +175,7 @@ class Styler:
         Add rules to the existing rules.
         """
         # check if the rules are in proper format
-        for key, (val_c, val_p, val_f) in rules.items():
+        for key, _ in rules.items():
             # first, check if the key includes a group with the key; (?<MASK>...)
             # e.g. (?P<MASK>(아빠|아버지){TAG}NNG)
             if not re.search(re.escape(r"(?P<MASK>") + r".*" + re.escape(")"), key):

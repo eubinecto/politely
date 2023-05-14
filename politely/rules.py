@@ -1,3 +1,7 @@
+"""
+규칙:
+1.
+"""
 from typing import Set, Tuple, Dict
 
 # --- symbols --- #
@@ -6,10 +10,11 @@ TAG = "🏷"
 SEP = "🔗"
 
 
-# --- all EF's of different styles --- #
+# --- all EF's of different styles they must be singular tokens --- #
 CASUAL = {
     f"어{TAG}EF",
     f"다{TAG}EF",
+    f"니{TAG}EF",
     f"라{TAG}EF",
     f"어라{TAG}EF",
     f"자{TAG}EF",
@@ -29,9 +34,10 @@ CASUAL = {
 }
 
 POLITE = {
+    f"요{TAG}EF",
     f"어요{TAG}EF",
-    f"시{TAG}EP{SEP}어요{TAG}EF",
     f"에요{TAG}EF",
+    f"ᆫ가요{TAG}EF",
     f"지요{TAG}EF",
     f"래요{TAG}EF",
     f"죠{TAG}EF",
@@ -46,13 +52,13 @@ POLITE = {
 
 FORMAL = {
     f"습니다{TAG}EF",
-    f"시{TAG}EP{SEP}습니다{TAG}EF",
     f"습니까{TAG}EF",
     f"랍니다{TAG}EF",
     f"ᆸ니까{TAG}EF",
     f"ᆸ시오{TAG}EF",
     f"ᆸ니다{TAG}EF",
-    f"ᆸ시다{TAG}EF"
+    f"ᆸ시다{TAG}EF",
+    f"읍시다{TAG}EF",
 }
 
 
@@ -60,6 +66,7 @@ FORMAL = {
 EFS = rf"(?P<MASK>({'|'.join([pair for pair in (CASUAL | POLITE | FORMAL)])}))"
 SELF = rf"\g<MASK>"
 WITH_JONG_SUNG = rf"[{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
+NO_JONG_SUNG = rf"[^{''.join({chr(i) for i in range(44032, 55204)} - {chr(44032 + 28 * i) for i in range(399)})}]"
 
 
 # --- programmatically populated RULES --- #
@@ -97,6 +104,17 @@ RULES.update(
     }
 )
 
+# --- 종성이 없는 경우, 어/EF, f"어라{TAG}EF", 어요/EF는 사용하지 않음 --- #
+RULES.update(
+    {
+        rf"{NO_JONG_SUNG}{TAG}[A-Z\-]+?{SEP}{EFS}": (
+            CASUAL - {f"어{TAG}EF", f"어라{TAG}EF"},
+            POLITE - {f"어요{TAG}EF"},
+            FORMAL
+        )
+    }
+)
+
 
 # --- 의문형인 경우, formal은 -니까만 가능 --- #
 RULES.update(
@@ -104,7 +122,7 @@ RULES.update(
         rf"{EFS}{SEP}\?{TAG}SF": (
             CASUAL,
             POLITE,
-            {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF"}
+            {f"습니까{TAG}EF", f"ᆸ니까{TAG}EF", f"시{TAG}EP{SEP}ᆸ니까{TAG}EF"}
         )
     }
 )
@@ -192,9 +210,23 @@ RULES.update(
 )
 
 
+# --- 시 + ㄴ가요 -> 시 + 니 --- #
+RULES.update(
+    {
+        rf"시{TAG}EP{SEP}(?P<MASK>ᆫ가요{TAG}EF)": (
+            {f"니{TAG}EF"},
+            {f"ᆫ가요{TAG}EF"},
+            {f"ᆸ니까{TAG}EF"}
+        )
+    }
+)
+
+
 # ---- to be used for scoring -- #
-PREFERENCES = {f"어{TAG}EF",
-               f"어요{TAG}EF",
-               f"어요{TAG}EF",
-               f"습니다{TAG}EF",
-               f"ᆸ니다{TAG}EF"}
+PREFERENCES = {
+    f"어{TAG}EF",
+    f"어요{TAG}EF",
+    f"어요{TAG}EF",
+    f"습니다{TAG}EF",
+    f"ᆸ니다{TAG}EF"
+}
