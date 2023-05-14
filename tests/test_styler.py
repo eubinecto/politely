@@ -602,7 +602,6 @@ def test_contextual_2(styler):
     assert styler(sent, 2) == "드디어 정상에 이르렀습니다."
 
 
-@pytest.mark.skip()
 def test_contextual_3(styler):
     """
     쓰레기를 주워요 -> 쓰레기를 주웁시다 / 쓰레기를 줍습니다 (존대 종결어미 선정에 맥락이 관여하는 경우)
@@ -612,9 +611,9 @@ def test_contextual_3(styler):
     sent = "저는 쓰레기를 주워요."
     assert styler(sent, 0) == "나는 쓰레기를 줍는다."
     assert styler(sent, 2) == "저는 쓰레기를 줍습니다."
-    sent = "자, 이제 쓰레기를 주워요."
-    assert styler(sent, 0) == "자, 이제 쓰레기를 줍자."
-    assert styler(sent, 2) == "자, 이제 쓰레기를 주웁시다."
+    sent = "자, 쓰레기를 주워요."
+    assert styler(sent, 0) == "자, 쓰레기를 줍자."
+    assert styler(sent, 2) == "자, 쓰레기를 주웁시다."
 
 
 @pytest.mark.skip()

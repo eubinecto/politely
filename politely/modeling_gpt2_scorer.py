@@ -16,7 +16,9 @@ class GPT2Scorer:
         self.device = device
         self.gpt2.eval()
 
-    def __call__(self, candidates: List[List[str]], logs: dict, kiwi: Kiwi) -> List[float]:
+    def __call__(self, candidates: List[List[str]], logs: dict, kiwi: Kiwi,
+                 # label_smoothing: https://ratsgo.github.io/insight-notes/docs/interpretable/smoothing
+                 label_smoothing: float = 0.2) -> List[float]:
         """
         이걸 batched processing으로 바꾸고 계속하기. device parameter도 추가하기.
         """
@@ -34,7 +36,9 @@ class GPT2Scorer:
         shift_logits = logits[:, :-1, :].contiguous()  # (N, L-1, |V|)
         shift_labels = inputs.input_ids[:, 1:].contiguous()  # (N, L-1)
         # flatten the tokens
-        loss_fct = CrossEntropyLoss(reduction='none', ignore_index=self.tokenizer.pad_token_id)
+        # TODO: use weight parameter to increase the losses for canonical ending like -습니다 / -어 / -어요
+        loss_fct = CrossEntropyLoss(reduction='none', ignore_index=self.tokenizer.pad_token_id,
+                                    label_smoothing=label_smoothing)
         loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
         loss_by_sequence = loss.view(logits.size(0), -1).mean(dim=1)
         # negative log likelihood
