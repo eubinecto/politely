@@ -16,7 +16,7 @@ class GPT2Scorer:
         self.device = device
         self.gpt2.eval()
 
-    def __call__(self, candidates: List[List[str]], log: dict, kiwi: Kiwi) -> List[float]:
+    def __call__(self, candidates: List[List[str]], logs: dict, kiwi: Kiwi) -> List[float]:
         """
         이걸 batched processing으로 바꾸고 계속하기. device parameter도 추가하기.
         """

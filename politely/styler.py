@@ -10,7 +10,7 @@ import torch
 from politely.errors import EFNotSupportedError, SFNotIncludedError, EFNotIncludedError
 from politely.fetchers import fetch_kiwi
 from politely import RULES, SEP, TAG, NULL, SELF
-from politely.modeling_gpt_scorer import GPT2Scorer
+from politely.modeling_gpt2_scorer import GPT2Scorer
 from politely.rules import EFS
 from politely.modeling_heuristic_scorer import HeuristicScorer
 
