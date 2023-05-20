@@ -4,9 +4,10 @@ from kiwipiepy import Kiwi
 from torch.nn import CrossEntropyLoss
 from transformers import AutoTokenizer, GPT2LMHeadModel
 from politely import TAG
+from politely.modeling_scorer import Scorer
 
 
-class GPT2Scorer:
+class GPT2Scorer(Scorer):
     """
     More accurate than heuristic scorer, but slower.
     """

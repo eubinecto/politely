@@ -30,7 +30,7 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-    def __init__(self, strict: bool = False, lm_search: bool = True):
+    def __init__(self, strict: bool = False, scorer: bool = True):
         # --- choose the scorer to use --- #
         if lm_search:
             # as of right now, we use GPT2

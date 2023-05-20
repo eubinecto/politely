@@ -1,11 +1,10 @@
-from typing import Set, List
-
+from typing import List
 from kiwipiepy import Kiwi
-
 from politely import PREFERENCES, CASUAL, POLITE, FORMAL, SEP
+from politely.modeling_scorer import Scorer
 
 
-class HeuristicScorer:
+class HeuristicScorer(Scorer):
 
     def __call__(self, candidates: List[List[str]], logs: dict, kiwi: Kiwi) -> List[List[float]]:
         """
