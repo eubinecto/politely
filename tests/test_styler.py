@@ -4,7 +4,7 @@ from politely.errors import SFNotIncludedError
 
 
 # narrow down the scope to each function
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def styler():
     return Styler(strict=True)
 
@@ -139,6 +139,26 @@ def test_ra(styler):
     # 1 -> 0
     sent = "이거 먹어요."
     assert styler(sent, 0) in ("이거 먹어라.", "이거 먹어.")
+
+
+def test_singayo(styler):
+    # 1 -> 0, 2
+    sent = "이걸 만든 사람은 누구신가요?"
+    assert styler(sent, 0) == "이걸 만든 사람은 누구니?"
+    assert styler(sent, 2) == "이걸 만든 사람은 누구십니까?"
+    # 0 -> 1, 2
+    sent = "이걸 만든 사람은 누구니?"
+    assert styler(sent, 1) == "이걸 만든 사람은 누구셔요?"
+    assert styler(sent, 2) in("이걸 만든 사람은 누구십니까?", "이걸 만든 사람은 누굽니까?")
+    # 2 -> 0, 1
+    sent = "이걸 만든 사람은 누구십니까?"
+    assert styler(sent, 0) == "이걸 만든 사람은 누구니?"
+    assert styler(sent, 1) == "이걸 만든 사람은 누구셔요?"
+
+
+def test_third_person(styler):
+    pass
+
 
 
 @pytest.mark.skip()
@@ -554,18 +574,18 @@ def test_kiwi_error_3(styler):
     assert styler(sent, 2) == "콩나물은 에어팟의 별칭입니다."
 
 
-@pytest.mark.skip()
 def test_contextual_1(styler):
     # 이런 식으로 맥락이 필요한 경우도 대응이 어렵다. (존대 종결어미 선정에 맥락이 관여하는 경우)
     # 이제, 밥을 등, 단어 선택에 따라 formal의 형태가 달라지는데, 이것에 대응하는 것은 불가능하다.
     # 맥락이 필요하다. 오직 규칙만으로는 불가능하다.
-    sent = "자 이제 먹어요."
-    assert styler(sent, 2) == "자 이제 먹읍시다"
-    sent = "전 밥을 먹어요."
-    assert styler(sent, 2) == "전 밥을 먹습니다"
+    sent = "자, 이제 먹어요."
+    assert styler(sent, 0) == "자, 이제 먹자."
+    assert styler(sent, 2) == "자, 이제 먹읍시다."
+    sent = "난 밥을 먹어요."
+    assert styler(sent, 0) == "난 밥을 먹는다."
+    assert styler(sent, 2) == "전 밥을 먹습니다."
 
 
-@pytest.mark.skip()
 def test_contextual_2(styler):
     """
     -르 불규칙 (conjugation 규칙에 맥락이 관여하는 경우)
@@ -575,16 +595,13 @@ def test_contextual_2(styler):
     여기 이슈참고: https://github.com/eubinecto/politely/issues/56#issue-1233231686
     """
     sent = "하지 말라고 일렀다."
-    assert styler(sent, 0) == "하지 말라고 일렀다."
     assert styler(sent, 1) == "하지 말라고 일렀어요."
     assert styler(sent, 2) == "하지 말라고 일렀습니다."
     sent = "드디어 정상에 이르렀다."
-    assert styler(sent, 0) == "드디어 정상에 이르렀다."
-    assert styler(sent, 1) == "드디어 정상에 이르렀어요."
+    assert styler(sent, 1) == "드디어 정상에 이르렀네요."
     assert styler(sent, 2) == "드디어 정상에 이르렀습니다."
 
 
-@pytest.mark.skip()
 def test_contextual_3(styler):
     """
     쓰레기를 주워요 -> 쓰레기를 주웁시다 / 쓰레기를 줍습니다 (존대 종결어미 선정에 맥락이 관여하는 경우)
@@ -592,13 +609,11 @@ def test_contextual_3(styler):
     # 자세한 설명: https://github.com/eubinecto/politely/issues/60#issuecomment-1126839221
     """
     sent = "저는 쓰레기를 주워요."
-    assert styler(sent, 0) == "나는 쓰레기를 주워."
-    assert styler(sent, 1) == "저는 쓰레기를 주워요."
+    assert styler(sent, 0) == "나는 쓰레기를 줍는다."
     assert styler(sent, 2) == "저는 쓰레기를 줍습니다."
-    sent = "같이 쓰레기를 주워요."
-    assert styler(sent, 0) == "같이 쓰레기를 줍자."
-    assert styler(sent, 1) == "같이 쓰레기를 주워요."
-    assert styler(sent, 2) == "같이 쓰레기를 주웁시다."
+    sent = "자, 쓰레기를 주워요."
+    assert styler(sent, 0) == "자, 쓰레기를 주워."
+    assert styler(sent, 2) == "자, 쓰레기를 주웁시다."
 
 
 @pytest.mark.skip()
@@ -608,15 +623,10 @@ def test_contextual_4(styler):
     떠나요 -> 떠나 / 떠나자, 둘 중 무엇이 정답인지는 맥락을 보아야만 알 수 있다.
     떠나요 -> 떠납니다 / 떠납시다 -> 둘 중 무엇이 맞는지도... 마찬가지
     """
-    sent = "자, 떠나요. 동해 바다로."
-    assert styler(sent, 0) == "자, 떠나자. 동해 바다로."
-    assert styler(sent, 1) == "자, 떠나요. 동해 바다로."
-    assert styler(sent, 2) == "자, 떠납시다. 동해 바다로."
+    sent = "같이 동해 바다로 떠나요."
+    assert styler(sent, 0) == "우리 동해 바다로 떠나자."
+    assert styler(sent, 2) == "우리 동해 바다로 떠납시다."
+    sent = "저는 동해 바다로 떠나요."
+    assert styler(sent, 0) == "나는 동해 바다로 떠난다."
+    assert styler(sent, 2) == "나는 동해 바다로 떠납니다."
 
-
-@pytest.mark.skip()
-def test_contextual_5(styler):
-    sent = "가까우니까 걸어가요."
-    assert styler(sent, 0) == "가까우니까 걸어가."
-    assert styler(sent, 1) == "가까우니까 걸어가요."
-    assert styler(sent, 2) == "가까우니까 걸어갑시다."

@@ -1,6 +1,6 @@
-from politely.scorer import Scorer
+from politely.modeling_heuristic_scorer import HeuristicScorer
 
-scorer = Scorer()
+scorer = HeuristicScorer()
 scorer.w2v.score("안녕")
 
 # word2vec

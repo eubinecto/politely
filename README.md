@@ -153,29 +153,6 @@ Or just visit [the demo we are hosting](https://eubinecto-politely-main-streamli
 <img width="743" alt="image" src="https://user-images.githubusercontent.com/56193069/177812857-afa40454-1afd-4b09-873f-aa9db3495d9e.png"> | 
 
 
-## What `politely` can't 🙅
-
-`politely`'s `Styler` cannnot take contexts into account because its conjugation algorithm is fundamentally rule-based. The algorithm is nothing but a chain of glorified if-else's. As a consequence of this, `Styler` can't disambiguate context-dependent conjugations, like so:  
-
-```python3
-# 권유 / 청유의 차이는 맥락에 의존
-print(styler("저는 쓰레기를 주워요.", 2))
-print(styler("자, 같이 쓰레기를 주워요.", 2))
-```
-```
-저는 쓰레기를 줍습니다.
-자, 같이 쓰레기를 줍습니다. (should be "자, 같이 쓰레기를 주웁시다")
-```
-```python3
-# 이르 + 어 -> 이르러/일러 또한 맥락에 의존
-print(styler("하지 말라고 일렀다.", 2))
-print(styler("정상에 이르렀다.", 2))
-```
-```
-하지 말라고 일렀습니다.
-정상에 일렀습니다. (should be "정상에 이르렀습니다")
-```
-
 
 ## By whom? 👏
 - funded by: [Faculty of Oriental Studies](https://www.orinst.ox.ac.uk) at the University of Oxford 
