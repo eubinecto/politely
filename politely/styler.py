@@ -11,8 +11,8 @@ from politely.errors import EFNotSupportedError, SFNotIncludedError, EFNotInclud
 from politely.fetchers import fetch_kiwi
 from politely import RULES, SEP, TAG, NULL, SELF
 from politely.modeling_gpt2_scorer import GPT2Scorer
+from politely.modeling_scorer import Scorer
 from politely.rules import EFS
-from politely.modeling_heuristic_scorer import HeuristicScorer
 
 
 def log(f):
@@ -30,13 +30,7 @@ class Styler:
     """
     A rule-based Korean Politeness Styler
     """
-    def __init__(self, strict: bool = False, scorer: bool = True):
-        # --- choose the scorer to use --- #
-        if lm_search:
-            # as of right now, we use GPT2
-            scorer = GPT2Scorer()
-        else:
-            scorer = HeuristicScorer()
+    def __init__(self, strict: bool = False, scorer: Scorer = GPT2Scorer()):
         #  --- object-owned attributes --- #
         self.scorer = scorer
         self.strict = strict

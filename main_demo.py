@@ -14,7 +14,7 @@ text = """잔소리를 두루 늘어놓다가 남이 들을까봐 손으로 입�
 kiwi = Kiwi()
 sents = [sent.text.strip() for sent in kiwi.split_into_sents(text)]
 # instantiate a Styler object.
-styler = Styler(lm_search=True)
+styler = Styler()
 # to a polite style
 pprint(" ".join([styler(sent, 1) for sent in sents]))
 print("###")
