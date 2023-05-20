@@ -25,7 +25,9 @@ classifiers = [
 
 dependencies = [
   "cmake>=3.25.2",
-  "kiwipiepy>=0.14.1"
+  "kiwipiepy>=0.14.1",
+  "transformers>=4.29.1",
+  "torch>=2.0.1"
 ]
 
 dynamic = ["version"]
