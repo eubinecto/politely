@@ -612,7 +612,7 @@ def test_contextual_3(styler):
     assert styler(sent, 0) == "나는 쓰레기를 줍는다."
     assert styler(sent, 2) == "저는 쓰레기를 줍습니다."
     sent = "자, 쓰레기를 주워요."
-    assert styler(sent, 0) == "자, 쓰레기를 줍자."
+    assert styler(sent, 0) == "자, 쓰레기를 주워."
     assert styler(sent, 2) == "자, 쓰레기를 주웁시다."
 
 
